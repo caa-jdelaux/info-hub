@@ -42,6 +42,10 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      # Requis par les tests du générateur de QR code (paquet `qrcode`).
+      - run: npm ci
       - run: npm run check
       - run: npm test
 

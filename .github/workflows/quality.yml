@@ -7,9 +7,13 @@ name: Qualité
 # `npm run quality` en local. Aucun `if` de YAML ne peut donc faire diverger ce
 # que le CI refuse de ce que le déploiement accepte.
 #
-# Le projet n'a aucune dépendance d'exécution : pas de `npm ci`, pas de
-# typecheck, pas de lint. Des contrôles qui ne vérifieraient rien coûteraient
-# du temps de CI, et ce temps se paie le 14 au matin, debout dans un hall.
+# Pas de typecheck ni de lint : la page est un fichier statique sans dépendance
+# d'exécution, ces contrôles ne vérifieraient rien.
+#
+# En revanche `npm ci` est nécessaire là où les tests touchent au générateur de
+# QR code, qui dépend du paquet `qrcode`. Le job `page` s'en passe : il porte le
+# contrôle du bloc des salles, celui qu'on relance le 14 au matin, debout dans
+# un hall — il reste sans installation, donc rapide.
 
 on:
   push:
@@ -44,6 +48,11 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      # Le YAML orchestre, il ne décide pas : la porte qualité et le contrôle
-      # après déploiement sont des scripts, et ces scripts sont testés.
+          cache: npm
+          cache-dependency-path: package-lock.json
+      # Requis par les tests du générateur de QR code (paquet `qrcode`).
+      - run: npm ci
+      # Le YAML orchestre, il ne décide pas : la porte qualité, le contrôle
+      # après déploiement et le générateur de QR sont des scripts, et ces
+      # scripts sont testés.
       - run: npm test

@@ -115,9 +115,11 @@ toute taille. Le PNG est une rasterisation de dépannage.
   chargé au vol : un seul fichier, donc pas de désynchronisation possible entre
   la page en cache et des données plus récentes, et aucune requête réseau
   supplémentaire.
-- **Pas de TypeScript, ni lint, ni audit de dépendances.** Le projet n'a aucune
-  dépendance d'exécution ; ces contrôles ne vérifieraient rien et coûteraient du
-  temps de CI, temps qui se paie le 14 au matin.
+- **Pas de TypeScript, ni lint, ni audit de dépendances.** La page servie n'a
+  aucune dépendance d'exécution ; ces contrôles ne vérifieraient rien. Le dépôt
+  a en revanche deux dépendances de développement, `wrangler` et `qrcode` : les
+  jobs qui exécutent les tests font donc `npm ci`. Seul le contrôle du bloc des
+  salles s'en passe, pour rester immédiat le 14 au matin.
 - **Pas de porte `changelog.json`.** Une version à incrémenter à la main
   obligerait à éditer un second fichier depuis un téléphone, sous pression — la
   porte deviendrait le principal mode de défaillance. La version est injectée
