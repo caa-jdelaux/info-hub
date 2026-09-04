@@ -90,15 +90,22 @@ qr/
 « TE » au centre. Il se régénère par `npm run qr`.
 
 Le logo recouvre des modules du code : c'est la correction d'erreur qui absorbe
-la perte. Le niveau **H** en tolère environ 30 %, mais cette marge sert aussi
-aux salissures, aux plis et à l'éclairage d'un hall d'accueil — elle n'est donc
-pas dépensée pour le logo seul. La plaque centrale occupe **6,0 %** de la
-surface, plafonnée à 8 % par un test.
+la perte. La plaque centrale **épouse le format du monogramme** (1,5:1) au lieu
+d'être carrée — une plaque carrée laissait du blanc en haut et en bas, et ce
+blanc recouvrait des modules sans rien afficher.
 
-Le code a été décodé après rendu à 200, 300, 512, 1024 et 2000 px : l'URL
-ressort exacte dans les cinq cas. Un test compare en outre le fichier committé
-à ce que le script produit pour l'URL de production, afin que le SVG parti à
-l'impression ne puisse pas dériver silencieusement.
+La taille du logo est réglée par la mesure, pas à l'estime. En balayant les
+tailles et en redécodant chaque rendu, le code passe encore à **21,0 %** de
+surface recouverte et casse à **25,3 %**. Ces chiffres valent en conditions
+idéales : rendu parfait, sans grain, sans angle, sans pli. Un appareil photo
+sur du papier imprimé dispose de bien moins de marge, d'où le facteur deux
+conservé : la plaque occupe **12,2 %** de la surface, et un test refuse toute
+valeur qui ne garderait pas ce facteur deux.
+
+Le code a été décodé après rendu à 150, 200, 300, 512, 1024 et 2000 px :
+l'URL ressort exacte dans les six cas. Un test compare en outre le fichier
+committé à ce que le script produit pour l'URL de production, afin que le SVG
+parti à l'impression ne puisse pas dériver silencieusement.
 
 **Préférer le SVG pour l'impression** : le code reste vectoriel, donc net à
 toute taille. Le PNG est une rasterisation de dépannage.

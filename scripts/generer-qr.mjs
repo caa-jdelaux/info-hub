@@ -13,11 +13,22 @@
 
 import QRCode from 'qrcode';
 
-/** Côté de la plaque centrale, en fraction du côté du code (hors marge). */
-export const FRACTION_PLAQUE = 0.24;
+/**
+ * Largeur du logo, en fraction du côté du code (hors marge).
+ *
+ * Valeur réglée par la mesure, pas à l'estime : en balayant les tailles et en
+ * redécodant chaque rendu, le code passe encore à 21,0 % de surface recouverte
+ * et casse à 25,3 %. Ces chiffres valent en conditions idéales — rendu
+ * parfait, sans grain, sans angle, sans pli. Un appareil photo sur du papier
+ * imprimé dispose de bien moins de marge, d'où le facteur deux conservé.
+ */
+export const FRACTION_LOGO = 0.36;
 
-/** Plafond de surface recouverte, très en deçà des ~30 % du niveau H. */
-export const SURFACE_MAX = 0.08;
+/** Blanc conservé autour du logo, en modules. */
+export const RESPIRATION_MODULES = 1;
+
+/** Plafond de surface recouverte. Point de rupture mesuré : 25,3 %. */
+export const SURFACE_MAX = 0.15;
 
 /** Marge silencieuse, en modules. En deçà de 4, des lecteurs échouent. */
 export const MARGE_MODULES = 4;
@@ -29,19 +40,36 @@ export const COULEUR_MODULES = '#1A1A2E';
  * @param {string} logoDataUri Monogramme, en data URI.
  * @param {{largeur: number, hauteur: number}} logoTaille Dimensions natives,
  *   pour conserver les proportions dans la plaque.
+ * @param {{fractionLogo?: number}} [options] Permet de balayer des tailles
+ *   candidates lors du réglage ; la valeur retenue est FRACTION_LOGO.
  * @returns {{svg: string, surfaceRecouverte: number, modules: number}}
  */
-export function genererSvg(url, logoDataUri, logoTaille) {
+export function genererSvg(url, logoDataUri, logoTaille, options = {}) {
+  const fractionLogo = options.fractionLogo ?? FRACTION_LOGO;
   const code = QRCode.create(url, { errorCorrectionLevel: 'H' });
   const n = code.modules.size;
   const bits = code.modules.data;
   const total = n + MARGE_MODULES * 2;
 
-  // La plaque est alignée sur la grille : elle recouvre des modules entiers,
-  // ce qui évite les demi-modules ambigus sur les bords.
-  let cotePlaque = Math.round(n * FRACTION_PLAQUE);
-  if ((n - cotePlaque) % 2 !== 0) cotePlaque += 1; // centrage exact
-  const debutPlaque = (n - cotePlaque) / 2;
+  // La plaque épouse le format du logo au lieu d'être carrée. Un monogramme
+  // en 1,5:1 posé sur une plaque carrée laisse du blanc perdu en haut et en
+  // bas, et ce blanc recouvre des modules sans rien afficher : à surface
+  // égale, une plaque au bon format donne un logo plus grand.
+  const ratio = logoTaille.largeur / logoTaille.hauteur;
+
+  // Alignement sur la grille : la plaque recouvre des modules entiers, ce qui
+  // évite les demi-modules ambigus sur ses bords. La parité est calée sur
+  // celle du code pour que le centrage tombe juste.
+  const surGrille = (valeur) => {
+    let entier = Math.ceil(valeur);
+    if ((n - entier) % 2 !== 0) entier += 1;
+    return entier;
+  };
+
+  const plaqueL = surGrille(n * fractionLogo + 2 * RESPIRATION_MODULES);
+  const plaqueH = surGrille(n * fractionLogo / ratio + 2 * RESPIRATION_MODULES);
+  const debutX = (n - plaqueL) / 2;
+  const debutY = (n - plaqueH) / 2;
 
   const carres = [];
   for (let y = 0; y < n; y += 1) {
@@ -49,19 +77,20 @@ export function genererSvg(url, logoDataUri, logoTaille) {
       if (!bits[y * n + x]) continue;
       // Inutile de dessiner ce que la plaque recouvre.
       const sousPlaque =
-        x >= debutPlaque && x < debutPlaque + cotePlaque &&
-        y >= debutPlaque && y < debutPlaque + cotePlaque;
+        x >= debutX && x < debutX + plaqueL &&
+        y >= debutY && y < debutY + plaqueH;
       if (sousPlaque) continue;
       carres.push(`M${x + MARGE_MODULES} ${y + MARGE_MODULES}h1v1h-1z`);
     }
   }
 
-  // Le logo occupe la plaque en conservant ses proportions, avec une respiration.
-  const respiration = cotePlaque * 0.14;
-  const dispo = cotePlaque - respiration * 2;
-  const ratio = logoTaille.largeur / logoTaille.hauteur;
-  const logoL = ratio >= 1 ? dispo : dispo * ratio;
-  const logoH = ratio >= 1 ? dispo / ratio : dispo;
+  // Le logo remplit la plaque moins la respiration, en conservant ses
+  // proportions : il touche donc les deux bords de la dimension contraignante.
+  const dispoL = plaqueL - 2 * RESPIRATION_MODULES;
+  const dispoH = plaqueH - 2 * RESPIRATION_MODULES;
+  const echelle = Math.min(dispoL / ratio, dispoH);
+  const logoL = echelle * ratio;
+  const logoH = echelle;
 
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -70,12 +99,12 @@ export function genererSvg(url, logoDataUri, logoTaille) {
      aria-label="QR code vers le programme du Testing Event 2026">
   <rect width="${total}" height="${total}" fill="#FFFFFF"/>
   <path d="${carres.join('')}" fill="${COULEUR_MODULES}"/>
-  <rect x="${MARGE_MODULES + debutPlaque}" y="${MARGE_MODULES + debutPlaque}"
-        width="${cotePlaque}" height="${cotePlaque}" rx="${cotePlaque * 0.12}"
+  <rect x="${MARGE_MODULES + debutX}" y="${MARGE_MODULES + debutY}"
+        width="${plaqueL}" height="${plaqueH}" rx="${Math.min(plaqueL, plaqueH) * 0.16}"
         fill="#FFFFFF"/>
   <image xlink:href="${logoDataUri}"
-         x="${MARGE_MODULES + debutPlaque + (cotePlaque - logoL) / 2}"
-         y="${MARGE_MODULES + debutPlaque + (cotePlaque - logoH) / 2}"
+         x="${MARGE_MODULES + debutX + (plaqueL - logoL) / 2}"
+         y="${MARGE_MODULES + debutY + (plaqueH - logoH) / 2}"
          width="${logoL}" height="${logoH}"
          preserveAspectRatio="xMidYMid meet"/>
 </svg>
@@ -83,8 +112,10 @@ export function genererSvg(url, logoDataUri, logoTaille) {
 
   return {
     svg,
-    surfaceRecouverte: (cotePlaque * cotePlaque) / (n * n),
+    surfaceRecouverte: (plaqueL * plaqueH) / (n * n),
     modules: n,
+    plaque: { largeur: plaqueL, hauteur: plaqueH },
+    logo: { largeur: logoL, hauteur: logoH },
   };
 }
 

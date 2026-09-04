@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   genererSvg,
-  FRACTION_PLAQUE,
+  FRACTION_LOGO,
+  RESPIRATION_MODULES,
   SURFACE_MAX,
   MARGE_MODULES,
 } from './generer-qr.mjs';
@@ -31,13 +32,33 @@ test('la marge silencieuse fait au moins 4 modules', () => {
 });
 
 test('la plaque est centrée et alignée sur la grille', () => {
-  const { svg, modules } = genererSvg(URL_PROD, FAUX_LOGO, LOGO);
-  const plaque = svg.match(/<rect x="([\d.]+)" y="([\d.]+)"\s+width="([\d.]+)"/);
-  assert.ok(plaque, 'plaque centrale introuvable dans le SVG');
-  const [x, y, cote] = plaque.slice(1).map(Number);
-  assert.equal(x, y, 'plaque non centrée');
-  assert.ok(Number.isInteger(cote), 'côté non aligné sur la grille');
-  assert.equal(x, MARGE_MODULES + (modules - cote) / 2);
+  // La plaque épouse le format du logo : elle n'est plus carrée, et chaque
+  // dimension se centre indépendamment.
+  const { svg, modules, plaque } = genererSvg(URL_PROD, FAUX_LOGO, LOGO);
+  const rect = svg.match(/<rect x="([\d.]+)" y="([\d.]+)"\s+width="([\d.]+)" height="([\d.]+)"/);
+  assert.ok(rect, 'plaque centrale introuvable dans le SVG');
+  const [x, y, l, h] = rect.slice(1).map(Number);
+  assert.ok(Number.isInteger(l) && Number.isInteger(h), 'plaque non alignée sur la grille');
+  assert.equal(x, MARGE_MODULES + (modules - plaque.largeur) / 2, 'plaque non centrée en X');
+  assert.equal(y, MARGE_MODULES + (modules - plaque.hauteur) / 2, 'plaque non centrée en Y');
+  assert.equal(l, plaque.largeur);
+  assert.equal(h, plaque.hauteur);
+});
+
+test('la plaque épouse le format du logo, sans blanc perdu', () => {
+  // Une plaque carrée sous un monogramme en 1,5:1 laissait du blanc en haut
+  // et en bas : ce blanc recouvrait des modules sans rien afficher.
+  const { plaque, logo } = genererSvg(URL_PROD, FAUX_LOGO, LOGO);
+  for (const [nom, cote, dim] of [
+    ['largeur', plaque.largeur, logo.largeur],
+    ['hauteur', plaque.hauteur, logo.hauteur],
+  ]) {
+    const marge = (cote - dim) / 2;
+    assert.ok(
+      marge >= 0 && marge <= RESPIRATION_MODULES + 1,
+      `${nom} : ${marge.toFixed(2)} module(s) de blanc, au-delà de la respiration`,
+    );
+  }
 });
 
 test('le logo est présent dans le SVG', () => {
@@ -55,8 +76,16 @@ test('les proportions du logo sont conservées', () => {
   );
 });
 
-test('la fraction de plaque reste dans une plage raisonnable', () => {
-  assert.ok(FRACTION_PLAQUE > 0 && FRACTION_PLAQUE <= 0.3);
+test('la taille du logo garde un facteur deux sur le point de rupture', () => {
+  // Rupture mesurée à 25,3 % de surface en conditions idéales. Le papier
+  // imprimé et un appareil photo en offrent bien moins : on ne s'en approche
+  // pas.
+  const { surfaceRecouverte } = genererSvg(URL_PROD, FAUX_LOGO, LOGO);
+  assert.ok(FRACTION_LOGO > 0 && FRACTION_LOGO < 0.5);
+  assert.ok(
+    surfaceRecouverte * 2 <= 0.253,
+    `surface ${(surfaceRecouverte * 100).toFixed(1)} % : moins d'un facteur deux sous 25,3 %`,
+  );
 });
 
 test("le QR du dépôt encode bien l'URL de production", () => {
