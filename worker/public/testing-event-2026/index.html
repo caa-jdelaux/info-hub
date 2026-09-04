@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<!-- L'environnement est porté par la racine du document : un seul marqueur
+     injecté au déploiement pilote à la fois le bandeau d'alerte et la puce du
+     pied de page, sans second chemin de code. En production il devient une
+     chaîne vide, et les deux disparaissent. -->
+<html lang="fr" data-env="__ENV__">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -96,6 +100,45 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ─── BANDEAU D'ENVIRONNEMENT ───────────────────────── */
+  /* Masqué par défaut, donc absent de la production quoi qu'il arrive : c'est
+     l'affichage qui est l'exception, jamais le masquage. Une règle oubliée ne
+     peut pas faire apparaître ce bandeau devant les participants.
+
+     Collant en haut : la page fait près de 7 000 px de haut, et un repère
+     visible seulement en haut ne servirait à rien une fois qu'on a défilé. */
+  .env-bandeau { display: none; }
+  html:not([data-env=""]) .env-bandeau {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 7px 14px;
+    /* Rayures d'avertissement : la couleur seule ne suffit pas à signaler
+       « ceci n'est pas la production ». */
+    background: repeating-linear-gradient(
+      135deg, #B4531F 0 14px, #9A4715 14px 28px
+    );
+    color: var(--te-white);        /* 5,00:1 et 6,39:1 selon la rayure */
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .env-bandeau-nom {
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: var(--te-white);
+    color: #9A4715;                /* 6,39:1 sur blanc */
+    letter-spacing: 2px;
+    flex-shrink: 0;
+  }
 
   body {
     background: var(--caa-gris-clair);
@@ -474,11 +517,18 @@
 
   @media print {
     body { background: #fff; }
+    .env-bandeau { display: none !important; }
     .conf-card, .kiosque-card, .special-slot { box-shadow: none; border: 1px solid #ddd; }
   }
 </style>
 </head>
 <body>
+
+<!-- ══════════ BANDEAU D'ENVIRONNEMENT (hors production) ══════════ -->
+<div class="env-bandeau">
+  <span class="env-bandeau-nom">__ENV__</span>
+  <span>Relecture — ne pas diffuser</span>
+</div>
 
 <!-- ══════════ HEADER ══════════ -->
 <header>

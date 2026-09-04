@@ -11,12 +11,20 @@
 export const MARQUEUR_VERSION = '__VERSION__';
 export const MARQUEUR_ENV = '__ENV__';
 
-/** Échappe le texte destiné à être inséré dans du HTML. */
+/**
+ * Échappe le texte destiné à être inséré dans du HTML.
+ *
+ * Les guillemets aussi : l'environnement atterrit dans l'attribut `data-env`
+ * de la racine du document, où un guillemet non échappé refermerait
+ * l'attribut.
+ */
 function echapper(texte) {
   return texte
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 /**

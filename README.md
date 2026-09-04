@@ -41,8 +41,16 @@ en cours : **c'est ce qui permet de distinguer sa propre version d'une copie en
 cache.** Si l'horodatage n'est pas celui de la publication qu'on vient de faire,
 la page affichée n'est pas à jour — recharger.
 
-Une puce orange **DEV** précède la version hors production. Si elle est là, on
-ne regarde pas l'adresse du QR code imprimé.
+Hors production, deux repères le signalent : un **bandeau orange rayé collant
+en haut de page**, visible en permanence pendant le défilement, et une **puce
+DEV** devant la version en bas. Si l'un des deux est là, on ne regarde pas
+l'adresse du QR code imprimé.
+
+Les deux sont pilotés par l'attribut `data-env` de la racine du document, écrit
+au déploiement depuis le même marqueur que la version. Le bandeau est masqué par
+défaut et n'apparaît que si `data-env` n'est pas vide : c'est l'affichage qui est
+l'exception, jamais le masquage — une règle oubliée ne peut pas le faire
+surgir devant les participants.
 
 ### Si quelque chose casse
 

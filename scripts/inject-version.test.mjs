@@ -46,3 +46,13 @@ test('version et environnement sont échappés avant insertion', () => {
   assert.ok(!sortie.includes('<script>'));
   assert.match(sortie, /&lt;b&gt;/);
 });
+
+test("les guillemets sont échappés — l'environnement va dans un attribut", () => {
+  // `data-env="…"` : un guillemet non échappé refermerait l'attribut.
+  const sortie = injecterVersion(
+    `<html data-env="${MARQUEUR_ENV}"><span>${MARQUEUR_VERSION}</span></html>`,
+    'v1',
+    'DE"V',
+  );
+  assert.match(sortie, /data-env="DE&quot;V"/);
+});
