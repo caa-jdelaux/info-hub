@@ -1,0 +1,19 @@
+# En-têtes HTTP des ressources statiques (format Cloudflare Workers static assets).
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+
+# La page est révalidée à chaque affichage. C'est le point décisif du 14 au
+# matin : les salles peuvent changer jusqu'au début d'après-midi, et un
+# téléphone qui a ouvert la page à 9h05 doit voir la version publiée à 11h.
+# « no-cache » ne désactive pas le cache — il impose une révalidation, donc un
+# 304 de quelques octets quand rien n'a bougé.
+/testing-event-2026/*
+  Cache-Control: no-cache
+
+# Les polices ne changent jamais sans changer de nom : un an de cache, pour que
+# seul le tout premier affichage paie les 112 Ko.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

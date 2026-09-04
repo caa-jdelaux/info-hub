@@ -1,0 +1,19 @@
+{
+  "name": "info-hub",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Pages d'information statiques, servies par un Worker Cloudflare.",
+  "scripts": {
+    "check": "node scripts/check-page.mjs worker/public/testing-event-2026/index.html",
+    "test": "node --test scripts/*.test.mjs",
+    "quality": "npm run check && npm test",
+    "deploy": "wrangler deploy --config worker/wrangler.jsonc"
+  },
+  "devDependencies": {
+    "wrangler": "^4.129.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

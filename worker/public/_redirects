@@ -1,0 +1,4 @@
+# La racine du hub n'a pas encore de contenu propre. Redirection temporaire
+# (302, jamais 301) : un 301 serait mémorisé définitivement par les
+# navigateurs et empêcherait d'installer un index ici plus tard.
+/  /testing-event-2026/  302

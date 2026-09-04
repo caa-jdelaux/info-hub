@@ -1,0 +1,135 @@
+name: Déploiement — Worker
+
+# UN SEUL fichier pour les deux environnements. La cible se déduit de
+# `github.ref_name` ; deux fichiers jumeaux divergeraient, et la divergence ne
+# se verrait qu'au pire moment.
+#
+#   push sur `prod` -> Worker `info-hub`      (URL du QR code imprimé)
+#   push sur `dev`  -> Worker `info-hub-dev`  (relecture depuis un téléphone)
+
+on:
+  push:
+    branches: [dev, prod]
+    paths:
+      - 'worker/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      # Le fichier de workflow figure dans ses propres `paths` : sans cela, on
+      # ne peut pas tester une correction du workflow sans modifier
+      # artificiellement du contenu.
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-worker-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # La porte qualité est dupliquée avec `quality.yml`, volontairement. Une
+  # « required check » se configure côté GitHub, se désactive côté GitHub, et
+  # n'est pas versionnée. Ce job-ci est dans le dépôt et ne peut pas être
+  # contourné par un push direct : ce qui doit bloquer un déploiement doit
+  # vivre dans le workflow de déploiement.
+  quality:
+    name: Contrôle qualité
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm run check
+      - run: npm test
+
+  deploy:
+    name: Injection de version puis déploiement
+    needs: [quality]
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+
+      - name: Résoudre l'environnement cible
+        run: |
+          if [ "${{ github.ref_name }}" = "prod" ]; then
+            echo "WORKER_NAME=info-hub"     >> $GITHUB_ENV
+            echo "PREFIXE_VERSION="         >> $GITHUB_ENV
+          else
+            echo "WORKER_NAME=info-hub-dev" >> $GITHUB_ENV
+            echo "PREFIXE_VERSION=DEV · "   >> $GITHUB_ENV
+          fi
+
+      # La version n'est jamais saisie à la main : le matin du 14, la seule
+      # édition doit être celle du bloc des salles. Heure de Paris, pas UTC :
+      # elle sera comparée à une montre, sur place.
+      - name: Injecter la version en pied de page
+        id: version
+        run: |
+          VERSION="${PREFIXE_VERSION}$(TZ=Europe/Paris date '+%d/%m/%Y %H:%M') · ${GITHUB_SHA::7}"
+          node scripts/inject-version.mjs \
+            worker/public/testing-event-2026/index.html "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Déployer le Worker
+        id: deploy
+        # L'URL est extraite de la sortie de wrangler plutôt que d'une variable
+        # de dépôt : une variable oubliée rendrait le contrôle suivant vert
+        # sans qu'il vérifie quoi que ce soit.
+        run: |
+          set -eo pipefail
+          npx wrangler deploy --config worker/wrangler.jsonc \
+            --name "$WORKER_NAME" 2>&1 | tee /tmp/deploy.log
+          URL=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' /tmp/deploy.log | head -1)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  # Le scénario redouté du 14 au matin : le bloc des salles est édité au clavier
+  # tactile, le déploiement passe au vert, et l'URL sert encore l'affectation de
+  # la veille. Ce contrôle compare ce que Cloudflare sert à ce qui a été poussé.
+  smoke:
+    name: Contrôle après déploiement
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: La page servie correspond à ce qui a été poussé
+        run: |
+          if [ -z "${{ needs.deploy.outputs.url }}" ]; then
+            echo "::error::URL de déploiement introuvable, contrôle impossible."
+            exit 1
+          fi
+          node scripts/check-deploiement.mjs \
+            "${{ needs.deploy.outputs.url }}/testing-event-2026/" \
+            worker/public/testing-event-2026/index.html \
+            "${{ needs.deploy.outputs.version }}"
+
+      - name: Résumé
+        if: always()
+        run: |
+          {
+            echo "## Déploiement — ${{ github.ref_name }}"
+            echo ""
+            echo "- Worker : \`${{ github.ref_name == 'prod' && 'info-hub' || 'info-hub-dev' }}\`"
+            echo "- Programme : ${{ needs.deploy.outputs.url }}/testing-event-2026/"
+            echo "- Version affichée : ${{ needs.deploy.outputs.version }}"
+            echo "- Révision : \`${{ github.sha }}\`"
+            echo "- Contrôle après déploiement : ${{ job.status }}"
+          } >> "$GITHUB_STEP_SUMMARY"

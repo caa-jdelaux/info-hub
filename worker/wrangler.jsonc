@@ -1,0 +1,27 @@
+{
+  // Worker « assets seuls » : aucun script, Cloudflare sert directement les
+  // fichiers de public/. C'est le mode recommandé par Cloudflare pour un
+  // nouveau projet statique — Pages est en maintenance depuis 2026.
+  //
+  // Le nom du Worker donne son sous-domaine :
+  //   https://info-hub.<sous-domaine-du-compte>.workers.dev
+  // Il est figé : l'URL part dans un QR code imprimé.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "info-hub",
+  "compatibility_date": "2026-09-04",
+
+  "assets": {
+    "directory": "./public",
+    // Défaut de Cloudflare, rendu explicite : public/foo/index.html est servi
+    // sur /foo/ (avec barre oblique finale), public/foo.html sur /foo.
+    "html_handling": "auto-trailing-slash",
+    // Une URL inconnue renvoie 404 plutôt que la page d'accueil : ce hub n'est
+    // pas une application monopage, et masquer une faute de frappe dans un QR
+    // code derrière un faux 200 rendrait le problème invisible.
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}

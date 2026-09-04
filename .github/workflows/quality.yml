@@ -1,0 +1,49 @@
+name: Qualité
+
+# Contrôles en jobs parallèles nommés : un échec doit dire immédiatement quoi
+# est cassé, sans dérouler un journal.
+#
+# Ces mêmes commandes sont appelées par `deploy-worker.yml` et par
+# `npm run quality` en local. Aucun `if` de YAML ne peut donc faire diverger ce
+# que le CI refuse de ce que le déploiement accepte.
+#
+# Le projet n'a aucune dépendance d'exécution : pas de `npm ci`, pas de
+# typecheck, pas de lint. Des contrôles qui ne vérifieraient rien coûteraient
+# du temps de CI, et ce temps se paie le 14 au matin, debout dans un hall.
+
+on:
+  push:
+    branches: [dev, prod]
+  pull_request:
+    branches: [dev, prod]
+  workflow_dispatch: {}
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  page:
+    name: Page — bloc des salles et autonomie réseau
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm run check
+
+  scripts:
+    name: Tests — scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      # Le YAML orchestre, il ne décide pas : la porte qualité et le contrôle
+      # après déploiement sont des scripts, et ces scripts sont testés.
+      - run: npm test
