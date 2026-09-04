@@ -65,10 +65,10 @@ jobs:
         run: |
           if [ "${{ github.ref_name }}" = "prod" ]; then
             echo "WORKER_NAME=info-hub"     >> $GITHUB_ENV
-            echo "PREFIXE_VERSION="         >> $GITHUB_ENV
+            echo "ENVIRONNEMENT="           >> $GITHUB_ENV
           else
             echo "WORKER_NAME=info-hub-dev" >> $GITHUB_ENV
-            echo "PREFIXE_VERSION=DEV · "   >> $GITHUB_ENV
+            echo "ENVIRONNEMENT=DEV"        >> $GITHUB_ENV
           fi
 
       # La version n'est jamais saisie à la main : le matin du 14, la seule
@@ -77,9 +77,9 @@ jobs:
       - name: Injecter la version en pied de page
         id: version
         run: |
-          VERSION="${PREFIXE_VERSION}$(TZ=Europe/Paris date '+%d/%m/%Y %H:%M') · ${GITHUB_SHA::7}"
+          VERSION="$(TZ=Europe/Paris date '+%d/%m/%Y %H:%M') · ${GITHUB_SHA::7}"
           node scripts/inject-version.mjs \
-            worker/public/testing-event-2026/index.html "$VERSION"
+            worker/public/testing-event-2026/index.html "$VERSION" "$ENVIRONNEMENT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Déployer le Worker

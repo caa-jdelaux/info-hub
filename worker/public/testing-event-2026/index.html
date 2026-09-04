@@ -387,16 +387,38 @@
   }
   footer p { font-size: 0.8rem; color: rgba(255,255,255,0.55); letter-spacing: 1px; }
   footer .star-row { color: var(--te-red); font-size: 1rem; letter-spacing: 6px; margin-bottom: 8px; }
-  /* Version injectée au déploiement. Elle sert le matin du 14 : elle dit
-     d'un coup d'œil si l'écran affiche la version qu'on vient de publier
-     ou une copie en cache. */
-  footer .version {
-    margin-top: 7px;
-    font-size: 0.7rem;
+
+  /* ─── VERSION ───────────────────────────────────────── */
+  /* Sous le bandeau final, hors de celui-ci : c'est une donnée technique, pas
+     un élément de la charte. Elle sert le matin du 14 — elle dit d'un coup
+     d'œil si l'écran affiche la version qu'on vient de publier ou une copie
+     en cache. */
+  .version {
+    text-align: center;
+    padding: 13px 20px 20px;
+    font-size: 0.72rem;
     letter-spacing: 0.5px;
-    color: rgba(255,255,255,0.6);
+    color: var(--caa-gris-fonce);   /* 6,91:1 sur le fond de page */
     font-variant-numeric: tabular-nums;
   }
+  /* La puce d'environnement n'apparaît que hors production. Un orange franc,
+     étranger au rouge de la charte : on ne doit pas pouvoir prendre la version
+     de relecture pour celle du QR code imprimé. */
+  .version-env {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    background: #B4531F;            /* blanc dessus : 5,00:1 */
+    color: var(--te-white);
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    vertical-align: 1px;
+  }
+  /* En production le marqueur est remplacé par une chaîne vide : la puce
+     disparaît d'elle-même, sans second chemin de code à maintenir. */
+  .version-env:empty { display: none; }
 
   /* ─── RESPONSIVE ────────────────────────────────────── */
   @media (max-width: 720px) {
@@ -660,8 +682,9 @@
 <footer>
   <div class="star-row">★ ★ ★</div>
   <p>Testing Event · Crédit Agricole Assurances · 14 septembre 2026</p>
-  <p class="version">__VERSION__</p>
 </footer>
+
+<p class="version"><span class="version-env">__ENV__</span><span>__VERSION__</span></p>
 
 <script>
 /* Reporte les salles du bloc de données en tête de fichier sur les cartes.

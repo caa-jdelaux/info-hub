@@ -113,8 +113,10 @@ export function verifierPage(html) {
   // Il est remplacé au déploiement. S'il manque dans le dépôt, c'est qu'un
   // fichier déjà injecté a été committé : la page figerait alors une version
   // périmée en pied de page.
-  if (!html.includes('__VERSION__')) {
-    anomalies.push('Marqueur « __VERSION__ » absent du pied de page.');
+  for (const marqueur of ['__VERSION__', '__ENV__']) {
+    if (!html.includes(marqueur)) {
+      anomalies.push(`Marqueur « ${marqueur} » absent du pied de page.`);
+    }
   }
 
   // ── Socle mobile ─────────────────────────────────────────────────────

@@ -16,7 +16,8 @@ function pageValide(salles = Object.fromEntries(
   return `<html lang="fr"><head><meta name="viewport" content="width=device-width"/>` +
     `<title>T</title>` +
     `<script type="application/json" id="salles-data">${JSON.stringify(salles)}</script>` +
-    `</head><body>${cartes}<p>__VERSION__</p></body></html>`;
+    `</head><body>${cartes}` +
+    `<p><span>__ENV__</span><span>__VERSION__</span></p></body></html>`;
 }
 
 test('la page réelle du dépôt passe tous les contrôles', () => {

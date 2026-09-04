@@ -36,10 +36,13 @@ un navigateur mobile**, en éditant un seul bloc.
 6. Reporter sur `prod` (*Pull request* de `dev` vers `prod`, ou édition directe
    du même bloc sur `prod`).
 
-Le pied de page affiche la date, l'heure et la révision du déploiement en
-cours : **c'est ce qui permet de distinguer sa propre version d'une copie en
-cache.** Si l'horodatage n'est pas celui de la publication qu'on vient de
-faire, la page affichée n'est pas à jour — recharger.
+Sous le bandeau final s'affiche la date, l'heure et la révision du déploiement
+en cours : **c'est ce qui permet de distinguer sa propre version d'une copie en
+cache.** Si l'horodatage n'est pas celui de la publication qu'on vient de faire,
+la page affichée n'est pas à jour — recharger.
+
+Une puce orange **DEV** précède la version hors production. Si elle est là, on
+ne regarde pas l'adresse du QR code imprimé.
 
 ### Si quelque chose casse
 
@@ -64,9 +67,33 @@ worker/
     assets/fonts/                      Barlow auto-hébergée (SIL OFL 1.1)
 scripts/
   check-page.mjs                       Porte qualité
-  inject-version.mjs                   Version injectée au déploiement
+  inject-version.mjs                   Version et puce d'environnement
   check-deploiement.mjs                Contrôle de ce que l'URL sert vraiment
+  generer-qr.mjs                       QR code de l'URL de production
+qr/
+  testing-event-2026.svg               QR vectoriel — à fournir à l'imprimeur
+  testing-event-2026.png               Rendu 2000 px, pour les supports non vectoriels
+  monogramme-te.png                    Monogramme placé au centre du code
 ```
+
+## QR code
+
+`qr/testing-event-2026.svg` encode l'URL de production et porte le monogramme
+« TE » au centre. Il se régénère par `npm run qr`.
+
+Le logo recouvre des modules du code : c'est la correction d'erreur qui absorbe
+la perte. Le niveau **H** en tolère environ 30 %, mais cette marge sert aussi
+aux salissures, aux plis et à l'éclairage d'un hall d'accueil — elle n'est donc
+pas dépensée pour le logo seul. La plaque centrale occupe **6,0 %** de la
+surface, plafonnée à 8 % par un test.
+
+Le code a été décodé après rendu à 200, 300, 512, 1024 et 2000 px : l'URL
+ressort exacte dans les cinq cas. Un test compare en outre le fichier committé
+à ce que le script produit pour l'URL de production, afin que le SVG parti à
+l'impression ne puisse pas dériver silencieusement.
+
+**Préférer le SVG pour l'impression** : le code reste vectoriel, donc net à
+toute taille. Le PNG est une rasterisation de dépannage.
 
 ### Choix structurants
 

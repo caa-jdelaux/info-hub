@@ -56,8 +56,10 @@ export function comparer(htmlServi, sallesAttendues, versionAttendue) {
     );
   }
 
-  if (htmlServi.includes('__VERSION__')) {
-    anomalies.push('Marqueur « __VERSION__ » non remplacé dans la page servie.');
+  for (const marqueur of ['__VERSION__', '__ENV__']) {
+    if (htmlServi.includes(marqueur)) {
+      anomalies.push(`Marqueur « ${marqueur} » non remplacé dans la page servie.`);
+    }
   }
 
   const distantes = [
