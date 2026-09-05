@@ -5,6 +5,7 @@ import {
   verifierPage,
   NOMBRE_DE_KIOSQUES,
   NOMBRE_DE_CRENEAUX,
+  NOMBRE_DE_ROTATIONS,
 } from './check-page.mjs';
 
 const PAGE = 'worker/public/testing-event-2026/index.html';
@@ -17,10 +18,15 @@ function creneauxValides(nombre = NOMBRE_DE_CRENEAUX) {
   ).join('\n');
 }
 
+/** Rotations témoins, sans horodatage : elles ne comptent pas comme créneaux. */
+function rotations(nombre = NOMBRE_DE_ROTATIONS) {
+  return Array.from({ length: nombre }, () => '<div class="rotation-slot"></div>').join('');
+}
+
 /** Page minimale conforme, pour isoler chaque contrôle. */
 function pageValide(salles = Object.fromEntries(
   Array.from({ length: NOMBRE_DE_KIOSQUES }, (_, i) => [String(i + 1), '']),
-), creneaux = creneauxValides()) {
+), creneaux = creneauxValides(), rotationsHtml = rotations(), plafond = NOMBRE_DE_ROTATIONS) {
   const cartes = Object.keys(salles)
     .map((n) => `<article class="kiosque-card" data-kiosque="${n}">` +
                 `<div data-salle>Salle à confirmer</div></article>`)
@@ -28,8 +34,9 @@ function pageValide(salles = Object.fromEntries(
   return `<html lang="fr"><head><meta name="viewport" content="width=device-width"/>` +
     `<title>T</title>` +
     `<script type="application/json" id="salles-data">${JSON.stringify(salles)}</script>` +
-    `</head><body>${cartes}${creneaux}` +
-    `<p><span>__ENV__</span><span>__VERSION__</span></p></body></html>`;
+    `</head><body>${cartes}${creneaux}${rotationsHtml}` +
+    `<p><span>__ENV__</span><span>__VERSION__</span></p>` +
+    `<script>var MAX_SELECTION = ${plafond};</script></body></html>`;
 }
 
 test('la page réelle du dépôt passe tous les contrôles', () => {
@@ -141,4 +148,29 @@ test('un créneau hors de la journée est signalé', () => {
       '<div data-debut="1500" data-fin="1600"></div>'),
   );
   assert.ok(anomalies.some((a) => /hors d'une journée/.test(a)));
+});
+
+test('un plafond de sélection décorrélé des rotations est signalé', () => {
+  // Le cas qui compte : cinq rotations, un plafond resté à quatre. Personne
+  // ne le verrait avant que le sixième clic soit refusé à tort le jour J.
+  const anomalies = verifierPage(
+    pageValide(undefined, undefined, rotations(), NOMBRE_DE_ROTATIONS - 1),
+  );
+  assert.equal(anomalies.length, 1);
+  assert.match(anomalies[0], /un kiosque par rotation/);
+});
+
+test('une rotation ajoutée sans relever le plafond est signalée', () => {
+  const anomalies = verifierPage(
+    pageValide(undefined, undefined, rotations(NOMBRE_DE_ROTATIONS + 1)),
+  );
+  assert.equal(anomalies.length, 2);
+  assert.match(anomalies[0], /rotation\(s\) trouvée\(s\)/);
+  assert.match(anomalies[1], /un kiosque par rotation/);
+});
+
+test('un plafond de sélection absent est signalé', () => {
+  const anomalies = verifierPage(pageValide().replace(/var MAX_SELECTION = \d+;/, ''));
+  assert.equal(anomalies.length, 1);
+  assert.match(anomalies[0], /MAX_SELECTION/);
 });

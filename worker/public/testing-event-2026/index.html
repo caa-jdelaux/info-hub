@@ -497,6 +497,59 @@
     transition: background .18s;
   }
   .bascule-kiosques:hover { background: var(--te-cyan-light); }
+
+  /* Sélection personnelle. Dix kiosques, cinq rotations : un participant en
+     fait cinq. Le repère sert à préparer son après-midi ; il ne réserve
+     aucune place et l'organisation sur place ne le lit pas. */
+  .selection-etat {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .selection-compte {
+    font-family: 'Barlow Condensed', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700; font-size: 0.95rem; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--te-teal-text);   /* 5,00:1 */
+  }
+  .selection-vider {
+    appearance: none; cursor: pointer; min-height: 36px;
+    background: var(--te-white); border: 1px solid #C9D8D8; border-radius: 8px;
+    color: var(--caa-gris-fonce); padding: 7px 12px;
+    font-family: inherit; font-size: 0.8rem; font-weight: 600;
+  }
+  .selection-note {
+    flex-basis: 100%; margin: 0;
+    font-size: 0.78rem; line-height: 1.4; color: var(--caa-gris-fonce);   /* 8,10:1 */
+  }
+
+  /* La commande vit sur la carte, à côté de la salle : c'est là que se prend
+     la décision, en lisant le pitch. */
+  .bascule-repere {
+    appearance: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 8px; margin-left: 6px;
+    min-height: 40px; padding: 5px 13px;
+    background: var(--te-white); border: 1px solid #C9D8D8; border-radius: 999px;
+    color: var(--te-teal-text);   /* 5,00:1 */
+    font-family: inherit; font-size: 0.78rem; font-weight: 700;
+    transition: background .18s;
+  }
+  .bascule-repere[aria-pressed="true"] {
+    background: var(--te-cyan-dark); border-color: var(--te-cyan-dark);
+    color: var(--te-white);   /* 4,77:1 */
+  }
+  /* En mode compact la ligne porte déjà le nom et la salle : la commande se
+     réduit à l'étoile. Le nom accessible reste porté par aria-label, la
+     réduction est purement visuelle. */
+  .kiosques-grid.compacts .bascule-repere {
+    margin-top: 0; margin-left: 0; padding: 5px 12px; gap: 0;
+  }
+  .kiosques-grid.compacts .bascule-repere-libelle { display: none; }
+
+  /* Un anneau, pas un fond : la carte garde exactement la mise en forme
+     communiquée, et le repère se lit d'un coup d'œil en faisant défiler. */
+  .kiosque-card.repere {
+    box-shadow: 0 0 0 2px var(--te-cyan-dark), 0 2px 8px rgba(0,0,0,0.07);
+  }
   .kiosques-grid.compacts .kiosque-pitch { display: none; }
   .kiosques-grid.compacts .kiosque-body {
     padding: 9px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -628,7 +681,10 @@
     .env-bandeau { display: none !important; }
     /* Commandes et repère temporel n'ont aucun sens sur du papier. */
     .bascule-kiosques, .encours-etiquette, .rs-encours, .evitement,
-    .avis-maj { display: none !important; }
+    .avis-maj, .bascule-repere, .selection-etat { display: none !important; }
+    /* L'anneau de sélection ne survit pas à l'impression : on le rend en
+       bordure, la feuille imprimée reste celle du participant. */
+    .kiosque-card.repere { border: 2px solid var(--te-cyan-dark) !important; }
     .encours { outline: none !important; }
     .section-title { position: static; }
     .kiosques-grid.compacts .kiosque-pitch { display: block; }
@@ -941,6 +997,151 @@
 
     appliquerCompact();
     outils.appendChild(bouton);
+  }
+
+  /* ── Sélection personnelle ──────────────────────────────────────────
+     Dix kiosques en simultané, cinq rotations identiques : un participant
+     en fait cinq. Le plafond n'est donc pas un réglage d'affichage, c'est
+     le nombre de rotations — au sixième clic on refuse plutôt que de
+     laisser constituer une liste qu'aucun après-midi ne permet.
+
+     La sélection est rangée sous le NUMÉRO de kiosque, jamais sous la
+     salle ni la position dans la grille : les salles sont saisies le jour J
+     et les cartes peuvent bouger, les numéros non. Une publication en cours
+     de journée laisse donc la sélection intacte — le rafraîchissement
+     automatique ne réécrit que les salles, pas les cartes.
+
+     Tout reste dans le navigateur de l'appareil : rien ne part vers le
+     serveur, à la différence d'un cookie, et rien ne suit l'utilisateur
+     d'un navigateur à l'autre. Ce n'est pas une réservation : les places
+     se prennent sur place, dans la limite de la capacité des salles. */
+  var CLEF_SELECTION = 'te-kiosques-selection';
+  var MAX_SELECTION = 5;
+
+  if (outils && cartes.length) {
+    var numerosConnus = cartes.map(function (carte) { return carte.dataset.kiosque; });
+    var selection = [];
+
+    /* Relecture défensive : le contenu vient du navigateur, il peut avoir été
+       écrit par une version précédente de la page ou modifié à la main. On ne
+       garde que des numéros existants, sans doublon, dans la limite du
+       plafond — le reste est ignoré en silence. */
+    try {
+      var brut = JSON.parse(localStorage.getItem(CLEF_SELECTION) || '[]');
+      if (Object.prototype.toString.call(brut) === '[object Array]') {
+        brut.forEach(function (valeur) {
+          var numero = String(valeur);
+          if (numerosConnus.indexOf(numero) !== -1 &&
+              selection.indexOf(numero) === -1 &&
+              selection.length < MAX_SELECTION) {
+            selection.push(numero);
+          }
+        });
+      }
+    } catch (e) { /* stockage indisponible ou illisible : sélection vide */ }
+
+    var enregistrer = function () {
+      try {
+        localStorage.setItem(CLEF_SELECTION, JSON.stringify(selection));
+      } catch (e) { /* navigation privée, stockage plein : sans effet */ }
+    };
+
+    var etat = document.createElement('div');
+    etat.className = 'selection-etat';
+
+    /* role="status" : le compteur est la seule confirmation qu'un clic a
+       porté pour qui n'a pas le retour visuel. */
+    var compte = document.createElement('p');
+    compte.className = 'selection-compte';
+    compte.setAttribute('role', 'status');
+
+    var vider = document.createElement('button');
+    vider.type = 'button';
+    vider.className = 'selection-vider';
+    vider.textContent = 'Tout effacer';
+
+    var note = document.createElement('p');
+    note.className = 'selection-note';
+    note.textContent =
+      'Repère personnel, conservé sur cet appareil uniquement. ' +
+      'Il ne réserve pas de place : l\'accès aux kiosques se fait sur place.';
+
+    etat.appendChild(compte);
+    etat.appendChild(vider);
+    etat.appendChild(note);
+    outils.insertBefore(etat, outils.firstChild);
+
+    var boutons = {};
+
+    var rafraichirSelection = function () {
+      compte.textContent =
+        'Mes kiosques repérés : ' + selection.length + ' / ' + MAX_SELECTION;
+      vider.hidden = selection.length === 0;
+
+      cartes.forEach(function (carte) {
+        var numero = carte.dataset.kiosque;
+        var choisi = selection.indexOf(numero) !== -1;
+        carte.classList.toggle('repere', choisi);
+
+        var commande = boutons[numero];
+        if (!commande) { return; }
+        commande.bouton.setAttribute('aria-pressed', String(choisi));
+        /* Dix commandes identiques dans la page : le nom accessible doit
+           porter le numéro, sinon aucune n'est distinguable à l'écoute. */
+        commande.bouton.setAttribute(
+          'aria-label',
+          (choisi ? 'Retirer le kiosque ' : 'Repérer le kiosque ') + numero,
+        );
+        commande.glyphe.textContent = choisi ? '\u2605' : '\u2606';
+        commande.libelle.textContent = choisi ? 'Repéré' : 'Repérer';
+      });
+    };
+
+    cartes.forEach(function (carte) {
+      var numero = carte.dataset.kiosque;
+      var corps = carte.querySelector('.kiosque-body');
+      if (!corps) { return; }
+
+      var bascule = document.createElement('button');
+      bascule.type = 'button';
+      bascule.className = 'bascule-repere';
+
+      var glyphe = document.createElement('span');
+      glyphe.setAttribute('aria-hidden', 'true');
+      var libelle = document.createElement('span');
+      libelle.className = 'bascule-repere-libelle';
+      bascule.appendChild(glyphe);
+      bascule.appendChild(libelle);
+
+      bascule.addEventListener('click', function () {
+        var rang = selection.indexOf(numero);
+        if (rang !== -1) {
+          selection.splice(rang, 1);
+        } else if (selection.length >= MAX_SELECTION) {
+          montrerAvis(
+            'Cinq rotations, donc cinq kiosques au plus. ' +
+              'Retirez-en un pour en ajouter un autre.',
+            false,
+          );
+          return;
+        } else {
+          selection.push(numero);
+        }
+        enregistrer();
+        rafraichirSelection();
+      });
+
+      boutons[numero] = { bouton: bascule, glyphe: glyphe, libelle: libelle };
+      corps.appendChild(bascule);
+    });
+
+    vider.addEventListener('click', function () {
+      selection.length = 0;
+      enregistrer();
+      rafraichirSelection();
+    });
+
+    rafraichirSelection();
   }
 
   /* ── Repère « en ce moment » ────────────────────────────────────────

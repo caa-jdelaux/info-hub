@@ -117,8 +117,8 @@ toute taille. Le PNG est une rasterisation de dépannage.
 ## Comportements de la page
 
 Tout est facultatif : **sans JavaScript, le programme reste complet et juste.**
-Seuls le récapitulatif, la bascule et le repère « en ce moment » n'apparaissent
-pas ; les cartes, elles, portent leur salle dans le HTML.
+Seuls la bascule, la sélection personnelle et le repère « en ce moment »
+n'apparaissent pas ; les cartes, elles, portent leur salle dans le HTML.
 
 - **Repère « en ce moment ».** Le créneau en cours reçoit un contour et une
   étiquette. Aucune couleur ni mise en forme de bloc n'est modifiée. L'heure est
@@ -131,6 +131,35 @@ pas ; les cartes, elles, portent leur salle dans le HTML.
 - **Bascule compact / détaillé.** Replie les descriptions des kiosques : la
   section après-midi passe de 3 719 à 2 909 px, soit 22 % de moins. Le choix
   est retenu d'une visite à l'autre.
+- **Sélection personnelle (jusqu'à 5 kiosques).** Une étoile par carte marque
+  les kiosques qu'on veut faire. Le plafond n'est pas un réglage d'affichage :
+  **10 kiosques en simultané, 5 rotations identiques**, donc cinq kiosques par
+  participant. Au sixième clic la page refuse et le dit, plutôt que de laisser
+  constituer une liste qu'aucun après-midi ne permet. La porte qualité vérifie
+  que le plafond du script et le nombre de rotations du markup restent égaux.
+
+  La sélection est rangée sous le **numéro** de kiosque, jamais sous la salle ni
+  la position dans la grille : les salles sont saisies le jour J, les numéros
+  non. Une publication en cours de journée laisse donc la sélection intacte.
+
+  Elle vit dans le `localStorage` de l'appareil, **pas dans un cookie** : un
+  cookie partirait avec chaque requête vers le Worker, alors que rien ici n'a à
+  quitter le téléphone. Conséquences à assumer : la sélection est **propre à un
+  navigateur** — le QR scanné ouvre souvent un navigateur intégré, et rouvrir
+  l'URL dans Safari repart de zéro — et elle disparaît en navigation privée. La
+  page le dit sous le compteur.
+
+  **Ce n'est pas une réservation.** Aucune place n'est décomptée, l'organisation
+  ne lit pas ces sélections, et l'accès aux salles se fait sur place. Le libellé
+  affiché ne dit jamais autre chose.
+
+  Côté droit : l'article 82 de la loi 78-17 vise les lectures et écritures dans
+  le terminal, cookie ou non. Les lignes directrices de la CNIL exemptent de
+  consentement les traceurs de personnalisation de l'interface quand celle-ci
+  est un élément intrinsèque et attendu du service — ce qui est le cas d'une
+  sélection déclenchée par l'utilisateur lui-même. Pas de bandeau de
+  consentement. Référence : [délibération n° 2020-091 du 17 septembre
+  2020](https://www.legifrance.gouv.fr/cnil/id/CNILTEXT000042398005).
 - **Titres de section collants.** Le titre de la demi-journée reste visible
   pendant qu'on parcourt sa section. Le décalage tient compte du bandeau
   d'environnement, mesuré et non codé en dur — il vaut zéro en production.

@@ -15,6 +15,9 @@ export const NOMBRE_DE_KIOSQUES = 10;
 /** Blocs horodatés : 5 créneaux simples, 3 conférences, 5 rotations. */
 export const NOMBRE_DE_CRENEAUX = 13;
 
+/** Rotations de l'après-midi. Un participant fait un kiosque par rotation. */
+export const NOMBRE_DE_ROTATIONS = 5;
+
 /**
  * @param {string} html Contenu de la page.
  * @returns {string[]} Liste des anomalies. Vide si la page est conforme.
@@ -128,6 +131,26 @@ export function verifierPage(html) {
       anomalies.push(`Créneau ${d}–${f} : chevauche ou précède le créneau précédent.`);
     }
     precedent = f;
+  }
+
+  // ── Plafond de sélection ─────────────────────────────────────────────
+  // Le plafond n'est pas un réglage d'affichage : il vaut le nombre de
+  // rotations, puisqu'un participant fait un kiosque par rotation. Ajouter
+  // une rotation sans relever le plafond passerait inaperçu jusqu'au jour J.
+  const rotations = [...html.matchAll(/class="rotation-slot"/g)].length;
+  if (rotations !== NOMBRE_DE_ROTATIONS) {
+    anomalies.push(
+      `${rotations} rotation(s) trouvée(s), ${NOMBRE_DE_ROTATIONS} attendue(s).`,
+    );
+  }
+  const plafond = html.match(/var MAX_SELECTION = (\d+);/);
+  if (!plafond) {
+    anomalies.push('Plafond de sélection « MAX_SELECTION » introuvable.');
+  } else if (Number(plafond[1]) !== rotations) {
+    anomalies.push(
+      `Plafond de sélection à ${plafond[1]} pour ${rotations} rotation(s) : ` +
+        `un participant fait un kiosque par rotation.`,
+    );
   }
 
   // ── Autonomie réseau ─────────────────────────────────────────────────
