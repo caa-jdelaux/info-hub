@@ -36,6 +36,10 @@ un navigateur mobile**, en éditant un seul bloc.
 6. Reporter sur `prod` (*Pull request* de `dev` vers `prod`, ou édition directe
    du même bloc sur `prod`).
 
+Les pages déjà ouvertes sur les téléphones se mettent à jour toutes seules :
+inutile de demander à qui que ce soit de recharger (voir *Rafraîchissement
+automatique*).
+
 Sous le bandeau final s'affiche la date, l'heure et la révision du déploiement
 en cours : **c'est ce qui permet de distinguer sa propre version d'une copie en
 cache.** Si l'horodatage n'est pas celui de la publication qu'on vient de faire,
@@ -127,11 +131,32 @@ pas ; les cartes, elles, portent leur salle dans le HTML.
 - **Bascule compact / détaillé.** Replie les descriptions des kiosques : la
   section après-midi passe de 3 719 à 2 909 px, soit 22 % de moins. Le choix
   est retenu d'une visite à l'autre.
-- **Récapitulatif kiosque → salle.** Construit depuis les cartes elles-mêmes,
-  donc une seule source de vérité : rien à resynchroniser si un nom change.
 - **Titres de section collants.** Le titre de la demi-journée reste visible
   pendant qu'on parcourt sa section. Le décalage tient compte du bandeau
   d'environnement, mesuré et non codé en dur — il vaut zéro en production.
+
+### Rafraîchissement automatique
+
+Le problème que cela règle : un téléphone qui a ouvert la page à 9h05 et l'a
+laissée dans un onglet continue d'afficher les salles de ce moment-là, même si
+elles ont changé à 11h. **Les en-têtes HTTP ne peuvent rien pour un document
+déjà rendu** — `Cache-Control` n'agit qu'au chargement suivant.
+
+La page se ré-interroge donc elle-même, au retour sur l'onglet, à la reprise du
+focus, et toutes les cinq minutes si elle reste visible. Quand la version
+publiée diffère de celle affichée, **les salles sont mises à jour sur place,
+sans rechargement**, et un avis discret propose — sans l'imposer — de recharger
+pour le reste. Personne n'aime voir sa page sauter en pleine lecture.
+
+La requête est conditionnelle (`cache: 'no-cache'`) : tant que rien n'a été
+republié, le serveur répond **304** et il ne passe presque rien sur le réseau.
+Un corps complet n'est téléchargé que lorsque la version a réellement changé.
+
+Ce mécanisme **ne porte jamais l'affichage initial** : les salles sont dans le
+HTML dès le premier octet. Si le réseau tombe — portail captif du wifi invité,
+sous-sol —, la page reste celle qui a été chargée et le participant garde une
+information juste, seulement plus ancienne. C'est la différence avec un service
+worker, qui servirait activement une copie périmée.
 
 ## Accessibilité
 
