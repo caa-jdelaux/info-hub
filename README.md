@@ -110,6 +110,50 @@ parti à l'impression ne puisse pas dériver silencieusement.
 **Préférer le SVG pour l'impression** : le code reste vectoriel, donc net à
 toute taille. Le PNG est une rasterisation de dépannage.
 
+## Comportements de la page
+
+Tout est facultatif : **sans JavaScript, le programme reste complet et juste.**
+Seuls le récapitulatif, la bascule et le repère « en ce moment » n'apparaissent
+pas ; les cartes, elles, portent leur salle dans le HTML.
+
+- **Repère « en ce moment ».** Le créneau en cours reçoit un contour et une
+  étiquette. Aucune couleur ni mise en forme de bloc n'est modifiée. L'heure est
+  celle de **Paris**, pas celle de l'appareil : un téléphone réglé sur un autre
+  fuseau afficherait le mauvais créneau. Le repère ne s'active **que le
+  14 septembre 2026** — les autres jours, la page est strictement celle qui a
+  été communiquée. Les horaires vivent dans le markup (`data-debut` /
+  `data-fin`, en minutes) et la porte qualité vérifie qu'ils sont croissants et
+  sans chevauchement.
+- **Bascule compact / détaillé.** Replie les descriptions des kiosques : la
+  section après-midi passe de 3 719 à 2 909 px, soit 22 % de moins. Le choix
+  est retenu d'une visite à l'autre.
+- **Récapitulatif kiosque → salle.** Construit depuis les cartes elles-mêmes,
+  donc une seule source de vérité : rien à resynchroniser si un nom change.
+- **Titres de section collants.** Le titre de la demi-journée reste visible
+  pendant qu'on parcourt sa section. Le décalage tient compte du bandeau
+  d'environnement, mesuré et non codé en dur — il vaut zéro en production.
+
+## Accessibilité
+
+Deux défauts structurels ont été corrigés, sans qu'un pixel bouge :
+
+- **Le `h1` était le slogan de l'événement**, pas le sujet de la page. Le thème
+  est redevenu un paragraphe ; un titre réel, lisible par les lecteurs d'écran
+  sans occuper de place, nomme le document.
+- **Aucun des 13 contenus n'était un titre.** Les 3 conférences et les
+  10 kiosques sont désormais des `h3` dans des `article`, à l'intérieur de
+  `section` par demi-journée. La page passe de **3 à 17 titres navigables** :
+  un lecteur d'écran saute de l'un à l'autre au lieu de tout lire en linéaire.
+
+S'y ajoutent un lien d'évitement, des repères de focus visibles, et
+`aria-hidden` sur les emoji et les ★ décoratifs — sans quoi la synthèse vocale
+annonce « dé à jouer Ludopédagogie ».
+
+Les teintes vives de la charte ne portent pas de texte : blanc sur `#00B4B4`
+donne 2,56:1 et blanc sur `#ED1B2F` 4,38:1, tous deux sous le seuil WCAG AA de
+4,5:1. Des variantes foncées (`#008080`, `#006A6A`, `#C01020`) les remplacent
+partout où du texte est posé, entre 4,77:1 et 8,16:1.
+
 ### Choix structurants
 
 - **Page autonome.** Aucune ressource distante : polices auto-hébergées, logo
@@ -165,20 +209,6 @@ Tant qu'ils sont absents, la porte qualité passe mais le déploiement échoue.
 npm run quality   # porte qualité + tests
 npm run deploy    # déploiement manuel (nécessite les identifiants Cloudflare)
 ```
-
----
-
-## Accessibilité
-
-Les teintes vives de la charte ne portent plus de texte : blanc sur `#00B4B4`
-donne 2,56:1 et blanc sur `#ED1B2F` 4,38:1, tous deux sous le seuil WCAG AA de
-4,5:1. Des variantes foncées (`#008080`, `#006A6A`, `#C01020`) les remplacent
-partout où du texte est posé, entre 4,77:1 et 8,16:1. Les teintes d'origine
-restent employées comme accents décoratifs et sur fond sombre, où le rapport est
-largement suffisant.
-
-Rapports calculés selon la formule de luminance relative WCAG 2.1, vérifiables
-avec n'importe quel contrôleur de contraste.
 
 ---
 

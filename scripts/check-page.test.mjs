@@ -1,22 +1,34 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { verifierPage, NOMBRE_DE_KIOSQUES } from './check-page.mjs';
+import {
+  verifierPage,
+  NOMBRE_DE_KIOSQUES,
+  NOMBRE_DE_CRENEAUX,
+} from './check-page.mjs';
 
 const PAGE = 'worker/public/testing-event-2026/index.html';
+
+/** Créneaux témoins : bornes croissantes, sans chevauchement. */
+function creneauxValides(nombre = NOMBRE_DE_CRENEAUX) {
+  return Array.from(
+    { length: nombre },
+    (_, i) => `<div data-debut="${540 + i * 30}" data-fin="${540 + i * 30 + 25}"></div>`,
+  ).join('\n');
+}
 
 /** Page minimale conforme, pour isoler chaque contrôle. */
 function pageValide(salles = Object.fromEntries(
   Array.from({ length: NOMBRE_DE_KIOSQUES }, (_, i) => [String(i + 1), '']),
-)) {
+), creneaux = creneauxValides()) {
   const cartes = Object.keys(salles)
-    .map((n) => `<div class="kiosque-card" data-kiosque="${n}">` +
-                `<div data-salle>Salle à confirmer</div></div>`)
+    .map((n) => `<article class="kiosque-card" data-kiosque="${n}">` +
+                `<div data-salle>Salle à confirmer</div></article>`)
     .join('\n');
   return `<html lang="fr"><head><meta name="viewport" content="width=device-width"/>` +
     `<title>T</title>` +
     `<script type="application/json" id="salles-data">${JSON.stringify(salles)}</script>` +
-    `</head><body>${cartes}` +
+    `</head><body>${cartes}${creneaux}` +
     `<p><span>__ENV__</span><span>__VERSION__</span></p></body></html>`;
 }
 
@@ -90,4 +102,43 @@ test('un emplacement de salle manquant est signalé', () => {
 test('la meta viewport est exigée', () => {
   const anomalies = verifierPage(pageValide().replace(/<meta name="viewport"[^>]*\/>/, ''));
   assert.ok(anomalies.some((a) => /viewport/.test(a)));
+});
+
+test('les cartes sont reconnues quelle que soit leur balise', () => {
+  // Les cartes sont passées de <div> à <article> ; le contrôle ne doit pas
+  // dépendre du nom de la balise.
+  assert.deepEqual(verifierPage(pageValide().replace(/article/g, 'div')), []);
+});
+
+test('un créneau manquant est signalé', () => {
+  const anomalies = verifierPage(pageValide(undefined, creneauxValides(NOMBRE_DE_CRENEAUX - 1)));
+  assert.ok(anomalies.some((a) => /créneau\(x\) horodaté/.test(a)));
+});
+
+test('un créneau dont la fin précède le début est signalé', () => {
+  const anomalies = verifierPage(
+    pageValide(undefined, creneauxValides(NOMBRE_DE_CRENEAUX - 1) +
+      '<div data-debut="900" data-fin="880"></div>'),
+  );
+  assert.ok(anomalies.some((a) => /la fin ne suit pas le début/.test(a)));
+});
+
+test('un chevauchement de créneaux est signalé', () => {
+  // Deux repères « en ce moment » simultanés : le participant ne saurait
+  // plus lequel lire.
+  const anomalies = verifierPage(
+    pageValide(undefined,
+      '<div data-debut="540" data-fin="600"></div>' +
+      '<div data-debut="570" data-fin="630"></div>' +
+      creneauxValides(NOMBRE_DE_CRENEAUX - 2)),
+  );
+  assert.ok(anomalies.some((a) => /chevauche ou précède/.test(a)));
+});
+
+test('un créneau hors de la journée est signalé', () => {
+  const anomalies = verifierPage(
+    pageValide(undefined, creneauxValides(NOMBRE_DE_CRENEAUX - 1) +
+      '<div data-debut="1500" data-fin="1600"></div>'),
+  );
+  assert.ok(anomalies.some((a) => /hors d'une journée/.test(a)));
 });

@@ -12,6 +12,9 @@
 
 export const NOMBRE_DE_KIOSQUES = 10;
 
+/** Blocs horodatés : 5 créneaux simples, 3 conférences, 5 rotations. */
+export const NOMBRE_DE_CRENEAUX = 13;
+
 /**
  * @param {string} html Contenu de la page.
  * @returns {string[]} Liste des anomalies. Vide si la page est conforme.
@@ -64,7 +67,10 @@ export function verifierPage(html) {
   }
 
   // ── Cartes kiosques ──────────────────────────────────────────────────
-  const cartes = [...html.matchAll(/<div class="kiosque-card" data-kiosque="(\d+)">/g)];
+  // Indépendant de la balise : les cartes sont des <article> depuis le passage
+  // à une structure sémantique, et ce contrôle ne doit pas casser au prochain
+  // changement de ce genre.
+  const cartes = [...html.matchAll(/<\w+ class="kiosque-card" data-kiosque="(\d+)">/g)];
   if (cartes.length !== NOMBRE_DE_KIOSQUES) {
     anomalies.push(
       `${cartes.length} carte(s) kiosque trouvée(s), ${NOMBRE_DE_KIOSQUES} attendue(s).`,
@@ -95,6 +101,33 @@ export function verifierPage(html) {
     if (!/data-salle/.test(html.slice(debut, fin))) {
       anomalies.push(`Carte du kiosque ${cartes[i][1]} sans emplacement « data-salle ».`);
     }
+  }
+
+  // ── Horaires exploitables ────────────────────────────────────────────
+  // Le repère « en ce moment » lit ces bornes. Une valeur incohérente ne se
+  // verrait qu'un seul jour, le 14, et seulement pendant le créneau concerné.
+  const creneaux = [...html.matchAll(/data-debut="(\d+)"\s+data-fin="(\d+)"/g)];
+  if (creneaux.length !== NOMBRE_DE_CRENEAUX) {
+    anomalies.push(
+      `${creneaux.length} créneau(x) horodaté(s), ${NOMBRE_DE_CRENEAUX} attendu(s).`,
+    );
+  }
+  let precedent = null;
+  for (const [, debut, fin] of creneaux) {
+    const d = Number(debut);
+    const f = Number(fin);
+    if (f <= d) {
+      anomalies.push(`Créneau ${d}–${f} : la fin ne suit pas le début.`);
+    }
+    if (d < 0 || f > 24 * 60) {
+      anomalies.push(`Créneau ${d}–${f} : hors d'une journée.`);
+    }
+    // Les créneaux se suivent dans l'ordre du document. Un chevauchement
+    // ferait clignoter deux repères « en ce moment » en même temps.
+    if (precedent !== null && d < precedent) {
+      anomalies.push(`Créneau ${d}–${f} : chevauche ou précède le créneau précédent.`);
+    }
+    precedent = f;
   }
 
   // ── Autonomie réseau ─────────────────────────────────────────────────
@@ -144,7 +177,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   const anomalies = verifierPage(readFileSync(chemin, 'utf8'));
   if (anomalies.length === 0) {
-    console.log(`✓ ${chemin} — ${NOMBRE_DE_KIOSQUES} kiosques, page autonome.`);
+      console.log(
+      `✓ ${chemin} — ${NOMBRE_DE_KIOSQUES} kiosques, ${NOMBRE_DE_CRENEAUX} créneaux, page autonome.`,
+    );
     process.exit(0);
   }
   for (const anomalie of anomalies) {

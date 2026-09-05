@@ -283,6 +283,17 @@
     flex: 1; height: 2px;
     background: linear-gradient(90deg, var(--te-cyan), transparent);
   }
+  /* Le titre de la demi-journée reste visible pendant qu'on parcourt sa
+     section : on sait toujours si l'on regarde le matin ou l'après-midi.
+     Le décalage tient compte du bandeau d'environnement, lui aussi collant ;
+     il vaut zéro en production, où ce bandeau n'existe pas. */
+  .section-title {
+    position: sticky;
+    top: var(--haut-collant, 0px);
+    z-index: 20;
+    background: var(--caa-gris-clair);
+    padding: 6px 0;
+  }
 
   /* ─── CARTES CONFÉRENCES ────────────────────────────── */
   .conf-card {
@@ -421,6 +432,103 @@
   }
   .kiosque-salle.inconnue::before { content: '⏳'; }
 
+  /* ─── LIEN D'ÉVITEMENT ET TITRE DE PAGE ─────────────── */
+  /* Le titre reste lisible par les lecteurs d'écran sans occuper de place :
+     `display:none` l'aurait retiré de l'arbre d'accessibilité. */
+  .titre-page {
+    position: absolute; width: 1px; height: 1px;
+    margin: -1px; padding: 0; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  .evitement {
+    position: absolute; left: 50%; top: 0; transform: translate(-50%, -120%);
+    z-index: 60; background: var(--te-white); color: var(--te-teal-text);
+    font-weight: 700; font-size: 0.9rem; padding: 10px 18px;
+    border-radius: 0 0 8px 8px; text-decoration: none;
+    transition: transform .18s ease;
+  }
+  .evitement:focus { transform: translate(-50%, 0); }
+
+  /* Repère de focus visible : sans lui, les commandes ajoutées seraient
+     inatteignables au clavier « à l'aveugle ». */
+  a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--te-teal-text);
+    outline-offset: 2px;
+  }
+
+  /* ─── EN CE MOMENT ──────────────────────────────────── */
+  /* Ni couleur ni mise en forme de bloc ne changent : le repère se pose
+     autour, en contour, et s'annonce par une étiquette au-dessus. */
+  .encours {
+    outline: 3px solid var(--te-cyan-dark);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+  .encours-etiquette {
+    display: flex; align-items: center; gap: 6px; width: fit-content;
+    font-family: 'Barlow Condensed', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700; font-size: 0.74rem; letter-spacing: 1.6px;
+    text-transform: uppercase;
+    background: var(--te-cyan-dark); color: var(--te-white);  /* 4,77:1 */
+    padding: 3px 10px; border-radius: 4px;
+    margin: 14px 0 6px;
+  }
+  .rotation-slot .rs-encours {
+    display: inline-block; margin-left: auto;
+    font-family: 'Barlow Condensed', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700; font-size: 0.72rem; letter-spacing: 1.2px;
+    text-transform: uppercase;
+    background: var(--te-cyan-dark); color: var(--te-white);
+    padding: 2px 8px; border-radius: 4px;
+  }
+
+  /* ─── OUTILS KIOSQUES ───────────────────────────────── */
+  .recap-salles {
+    background: var(--te-white); border-radius: 8px; margin-bottom: 12px;
+    overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  .recap-salles h3 {
+    background: var(--te-teal-text); color: var(--te-white);
+    padding: 9px 14px;
+    font-family: 'Barlow Condensed', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700; font-size: 0.88rem;
+    letter-spacing: 1.6px; text-transform: uppercase;
+  }
+  .recap-salles ol { list-style: none; }
+  .recap-salles li {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 7px 14px; border-top: 1px solid #EEF3F3; font-size: 0.9rem;
+  }
+  .recap-salles li:first-child { border-top: 0; }
+  .recap-salles .rs-num {
+    font-family: 'Barlow Condensed', 'Segoe UI', Arial, sans-serif;
+    font-weight: 800; font-size: 0.95rem;
+    color: var(--te-white); background: var(--te-cyan-dark);
+    min-width: 22px; height: 22px; border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .recap-salles .rs-nom { flex: 1; color: var(--te-dark); font-weight: 600; }
+  .recap-salles .rs-salle { color: var(--te-teal-text); font-weight: 700; white-space: nowrap; }
+  .recap-salles .rs-salle.inconnue { color: var(--caa-gris-fonce); font-weight: 600; }
+
+  .bascule-kiosques {
+    display: block; width: 100%; min-height: 44px; margin-bottom: 10px;
+    appearance: none; cursor: pointer;
+    background: var(--te-white); border: 1px solid #C9D8D8; border-radius: 8px;
+    color: var(--te-teal-text);
+    font-family: 'Barlow Condensed', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700; font-size: 0.9rem; letter-spacing: 1.4px;
+    text-transform: uppercase; padding: 11px 14px;
+    transition: background .18s;
+  }
+  .bascule-kiosques:hover { background: var(--te-cyan-light); }
+  .kiosques-grid.compacts .kiosque-pitch { display: none; }
+  .kiosques-grid.compacts .kiosque-body {
+    padding: 9px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .kiosques-grid.compacts .kiosque-name { margin-bottom: 0; flex: 1; min-width: 0; }
+  .kiosques-grid.compacts .kiosque-salle { margin-top: 0; font-size: 0.82rem; padding: 3px 9px; }
+
   /* ─── FOOTER ────────────────────────────────────────── */
   footer {
     background: var(--te-dark);
@@ -518,6 +626,11 @@
   @media print {
     body { background: #fff; }
     .env-bandeau { display: none !important; }
+    /* Commandes et repère temporel n'ont aucun sens sur du papier. */
+    .bascule-kiosques, .encours-etiquette, .rs-encours, .evitement { display: none !important; }
+    .encours { outline: none !important; }
+    .section-title { position: static; }
+    .kiosques-grid.compacts .kiosque-pitch { display: block; }
     .conf-card, .kiosque-card, .special-slot { box-shadow: none; border: 1px solid #ddd; }
   }
 </style>
@@ -529,6 +642,15 @@
   <span class="env-bandeau-nom">__ENV__</span>
   <span>Relecture — ne pas diffuser</span>
 </div>
+
+<!-- Le premier élément focalisable de la page permet d'atteindre le
+     programme sans traverser l'en-tête à la tabulation. -->
+<a class="evitement" href="#programme">Aller au programme</a>
+
+<!-- Titre réel du document. Le bandeau ci-dessous porte le thème de
+     l'événement, qui est un slogan : ce n'est pas le sujet de la page, et
+     l'annoncer comme titre laissait un lecteur d'écran sans repère. -->
+<h1 class="titre-page">Programme du Testing Event — 14 septembre 2026</h1>
 
 <!-- ══════════ HEADER ══════════ -->
 <header>
@@ -542,73 +664,77 @@
   </div>
 
   <div class="theme-bar">
-    <h1>TEST : les transformations en marche et les grands défis de demain</h1>
+    <p>TEST : les transformations en marche et les grands défis de demain</p>
   </div>
 </header>
 
 <!-- ══════════ CONTENU ══════════ -->
-<div class="container">
+<main class="container" id="programme">
 
   <!-- MATIN -->
+  <section aria-labelledby="titre-matin">
   <div class="section-title">
-    <span class="star-icon">★</span>
-    <h2>Matin — Conférences</h2>
+    <span class="star-icon" aria-hidden="true">★</span>
+    <h2 id="titre-matin">Matin — Conférences</h2>
   </div>
 
-  <div class="special-slot">
+  <div class="special-slot" data-debut="540" data-fin="585">
     <div class="slot-time cyan">9h00</div>
-    <div class="slot-label accueil">☕ Accueil café &amp; petit-déjeuner</div>
+    <div class="slot-label accueil"><span aria-hidden="true">☕</span> Accueil café &amp; petit-déjeuner</div>
   </div>
 
-  <div class="special-slot">
+  <div class="special-slot" data-debut="585" data-fin="600">
     <div class="slot-time dark">9h45</div>
-    <div class="slot-label ouverture">🎤 Mot d'ouverture</div>
+    <div class="slot-label ouverture"><span aria-hidden="true">🎤</span> Mot d'ouverture</div>
   </div>
 
-  <div class="conf-card">
+  <article class="conf-card" data-debut="600" data-fin="645">
     <div class="conf-time-col">10h00</div>
     <div class="conf-badge conf1"></div>
     <div class="conf-body">
-      <div class="conf-type conf1">★ Conférence 1</div>
-      <div class="conf-title">Des 7 principes du test aux 7 principes de la qualité</div>
+      <div class="conf-type conf1"><span aria-hidden="true">★</span> Conférence 1</div>
+      <h3 class="conf-title">Des 7 principes du test aux 7 principes de la qualité</h3>
       <div class="conf-pitch"><em>« Un produit peut être parfaitement testé… et pourtant inutilisable. »</em></div>
     </div>
-  </div>
+  </article>
 
-  <div class="conf-card">
+  <article class="conf-card" data-debut="645" data-fin="690">
     <div class="conf-time-col">10h45</div>
     <div class="conf-badge conf2"></div>
     <div class="conf-body">
-      <div class="conf-type conf2">★ Conférence 2</div>
-      <div class="conf-title">De l'IA générative aux tests « augmentés » : les 7 leçons apprises pour industrialiser l'IA dans le cycle de test</div>
+      <div class="conf-type conf2"><span aria-hidden="true">★</span> Conférence 2</div>
+      <h3 class="conf-title">De l'IA générative aux tests « augmentés » : les 7 leçons apprises pour industrialiser l'IA dans le cycle de test</h3>
       <div class="conf-pitch"><em>« Le rôle du testeur ne disparaît pas… il se transforme. »</em></div>
     </div>
-  </div>
+  </article>
 
-  <div class="conf-card">
+  <article class="conf-card" data-debut="690" data-fin="735">
     <div class="conf-time-col">11h30</div>
     <div class="conf-badge table"></div>
     <div class="conf-body">
-      <div class="conf-type table">★ Table ronde</div>
-      <div class="conf-title">Mode produit et les tests</div>
+      <div class="conf-type table"><span aria-hidden="true">★</span> Table ronde</div>
+      <h3 class="conf-title">Mode produit et les tests</h3>
       <div class="conf-pitch"><em>« Mode produit ADE : comment CAAS transforme ses approches de test pour accompagner la fabrication agile ? »</em></div>
     </div>
+  </article>
+
+  <div class="special-slot" style="margin-top:16px;" data-debut="735" data-fin="820">
+    <div class="slot-time red">12h15</div>
+    <div class="slot-label cocktail"><span aria-hidden="true">🥂</span> Cocktail déjeunatoire</div>
   </div>
 
-  <div class="special-slot" style="margin-top:16px;">
-    <div class="slot-time red">12h15</div>
-    <div class="slot-label cocktail">🥂 Cocktail déjeunatoire</div>
-  </div>
+  </section>
 
   <!-- APRÈS-MIDI -->
+  <section aria-labelledby="titre-apres-midi">
   <div class="section-title" style="margin-top:36px;">
-    <span class="star-icon">★</span>
-    <h2>Après-midi — Kiosques &amp; ateliers</h2>
+    <span class="star-icon" aria-hidden="true">★</span>
+    <h2 id="titre-apres-midi">Après-midi — Kiosques &amp; ateliers</h2>
   </div>
 
-  <div class="special-slot">
+  <div class="special-slot" data-debut="820" data-fin="840">
     <div class="slot-time dark">13h40</div>
-    <div class="slot-label ouverture">📋 Présentation de l'organisation des kiosques</div>
+    <div class="slot-label ouverture"><span aria-hidden="true">📋</span> Présentation de l'organisation des kiosques</div>
   </div>
 
   <div class="rotations-info">
@@ -620,129 +746,144 @@
   </div>
 
   <div class="rotation-slots">
-    <div class="rotation-slot"><span class="rs-time">14h00 – 14h30</span><span class="rs-label">Rotation 1</span></div>
-    <div class="rotation-slot"><span class="rs-time">14h30 – 15h00</span><span class="rs-label">Rotation 2</span></div>
-    <div class="rotation-slot"><span class="rs-time">15h00 – 15h30</span><span class="rs-label">Rotation 3</span></div>
-    <div class="rotation-slot"><span class="rs-time">15h30 – 16h00</span><span class="rs-label">Rotation 4</span></div>
-    <div class="rotation-slot"><span class="rs-time">16h00 – 16h30</span><span class="rs-label">Rotation 5</span></div>
+    <div class="rotation-slot" data-debut="840" data-fin="870"><span class="rs-time">14h00 – 14h30</span><span class="rs-label">Rotation 1</span></div>
+    <div class="rotation-slot" data-debut="870" data-fin="900"><span class="rs-time">14h30 – 15h00</span><span class="rs-label">Rotation 2</span></div>
+    <div class="rotation-slot" data-debut="900" data-fin="930"><span class="rs-time">15h00 – 15h30</span><span class="rs-label">Rotation 3</span></div>
+    <div class="rotation-slot" data-debut="930" data-fin="960"><span class="rs-time">15h30 – 16h00</span><span class="rs-label">Rotation 4</span></div>
+    <div class="rotation-slot" data-debut="960" data-fin="990"><span class="rs-time">16h00 – 16h30</span><span class="rs-label">Rotation 5</span></div>
   </div>
+
+  <!-- Récapitulatif et bascule sont construits par le script de bas de page,
+       à partir des cartes elles-mêmes : une seule source de vérité, donc aucune
+       désynchronisation possible si un nom de kiosque change. Sans JavaScript,
+       ils n'apparaissent pas — les cartes, elles, restent complètes. -->
+  <div id="outils-kiosques"></div>
 
   <div class="kiosques-grid">
 
-    <div class="kiosque-card" data-kiosque="1">
+    <article class="kiosque-card" data-kiosque="1">
       <div class="kiosque-num">1</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">🎲 Ludopédagogie</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">🎲</span> Ludopédagogie</h3>
         <div class="kiosque-pitch">Tour de Babel ou Marshmallow Challenge : découvrez par le jeu pourquoi il faut tester tôt !</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="2">
+    <article class="kiosque-card" data-kiosque="2">
       <div class="kiosque-num">2</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">🤖 LynQA</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">🤖</span> LynQA</h3>
         <div class="kiosque-pitch">L'agent IA qui exécute vos tests manuels pendant que vous dormez — sans scripting, sans restructuration.</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="3">
+    <article class="kiosque-card" data-kiosque="3">
       <div class="kiosque-num">3</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">⚡ Écosystème d'agents IA</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">⚡</span> Écosystème d'agents IA</h3>
         <div class="kiosque-pitch">Coder, Tester, Automatiser… 3 agents IA, une chaîne de production de test automatisé !</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="4">
+    <article class="kiosque-card" data-kiosque="4">
       <div class="kiosque-num">4</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">🧭 Yest Companion</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">🧭</span> Yest Companion</h3>
         <div class="kiosque-pitch">De la page blanche à la mise à jour : l'IA propose les parcours à partir de vos US Jira/Confluence, vous validez.</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="5">
+    <article class="kiosque-card" data-kiosque="5">
       <div class="kiosque-num">5</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">🏛️ Bâtisseurs de pyramides</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">🏛️</span> Bâtisseurs de pyramides</h3>
         <div class="kiosque-pitch">Construisez votre VRAIE pyramide de tests en 3D interactive — trouvez le bon équilibre en mode collaboratif !</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="6">
+    <article class="kiosque-card" data-kiosque="6">
       <div class="kiosque-num">6</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">📋 Référentiel de tests X-Ray</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">📋</span> Référentiel de tests X-Ray</h3>
         <div class="kiosque-pitch">Au revoir QC, bienvenue X-Ray ! Découvrez le produit et la trajectoire de migration 2027.</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="7">
+    <article class="kiosque-card" data-kiosque="7">
       <div class="kiosque-num">7</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">🧠 SDSI Test &amp; IA</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">🧠</span> SDSI Test &amp; IA</h3>
         <div class="kiosque-pitch">IACA &amp; IACT : deux agents IA pour générer critères d'acceptance et cas de test directement depuis vos US.</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="8">
+    <article class="kiosque-card" data-kiosque="8">
       <div class="kiosque-num">8</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">🗄️ JADD</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">🗄️</span> JADD</h3>
         <div class="kiosque-pitch">Les données de production à portée de clic pour vos tests : enrichissez, réutilisez, rechargez en quelques clics.</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="9">
+    <article class="kiosque-card" data-kiosque="9">
       <div class="kiosque-num">9</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">📱 SauceLabs</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">📱</span> SauceLabs</h3>
         <div class="kiosque-pitch">Testez partout et homologuez en toute confiance — démos live sur la plateforme mobile, du dev à la validation.</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
-    <div class="kiosque-card" data-kiosque="10">
+    <article class="kiosque-card" data-kiosque="10">
       <div class="kiosque-num">10</div>
       <div class="kiosque-body">
-        <div class="kiosque-name">🎬 Vidéo TESTY — libre service</div>
+        <h3 class="kiosque-name"><span aria-hidden="true">🎬</span> Vidéo TESTY — libre service</h3>
         <div class="kiosque-pitch">Plongez dans l'univers coloré et décalé de TESTY : le métier de testeur en épisodes courts, ludiques, sans jargon.</div>
         <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
       </div>
-    </div>
+    </article>
 
   </div>
 
-  <div class="special-slot" style="margin-top:20px;">
+  <div class="special-slot" style="margin-top:20px;" data-debut="990" data-fin="1020">
     <div class="slot-time cyan">16h30 – 17h00</div>
-    <div class="slot-label cloture">🏆 Mot de clôture &amp; remise des lots</div>
+    <div class="slot-label cloture"><span aria-hidden="true">🏆</span> Mot de clôture &amp; remise des lots</div>
   </div>
 
-</div>
+  </section>
+</main>
 
 <!-- ══════════ FOOTER ══════════ -->
 <footer>
-  <div class="star-row">★ ★ ★</div>
+  <div class="star-row" aria-hidden="true">★ ★ ★</div>
   <p>Testing Event · Crédit Agricole Assurances · 14 septembre 2026</p>
 </footer>
 
 <p class="version"><span class="version-env">__ENV__</span><span>__VERSION__</span></p>
 
 <script>
-/* Reporte les salles du bloc de données en tête de fichier sur les cartes.
-   Le libellé « Salle à confirmer » figure déjà dans le HTML : sans
-   JavaScript, la carte reste donc juste, elle est seulement moins à jour. */
+/* Comportements de la page. Tout est facultatif : sans JavaScript, le
+   programme reste complet et juste — seuls le récapitulatif, la bascule et le
+   repère « en ce moment » n'apparaissent pas. */
 (function () {
-  var cartes = document.querySelectorAll('.kiosque-card');
-  var salles;
+  'use strict';
+
+  var racine = document.documentElement;
+
+  /* ── Salles ─────────────────────────────────────────────────────────
+     Reporte le bloc de données en tête de fichier sur les cartes. Le libellé
+     « Salle à confirmer » figure déjà dans le HTML : sans ce script, la carte
+     reste juste, elle est seulement moins à jour. */
+  var cartes = [].slice.call(document.querySelectorAll('.kiosque-card'));
+  var salles = null;
 
   try {
     salles = JSON.parse(document.getElementById('salles-data').textContent);
@@ -754,18 +895,180 @@
       var cible = carte.querySelector('[data-salle]');
       if (cible) { cible.textContent = 'Voir affichage sur place'; }
     });
-    return;
   }
 
-  cartes.forEach(function (carte) {
-    var cible = carte.querySelector('[data-salle]');
-    if (!cible) { return; }
-    var valeur = salles[carte.dataset.kiosque];
-    if (typeof valeur === 'string' && valeur.trim() !== '') {
-      cible.textContent = valeur.trim();
-      cible.classList.remove('inconnue');
+  if (salles) {
+    cartes.forEach(function (carte) {
+      var cible = carte.querySelector('[data-salle]');
+      if (!cible) { return; }
+      var valeur = salles[carte.dataset.kiosque];
+      if (typeof valeur === 'string' && valeur.trim() !== '') {
+        cible.textContent = valeur.trim();
+        cible.classList.remove('inconnue');
+      }
+    });
+  }
+
+  /* Nom du kiosque sans son emoji : celui-ci est marqué aria-hidden, on le
+     retire plutôt que de découper la chaîne à l'aveugle. */
+  function nomDuKiosque(carte) {
+    var titre = carte.querySelector('.kiosque-name');
+    if (!titre) { return ''; }
+    var copie = titre.cloneNode(true);
+    [].forEach.call(copie.querySelectorAll('[aria-hidden]'), function (e) { e.remove(); });
+    return copie.textContent.trim();
+  }
+
+  var outils = document.getElementById('outils-kiosques');
+  var grille = document.querySelector('.kiosques-grid');
+
+  /* ── Récapitulatif kiosque → salle ──────────────────────────────────
+     Construit depuis les cartes elles-mêmes : une seule source de vérité,
+     donc rien à resynchroniser si un nom ou une salle change. C'est le format
+     qu'on consulte debout, entre deux rotations. */
+  if (outils && cartes.length) {
+    var recap = document.createElement('div');
+    recap.className = 'recap-salles';
+    var liste = document.createElement('ol');
+
+    cartes.forEach(function (carte) {
+      var salle = carte.querySelector('[data-salle]');
+      var li = document.createElement('li');
+
+      var num = document.createElement('span');
+      num.className = 'rs-num';
+      num.textContent = carte.dataset.kiosque;
+
+      var nom = document.createElement('span');
+      nom.className = 'rs-nom';
+      nom.textContent = nomDuKiosque(carte);
+
+      var valeur = document.createElement('span');
+      valeur.className = 'rs-salle' + (salle && salle.classList.contains('inconnue') ? ' inconnue' : '');
+      valeur.textContent = salle ? salle.textContent.trim() : '—';
+
+      li.appendChild(num);
+      li.appendChild(nom);
+      li.appendChild(valeur);
+      liste.appendChild(li);
+    });
+
+    var titreRecap = document.createElement('h3');
+    titreRecap.textContent = 'Kiosque → salle';
+    recap.appendChild(titreRecap);
+    recap.appendChild(liste);
+    outils.appendChild(recap);
+  }
+
+  /* ── Bascule compact / détaillé ─────────────────────────────────────
+     Replie les descriptions pour ne laisser que numéro, nom et salle. Les
+     pitchs servent à choisir avant l'après-midi ; pendant, on cherche une
+     salle en marchant. */
+  if (outils && grille) {
+    var bouton = document.createElement('button');
+    bouton.type = 'button';
+    bouton.className = 'bascule-kiosques';
+
+    var compact = false;
+    try { compact = localStorage.getItem('te-kiosques-compacts') === 'oui'; } catch (e) { /* sans effet */ }
+
+    function appliquer() {
+      grille.classList.toggle('compacts', compact);
+      bouton.setAttribute('aria-pressed', String(compact));
+      bouton.textContent = compact ? '▸ Afficher les descriptions' : '▾ Masquer les descriptions';
     }
-  });
+
+    bouton.addEventListener('click', function () {
+      compact = !compact;
+      try { localStorage.setItem('te-kiosques-compacts', compact ? 'oui' : 'non'); } catch (e) { /* sans effet */ }
+      appliquer();
+    });
+
+    appliquer();
+    outils.appendChild(bouton);
+  }
+
+  /* ── Repère « en ce moment » ────────────────────────────────────────
+     Une page statique traite 9h00 et 16h30 à l'identique, alors que la seule
+     question du participant sur place est « c'est quoi maintenant ».
+
+     L'heure est celle de Paris, pas celle de l'appareil : un téléphone réglé
+     sur un autre fuseau afficherait sinon le mauvais créneau. Le repère ne
+     s'active que le 14 septembre 2026 — les autres jours, il n'a aucun sens
+     et la page reste strictement celle qui a été communiquée. */
+  var JOUR = '14/09/2026';
+  var blocs = [].slice.call(document.querySelectorAll('[data-debut][data-fin]'));
+
+  function instantParis() {
+    try {
+      var parties = new Intl.DateTimeFormat('fr-FR', {
+        timeZone: 'Europe/Paris',
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false,
+      }).formatToParts(new Date());
+      var v = {};
+      parties.forEach(function (p) { v[p.type] = p.value; });
+      return {
+        jour: v.day + '/' + v.month + '/' + v.year,
+        minutes: parseInt(v.hour, 10) * 60 + parseInt(v.minute, 10),
+      };
+    } catch (e) {
+      return null; // Intl indisponible : on s'abstient plutôt que de deviner.
+    }
+  }
+
+  function etiquette() {
+    var p = document.createElement('p');
+    p.className = 'encours-etiquette';
+    p.textContent = '● En ce moment';
+    return p;
+  }
+
+  function majEnCours() {
+    var t = instantParis();
+
+    [].forEach.call(document.querySelectorAll('.encours'), function (e) { e.classList.remove('encours'); });
+    [].forEach.call(document.querySelectorAll('.encours-etiquette, .rs-encours'), function (e) { e.remove(); });
+
+    if (!t || t.jour !== JOUR) { return; }
+
+    blocs.forEach(function (bloc) {
+      var d = Number(bloc.dataset.debut);
+      var f = Number(bloc.dataset.fin);
+      if (!(t.minutes >= d && t.minutes < f)) { return; }
+
+      bloc.classList.add('encours');
+
+      if (bloc.classList.contains('rotation-slot')) {
+        /* Les rotations sont des éléments d'une rangée : l'étiquette va à
+           l'intérieur, pour ne pas casser la mise en page. */
+        var incise = document.createElement('span');
+        incise.className = 'rs-encours';
+        incise.textContent = '● en cours';
+        bloc.appendChild(incise);
+      } else {
+        bloc.parentNode.insertBefore(etiquette(), bloc);
+      }
+    });
+  }
+
+  majEnCours();
+  /* Les créneaux durent de 15 à 45 minutes : une vérification par demi-minute
+     suffit largement, et laisse la batterie tranquille. */
+  setInterval(majEnCours, 30000);
+
+  /* ── Décalage des titres collants ───────────────────────────────────
+     Le bandeau d'environnement est lui aussi collant. Sa hauteur est mesurée
+     plutôt que codée en dur : elle vaut zéro en production, où il n'existe
+     pas. */
+  function majDecalage() {
+    var bandeau = document.querySelector('.env-bandeau');
+    var hauteur = bandeau && bandeau.offsetHeight ? bandeau.offsetHeight : 0;
+    racine.style.setProperty('--haut-collant', hauteur + 'px');
+  }
+
+  majDecalage();
+  window.addEventListener('resize', majDecalage);
 })();
 </script>
 
