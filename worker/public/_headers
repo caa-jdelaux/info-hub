@@ -17,3 +17,9 @@
 # seul le tout premier affichage paie les 112 Ko.
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Le plan ne change pas d'un jour à l'autre, mais son nom de fichier est fixe :
+# une journée de cache, pas un an. S'il fallait le corriger le 14 au matin,
+# un an d'« immutable » rendrait la correction invisible.
+/assets/plans/*
+  Cache-Control: public, max-age=86400

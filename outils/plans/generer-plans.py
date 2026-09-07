@@ -1,15 +1,27 @@
 #!/usr/bin/env python3
-"""Génère un plan par salle de kiosque, la salle concernée mise en évidence.
+"""Prépare le plan du rez-de-jardin servi par la page programme.
 
 Hors chaîne de production : ce script n'est pas exécuté par le CI et demande
 Pillow + numpy (`pip install Pillow numpy`). Il ne sert qu'à régénérer les
-images si le plan du Business Center change ou si le rendu doit être ajusté.
+images si le plan du Business Center change.
+
+Deux sorties, deux usages différents :
+
+  worker/public/assets/plans/rez-de-jardin.png
+      Le plan nu, servi tel quel par la page. La mise en évidence d'une salle
+      est dessinée par-dessus en SVG, dans la page — une seule image sert donc
+      les dix salles, et l'anneau reste net à n'importe quel zoom.
+
+  outils/plans/apercus/plan-<salle>.png
+      Une image par salle, gravée. Sert de référence visuelle et de contrôle
+      des coordonnées ; la page ne les charge pas.
 
 Les dix zones ont été relevées par segmentation de la couleur magenta du plan
-(#DF2E85), qui distingue les salles de kiosques des autres espaces : SUMIDA et
-ALZETTE sont violettes, GARONNE bleu foncé, SEINE et DONAU vertes. Les
+(#DF2E85), qui distingue les salles de kiosques des autres espaces : Sumida et
+Alzette sont violettes, Garonne bleu foncé, Seine et Donau vertes. Les
 coordonnées sont figées ici plutôt que redétectées à chaque exécution : un
-changement de plan doit être constaté et revu, pas absorbé en silence.
+changement de plan doit être constaté et revu, pas absorbé en silence. Elles
+sont reprises à l'identique dans la table PLAN_SALLES de la page.
 """
 from PIL import Image, ImageDraw
 import numpy as np
@@ -17,9 +29,10 @@ import pathlib
 
 RACINE = pathlib.Path(__file__).resolve().parents[2]
 SOURCE = pathlib.Path(__file__).with_name('plan-rez-de-jardin-source.png')
-SORTIE = RACINE / 'worker' / 'public' / 'assets' / 'plans'
+PLAN_SERVI = RACINE / 'worker' / 'public' / 'assets' / 'plans' / 'rez-de-jardin.png'
+APERCUS = pathlib.Path(__file__).with_name('apercus')
 
-# (identifiant de fichier, nom affiché, x0, y0, x1, y1)
+# (identifiant, nom affiché, x0, y0, x1, y1)
 SALLES = [
     ('moselle', 'MOSELLE', 175,  59, 208, 131),
     ('liffey',  'LIFFEY',  175, 136, 208, 208),
@@ -37,19 +50,28 @@ ENCRE = (26, 26, 46)   # --te-dark de la page programme
 # Le reste du plan est éclairci sans disparaître : la salle doit sauter aux
 # yeux, mais les escaliers, les sanitaires et l'entrée servent à s'orienter.
 ESTOMPE = 0.62
+# Aplats vectoriels : 64 couleurs suffisent et divisent le poids par deux et
+# demi, sans perte visible.
+PALETTE = 64
 
 
 def main():
     base = Image.open(SOURCE).convert('RGB')
+    print(f'plan source {base.width}x{base.height}')
+
+    PLAN_SERVI.parent.mkdir(parents=True, exist_ok=True)
+    base.convert('P', palette=Image.ADAPTIVE, colors=PALETTE).save(
+        PLAN_SERVI, optimize=True)
+    print(f'{PLAN_SERVI.relative_to(RACINE)}  {PLAN_SERVI.stat().st_size / 1024:.1f} Ko')
+
     arr = np.asarray(base).astype(float)
     fond = Image.fromarray(
         np.clip(255 - (255 - arr) * (1 - ESTOMPE), 0, 255).astype(np.uint8))
 
-    SORTIE.mkdir(parents=True, exist_ok=True)
+    APERCUS.mkdir(parents=True, exist_ok=True)
     for slug, nom, x0, y0, x1, y1 in SALLES:
         img = fond.copy()
         img.paste(base.crop((x0, y0, x1 + 1, y1 + 1)), (x0, y0))
-
         d = ImageDraw.Draw(img)
         # Halo blanc puis anneau sombre : l'anneau doit se détacher aussi bien
         # du magenta de la salle que du gris du plan.
@@ -57,13 +79,9 @@ def main():
                             radius=8, outline=(255, 255, 255), width=6)
         d.rounded_rectangle([x0 - 11, y0 - 11, x1 + 11, y1 + 11],
                             radius=11, outline=ENCRE, width=5)
-
-        # Aplats vectoriels : 128 couleurs suffisent et divisent le poids par
-        # deux et demi, sans perte visible.
-        cible = SORTIE / f'plan-{slug}.png'
         img.convert('P', palette=Image.ADAPTIVE, colors=128).save(
-            cible, optimize=True)
-        print(f'{cible.relative_to(RACINE)}  ({nom})')
+            APERCUS / f'plan-{slug}.png', optimize=True)
+    print(f'{len(SALLES)} aperçus dans {APERCUS.relative_to(RACINE)}/')
 
 
 if __name__ == '__main__':

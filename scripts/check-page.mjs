@@ -18,6 +18,9 @@ export const NOMBRE_DE_CRENEAUX = 13;
 /** Rotations de l'après-midi. Un participant fait un kiosque par rotation. */
 export const NOMBRE_DE_ROTATIONS = 5;
 
+/** Salles de kiosques du rez-de-jardin, repérées sur le plan. */
+export const NOMBRE_DE_SALLES = 10;
+
 /**
  * @param {string} html Contenu de la page.
  * @returns {string[]} Liste des anomalies. Vide si la page est conforme.
@@ -150,6 +153,41 @@ export function verifierPage(html) {
     anomalies.push(
       `Plafond de sélection à ${plafond[1]} pour ${rotations} rotation(s) : ` +
         `un participant fait un kiosque par rotation.`,
+    );
+  }
+
+  // ── Plan des salles ──────────────────────────────────────────────────
+  // La table de la page doit couvrir les dix salles, et chacune porter sa
+  // description textuelle : un plan est muet pour un lecteur d'écran, et à
+  // 390 px de large le nom gravé sur l'image fait 5 px de haut. Une entrée
+  // sans « ou » passerait inaperçue jusqu'à ce que quelqu'un en ait besoin.
+  const entrees = [...html.matchAll(/\{\s*cle:\s*'([a-z]+)'/g)].map((m) => m[1]);
+  if (entrees.length !== NOMBRE_DE_SALLES) {
+    anomalies.push(
+      `${entrees.length} salle(s) dans la table du plan, ${NOMBRE_DE_SALLES} attendue(s).`,
+    );
+  }
+  const doublons = entrees.filter((c, i) => entrees.indexOf(c) !== i);
+  for (const clef of new Set(doublons)) {
+    anomalies.push(`Table du plan : la salle « ${clef} » figure deux fois.`);
+  }
+  // Aucune clef ne doit être contenue dans une autre : la recherche par
+  // sous-chaîne désignerait alors la mauvaise salle.
+  for (const a of entrees) {
+    for (const b of entrees) {
+      if (a !== b && b.includes(a)) {
+        anomalies.push(
+          `Table du plan : « ${a} » est contenu dans « ${b} » — la recherche ` +
+            `par sous-chaîne deviendrait ambiguë.`,
+        );
+      }
+    }
+  }
+  const descriptions = [...html.matchAll(/^\s*ou:\s*["']/gm)].length;
+  if (entrees.length > 0 && descriptions !== entrees.length) {
+    anomalies.push(
+      `${descriptions} description(s) « ou » pour ${entrees.length} salle(s) : ` +
+        `chaque salle doit être situable sans voir le plan.`,
     );
   }
 

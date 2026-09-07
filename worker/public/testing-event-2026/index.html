@@ -424,7 +424,19 @@
     color: var(--te-teal-text);   /* 5,75:1 */
     font-weight: 700;
     font-size: 0.8rem;
+    /* C'est un <button> : sans ces trois lignes il hériterait de l'apparence
+       native et de la police du système. Il reste inerte tant qu'aucun plan
+       ne correspond à la salle saisie — d'où le `disabled` dans le HTML. */
+    appearance: none; border: 0; font-family: inherit; text-align: left;
   }
+  /* Le plan est une aide de second rang : elle s'annonce discrètement, sans
+     rivaliser avec le nom de la salle, qui reste l'information principale. */
+  .kiosque-salle:enabled { cursor: pointer; padding-right: 8px; }
+  .kiosque-salle:enabled::after {
+    content: '›'; font-weight: 900; font-size: 1.05rem; line-height: 0.8;
+    opacity: 0.75;
+  }
+  .kiosque-salle:enabled:hover { background: #BDE9E9; }
   .kiosque-salle::before { content: '📍'; }
   /* Salle pas encore affectée : présente mais visiblement en attente, pour
      qu'on ne la confonde pas avec une affectation réelle. */
@@ -557,6 +569,61 @@
   .kiosques-grid.compacts .kiosque-name { margin-bottom: 0; flex: 1; min-width: 0; }
   .kiosques-grid.compacts .kiosque-salle { margin-top: 0; font-size: 0.82rem; padding: 3px 9px; }
 
+  /* ─── PLAN DE SALLE ─────────────────────────────────── */
+  /* Une seule ligne au-dessus de la grille plutôt qu'une mention répétée sur
+     chacune des dix cartes. */
+  .astuce-plan {
+    margin: 0 0 10px; font-size: 0.78rem; line-height: 1.4;
+    color: var(--caa-gris-fonce);   /* 8,10:1 */
+  }
+
+  /* <dialog> natif : la mise en retrait de l'arrière-plan, le piège de focus,
+     la fermeture par Échap et le fond assombri sont fournis par le navigateur.
+     Les réimplémenter à la main, c'est trois occasions de se tromper. */
+  .modale-plan {
+    /* Centrage explicite : la feuille de style du navigateur ne le fait pas
+       de façon fiable, et la modale se retrouvait collée en haut à gauche. */
+    position: fixed; inset: 0; margin: auto;
+    width: min(94vw, 640px); max-height: 92vh; padding: 0;
+    border: 0; border-radius: 12px; background: var(--te-white);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    overflow: auto;
+  }
+  .modale-plan::backdrop { background: rgba(26,26,46,0.62); }
+
+  .mp-tete {
+    position: sticky; top: 0; z-index: 2;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; background: var(--te-dark);
+  }
+  .mp-titre {
+    flex: 1; margin: 0;
+    font-family: 'Barlow Condensed', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700; font-size: 1.15rem; letter-spacing: 0.8px;
+    text-transform: uppercase; color: var(--te-white);   /* 15,3:1 */
+  }
+  .mp-fermer {
+    appearance: none; cursor: pointer; flex-shrink: 0;
+    background: var(--te-white); color: var(--te-teal-text);
+    border: 0; border-radius: 6px; padding: 9px 13px; min-height: 40px;
+    font-family: 'Barlow Condensed', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700; font-size: 0.86rem; letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  /* Le calque se superpose exactement à l'image : même rapport, même boîte. */
+  .mp-cadre { position: relative; line-height: 0; background: var(--te-white); }
+  .mp-cadre img { display: block; width: 100%; height: auto; }
+  .mp-calque { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* À 390 px de large, le nom écrit sur le plan fait 5 px de haut : la
+     position doit aussi être donnée en toutes lettres. */
+  .mp-repere {
+    margin: 0; padding: 12px 14px 16px;
+    font-size: 0.86rem; line-height: 1.45; color: var(--caa-gris-fonce);
+  }
+  .mp-repere strong { color: var(--te-dark); }
+
   /* ─── AVIS DE MISE À JOUR ───────────────────────────── */
   /* En bas de l'écran : c'est la zone atteignable au pouce, et cela ne
      recouvre pas le contenu qu'on est en train de lire. */
@@ -681,7 +748,10 @@
     .env-bandeau { display: none !important; }
     /* Commandes et repère temporel n'ont aucun sens sur du papier. */
     .bascule-kiosques, .encours-etiquette, .rs-encours, .evitement,
-    .avis-maj, .bascule-repere, .selection-etat { display: none !important; }
+    .avis-maj, .bascule-repere, .selection-etat, .astuce-plan,
+    .modale-plan { display: none !important; }
+    /* Sur papier, la pastille n'est plus une commande. */
+    .kiosque-salle:enabled::after { content: none; }
     /* L'anneau de sélection ne survit pas à l'impression : on le rend en
        bordure, la feuille imprimée reste celle du participant. */
     .kiosque-card.repere { border: 2px solid var(--te-cyan-dark) !important; }
@@ -821,7 +891,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🎲</span> Ludopédagogie</h3>
         <div class="kiosque-pitch">Tour de Babel ou Marshmallow Challenge : découvrez par le jeu pourquoi il faut tester tôt !</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -830,7 +900,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🤖</span> LynQA</h3>
         <div class="kiosque-pitch">L'agent IA qui exécute vos tests manuels pendant que vous dormez — sans scripting, sans restructuration.</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -839,7 +909,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">⚡</span> Écosystème d'agents IA</h3>
         <div class="kiosque-pitch">Coder, Tester, Automatiser… 3 agents IA, une chaîne de production de test automatisé !</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -848,7 +918,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🧭</span> Yest Companion</h3>
         <div class="kiosque-pitch">De la page blanche à la mise à jour : l'IA propose les parcours à partir de vos US Jira/Confluence, vous validez.</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -857,7 +927,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🏛️</span> Bâtisseurs de pyramides</h3>
         <div class="kiosque-pitch">Construisez votre VRAIE pyramide de tests en 3D interactive — trouvez le bon équilibre en mode collaboratif !</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -866,7 +936,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">📋</span> Référentiel de tests X-Ray</h3>
         <div class="kiosque-pitch">Au revoir QC, bienvenue X-Ray ! Découvrez le produit et la trajectoire de migration 2027.</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -875,7 +945,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🧠</span> SDSI Test &amp; IA</h3>
         <div class="kiosque-pitch">IACA &amp; IACT : deux agents IA pour générer critères d'acceptance et cas de test directement depuis vos US.</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -884,7 +954,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🗄️</span> JADD</h3>
         <div class="kiosque-pitch">Les données de production à portée de clic pour vos tests : enrichissez, réutilisez, rechargez en quelques clics.</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -893,7 +963,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">📱</span> SauceLabs</h3>
         <div class="kiosque-pitch">Testez partout et homologuez en toute confiance — démos live sur la plateforme mobile, du dev à la validation.</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -902,7 +972,7 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🎬</span> Vidéo TESTY — libre service</h3>
         <div class="kiosque-pitch">Plongez dans l'univers coloré et décalé de TESTY : le métier de testeur en épisodes courts, ludiques, sans jargon.</div>
-        <div class="kiosque-salle inconnue" data-salle>Salle à confirmer</div>
+        <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
 
@@ -934,6 +1004,70 @@
   var racine = document.documentElement;
   var cartes = [].slice.call(document.querySelectorAll('.kiosque-card'));
 
+  /* ── Plan des salles ────────────────────────────────────────────────
+     Les dix salles de kiosques du rez-de-jardin, avec leur rectangle sur
+     `assets/plans/rez-de-jardin.png` (840 x 819). Une seule image sert les
+     dix : la mise en évidence est dessinée par-dessus en SVG, donc nette à
+     tout zoom, et changer une salle ne coûte que quatre nombres.
+
+     Les coordonnées viennent de outils/plans/generer-plans.py, qui les tient
+     de la segmentation du magenta du plan. Les deux listes doivent rester
+     identiques.
+
+     `ou` n'est pas un commentaire : un plan est muet pour un lecteur d'écran,
+     et à 390 px de large le nom gravé sur l'image fait 5 px de haut. La
+     position est donc aussi donnée en toutes lettres, sous le plan. */
+  var PLAN_SALLES = [
+    { cle: 'moselle', nom: 'Moselle', x: 175, y:  59, l:  34, h: 73,
+      ou: "en haut à gauche du plan, bandeau vertical le long du couloir d'entrée, juste au-dessus de Liffey" },
+    { cle: 'liffey',  nom: 'Liffey',  x: 175, y: 136, l:  34, h: 73,
+      ou: "en haut à gauche du plan, sous Moselle, entre le couloir d'entrée et la salle Loire" },
+    { cle: 'loire',   nom: 'Loire',   x: 249, y: 111, l:  68, h: 98,
+      ou: 'en haut du plan, côté Boulevard Vaugirard, entre Liffey et Tajo' },
+    { cle: 'tajo',    nom: 'Tajo',    x: 460, y: 110, l:  67, h: 99,
+      ou: 'en haut du plan, côté Boulevard Vaugirard, à droite de Loire, près des ascenseurs' },
+    { cle: 'tevere',  nom: 'Tevere',  x: 712, y: 210, l:  75, h: 45,
+      ou: "à droite du plan, première salle de la file, juste au-dessus d'Adige" },
+    { cle: 'adige',   nom: 'Adige',   x: 712, y: 259, l:  86, h: 70,
+      ou: 'à droite du plan, sous Tevere' },
+    { cle: 'douro',   nom: 'Douro',   x: 406, y: 384, l:  67, h: 81,
+      ou: 'au centre-bas du plan, à gauche de Rhône, au-dessus de la salle Donau' },
+    { cle: 'rhone',   nom: 'Rhône',   x: 529, y: 385, l:  66, h: 80,
+      ou: 'au centre-bas du plan, à droite de Douro, au-dessus de la salle Donau' },
+    { cle: 'wisla',   nom: 'Wisla',   x: 182, y: 537, l: 103, h: 60,
+      ou: "en bas à gauche du plan, sous l'auditorium Seine, au-dessus de Rhin" },
+    { cle: 'rhin',    nom: 'Rhin',    x: 182, y: 601, l: 103, h: 67,
+      ou: 'en bas à gauche du plan, sous Wisla' }
+  ];
+
+  var PLAN_IMAGE = '../assets/plans/rez-de-jardin.png';
+  var PLAN_LARGEUR = 840, PLAN_HAUTEUR = 819;
+
+  /* La saisie du 14 au matin reste du texte libre — c'est indispensable au
+     pouce. On la normalise donc avant de chercher : « Salle Loire », « loire »
+     et « LOIRE (RDJ) » désignent la même salle. Aucun des dix noms n'étant
+     contenu dans un autre, la recherche par sous-chaîne ne peut pas se
+     tromper de salle. Si rien ne correspond, il n'y a pas de plan : la carte
+     reste juste, simplement sans cette aide. */
+  function trouverPlan(valeur) {
+    if (typeof valeur !== 'string' || !valeur.trim()) { return null; }
+    var t = valeur.trim().toLowerCase();
+    if (t.normalize) { t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+    for (var i = 0; i < PLAN_SALLES.length; i += 1) {
+      if (t.indexOf(PLAN_SALLES[i].cle) !== -1) { return PLAN_SALLES[i]; }
+    }
+    return null;
+  }
+
+  /* Sans <dialog> natif, on n'active rien : réimplémenter à la main la mise
+     en retrait de l'arrière-plan, le piège de focus et la fermeture par Échap,
+     c'est trois occasions de se tromper pour une aide de second rang. */
+  var planDisponible = (function () {
+    try {
+      return typeof document.createElement('dialog').showModal === 'function';
+    } catch (e) { return false; }
+  })();
+
   /* ── Salles ─────────────────────────────────────────────────────────
      Le libellé « Salle à confirmer » figure déjà dans le HTML : sans ce
      script, la carte reste juste, elle est seulement moins à jour. */
@@ -956,12 +1090,29 @@
       if (typeof valeur === 'string' && valeur.trim() !== '') {
         cible.textContent = valeur.trim();
         cible.classList.remove('inconnue');
+
+        /* La pastille ne devient une commande que si la salle saisie est
+           reconnue. Une valeur libre non reconnue reste affichée telle
+           quelle, simplement sans plan. */
+        var plan = planDisponible ? trouverPlan(valeur) : null;
+        cible.disabled = !plan;
+        if (plan) {
+          cible.dataset.plan = plan.cle;
+          cible.setAttribute('aria-label',
+            'Situer la salle ' + plan.nom + ' sur le plan');
+        } else {
+          delete cible.dataset.plan;
+          cible.removeAttribute('aria-label');
+        }
       } else {
         /* On n'invente pas de salle. Si le bloc est illisible — une virgule de
            trop saisie au clavier tactile, par exemple — on renvoie vers la
            signalétique des portes, qui fait foi de toute façon. */
         cible.textContent = salles ? 'Salle à confirmer' : 'Voir affichage sur place';
         cible.classList.add('inconnue');
+        cible.disabled = true;
+        delete cible.dataset.plan;
+        cible.removeAttribute('aria-label');
       }
     });
   }
@@ -1142,6 +1293,162 @@
     });
 
     rafraichirSelection();
+  }
+
+  /* ── Plan de localisation ───────────────────────────────────────────
+     Le nom de la salle reste affiché en clair : c'est la réponse à « je vais
+     où », elle se lit en marchant. Le plan est une aide de second rang, pour
+     qui ne connaît pas le Business Center — d'où le clic.
+
+     La modale n'est construite qu'au premier ouvert : tant que personne ne
+     demande de plan, l'image de 27 Ko n'est pas téléchargée. */
+  var modale = null, mpTitre = null, mpRepere = null, mpTrou = null,
+      mpHalo = null, mpAnneau = null;
+
+  var SVG = 'http://www.w3.org/2000/svg';
+
+  function rectSvg(attrs) {
+    var r = document.createElementNS(SVG, 'rect');
+    for (var k in attrs) {
+      if (Object.prototype.hasOwnProperty.call(attrs, k)) {
+        r.setAttribute(k, String(attrs[k]));
+      }
+    }
+    return r;
+  }
+
+  function construireModale() {
+    if (modale) { return; }
+
+    modale = document.createElement('dialog');
+    modale.className = 'modale-plan';
+
+    var tete = document.createElement('div');
+    tete.className = 'mp-tete';
+    mpTitre = document.createElement('p');
+    mpTitre.className = 'mp-titre';
+    var fermer = document.createElement('button');
+    fermer.type = 'button';
+    fermer.className = 'mp-fermer';
+    fermer.textContent = 'Fermer';
+    fermer.addEventListener('click', function () { modale.close(); });
+    tete.appendChild(mpTitre);
+    tete.appendChild(fermer);
+
+    var cadre = document.createElement('div');
+    cadre.className = 'mp-cadre';
+    var image = document.createElement('img');
+    image.src = PLAN_IMAGE;
+    image.decoding = 'async';
+    /* Décorative : la position est donnée en toutes lettres juste en dessous,
+       la répéter ici la ferait lire deux fois. */
+    image.alt = '';
+    cadre.appendChild(image);
+
+    var calque = document.createElementNS(SVG, 'svg');
+    calque.setAttribute('class', 'mp-calque');
+    calque.setAttribute('viewBox', '0 0 ' + PLAN_LARGEUR + ' ' + PLAN_HAUTEUR);
+    calque.setAttribute('aria-hidden', 'true');
+
+    /* Un masque plutôt qu'un aplat percé : le voile couvre tout le plan sauf
+       le rectangle de la salle, qui garde ses couleurs d'origine. Le reste
+       est éclairci sans disparaître — les escaliers, les sanitaires et
+       l'entrée servent à s'orienter. */
+    var defs = document.createElementNS(SVG, 'defs');
+    var masque = document.createElementNS(SVG, 'mask');
+    masque.setAttribute('id', 'mp-trou');
+    masque.appendChild(rectSvg({ x: 0, y: 0, width: PLAN_LARGEUR, height: PLAN_HAUTEUR, fill: '#fff' }));
+    mpTrou = rectSvg({ x: 0, y: 0, width: 0, height: 0, rx: 4, fill: '#000' });
+    masque.appendChild(mpTrou);
+    defs.appendChild(masque);
+    calque.appendChild(defs);
+
+    calque.appendChild(rectSvg({
+      x: 0, y: 0, width: PLAN_LARGEUR, height: PLAN_HAUTEUR,
+      fill: '#fff', opacity: 0.62, mask: 'url(#mp-trou)'
+    }));
+
+    /* Halo blanc puis anneau sombre : l'anneau doit se détacher aussi bien du
+       magenta de la salle que du gris du plan. */
+    mpHalo = rectSvg({ x: 0, y: 0, width: 0, height: 0, rx: 7,
+                       fill: 'none', stroke: '#fff', 'stroke-width': 7 });
+    mpAnneau = rectSvg({ x: 0, y: 0, width: 0, height: 0, rx: 11,
+                         fill: 'none', stroke: '#1A1A2E', 'stroke-width': 5 });
+    calque.appendChild(mpHalo);
+    calque.appendChild(mpAnneau);
+    cadre.appendChild(calque);
+
+    mpRepere = document.createElement('p');
+    mpRepere.className = 'mp-repere';
+
+    modale.appendChild(tete);
+    modale.appendChild(cadre);
+    modale.appendChild(mpRepere);
+
+    /* Un clic sur le fond assombri vise la modale elle-même, pas son contenu. */
+    modale.addEventListener('click', function (ev) {
+      if (ev.target === modale) { modale.close(); }
+    });
+    /* showModal met l'arrière-plan en retrait mais ne bloque pas son
+       défilement : sans cela, la page continue de défiler derrière. */
+    modale.addEventListener('close', function () {
+      document.body.style.overflow = '';
+    });
+
+    document.body.appendChild(modale);
+  }
+
+  function ouvrirPlan(cle, kiosque) {
+    var salle = null;
+    for (var i = 0; i < PLAN_SALLES.length; i += 1) {
+      if (PLAN_SALLES[i].cle === cle) { salle = PLAN_SALLES[i]; }
+    }
+    if (!salle) { return; }
+
+    construireModale();
+
+    mpTitre.textContent = (kiosque ? 'Kiosque ' + kiosque + ' — ' : '') + salle.nom;
+
+    mpTrou.setAttribute('x', salle.x);
+    mpTrou.setAttribute('y', salle.y);
+    mpTrou.setAttribute('width', salle.l);
+    mpTrou.setAttribute('height', salle.h);
+
+    /* Traits centrés sur le contour : le halo occupe la bande juste à
+       l'extérieur de la salle, l'anneau la bande suivante. */
+    mpHalo.setAttribute('x', salle.x - 3.5);
+    mpHalo.setAttribute('y', salle.y - 3.5);
+    mpHalo.setAttribute('width', salle.l + 7);
+    mpHalo.setAttribute('height', salle.h + 7);
+
+    mpAnneau.setAttribute('x', salle.x - 9.5);
+    mpAnneau.setAttribute('y', salle.y - 9.5);
+    mpAnneau.setAttribute('width', salle.l + 19);
+    mpAnneau.setAttribute('height', salle.h + 19);
+
+    mpRepere.textContent = '';
+    var fort = document.createElement('strong');
+    fort.textContent = 'Rez-de-jardin, salle ' + salle.nom;
+    mpRepere.appendChild(fort);
+    mpRepere.appendChild(document.createTextNode(' — ' + salle.ou + '.'));
+
+    document.body.style.overflow = 'hidden';
+    modale.showModal();
+  }
+
+  if (grille && outils && planDisponible) {
+    grille.addEventListener('click', function (ev) {
+      var cible = ev.target && ev.target.closest ? ev.target.closest('[data-salle]') : null;
+      if (!cible || cible.disabled || !cible.dataset.plan) { return; }
+      var carte = cible.closest('.kiosque-card');
+      ouvrirPlan(cible.dataset.plan, carte ? carte.dataset.kiosque : '');
+    });
+
+    var astuce = document.createElement('p');
+    astuce.className = 'astuce-plan';
+    astuce.textContent =
+      'Touchez une salle pour la situer sur le plan du rez-de-jardin.';
+    outils.appendChild(astuce);
   }
 
   /* ── Repère « en ce moment » ────────────────────────────────────────

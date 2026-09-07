@@ -114,31 +114,34 @@ parti à l'impression ne puisse pas dériver silencieusement.
 **Préférer le SVG pour l'impression** : le code reste vectoriel, donc net à
 toute taille. Le PNG est une rasterisation de dépannage.
 
-## Plans de salle
+## Plan des salles
 
 Les kiosques se tiennent au rez-de-jardin du Business Center CAA. Dix salles
 sont concernées, repérables sur le plan à leur couleur magenta — les autres
 espaces sont d'une autre teinte (Sumida et Alzette en violet, Garonne en bleu
 foncé, Seine et Donau en vert) :
 
-| Salle | Salle | Salle |
+| | | |
 |---|---|---|
-| Moselle | Loire | Douro |
-| Liffey | Tajo | Rhône |
-| Tevere | Wisla | |
-| Adige | Rhin | |
+| Moselle | Tajo | Douro |
+| Liffey | Tevere | Rhône |
+| Loire | Adige | Wisla |
+| | | Rhin |
 
-`worker/public/assets/plans/plan-<salle>.png` contient, pour chacune, le plan
-complet avec **cette salle seule mise en évidence** : elle garde ses couleurs
-d'origine et reçoit un anneau, le reste du plan est éclairci sans disparaître.
-Les circulations, les escaliers et l'entrée restent lisibles — ce sont eux qui
-servent à s'orienter, la salle seule ne suffirait pas.
+**Une seule image est servie** — `worker/public/assets/plans/rez-de-jardin.png`,
+27 Ko, le plan nu. La mise en évidence d'une salle est dessinée par-dessus en
+SVG dans la page : un voile percé d'un trou au rectangle de la salle, puis un
+halo blanc et un anneau sombre. Dix images gravées auraient pesé 297 Ko, se
+seraient pixellisées au zoom, et changer une salle aurait demandé de
+recommitter des binaires. Ici, une salle coûte quatre nombres dans la table
+`PLAN_SALLES` de la page.
 
-Les images sont régénérées par `outils/plans/generer-plans.py`, **hors chaîne
-de production** : le script demande Pillow et numpy, le CI ne l'exécute pas.
-Les coordonnées des dix zones y sont figées plutôt que redétectées à chaque
-fois — un changement de plan doit être constaté et revu, pas absorbé en
-silence. Le plan d'origine est conservé à côté du script.
+Ces coordonnées viennent de `outils/plans/generer-plans.py`, qui les tient de
+la segmentation du magenta. Elles sont figées dans le script comme dans la
+page — un changement de plan doit être constaté et revu, pas absorbé en
+silence. Le script régénère aussi dix aperçus gravés dans
+`outils/plans/apercus/`, qui servent de contrôle visuel et ne sont pas servis.
+Il demande Pillow et numpy ; le CI ne l'exécute pas.
 
 ## Comportements de la page
 
@@ -186,6 +189,33 @@ n'apparaissent pas ; les cartes, elles, portent leur salle dans le HTML.
   sélection déclenchée par l'utilisateur lui-même. Pas de bandeau de
   consentement. Référence : [délibération n° 2020-091 du 17 septembre
   2020](https://www.legifrance.gouv.fr/cnil/id/CNILTEXT000042398005).
+- **Plan de localisation.** Quand la salle saisie est reconnue, la pastille de
+  salle devient une commande — un chevron l'indique — et ouvre le plan du
+  rez-de-jardin avec cette salle mise en évidence.
+
+  Le nom de la salle, lui, reste affiché en clair : c'est la réponse à « je
+  vais où », elle se lit en marchant. Le plan est une aide de second rang, pour
+  qui ne connaît pas le bâtiment — d'où le clic, qui aurait été un contresens
+  sur le nom.
+
+  L'image n'est téléchargée qu'à la première ouverture : personne ne paie
+  27 Ko pour une aide qu'il n'ouvrira pas. La modale est un `<dialog>` natif —
+  mise en retrait de l'arrière-plan, piège de focus, fermeture par Échap et
+  fond assombri sont fournis par le navigateur plutôt que réimplémentés. Sans
+  `showModal`, rien n'est activé : la pastille reste inerte.
+
+  À 390 px de large, le nom gravé sur le plan fait 5 px de haut, et un plan est
+  de toute façon muet pour un lecteur d'écran. **La position est donc aussi
+  donnée en toutes lettres** sous l'image (« au centre-bas du plan, à droite de
+  Douro, au-dessus de la salle Donau »), et la porte qualité refuse une salle
+  sans cette description.
+
+  La saisie du 14 reste du texte libre : elle est normalisée (minuscules,
+  accents retirés) puis cherchée dans les dix noms connus, donc « Salle Rhône
+  (RDJ) » trouve Rhône. Aucun des dix noms n'étant contenu dans un autre, la
+  recherche ne peut pas se tromper de salle — la porte qualité le vérifie. Si
+  rien ne correspond, la valeur reste affichée telle quelle, simplement sans
+  plan : aucune saisie ne peut casser la page.
 - **Titres de section collants.** Le titre de la demi-journée reste visible
   pendant qu'on parcourt sa section. Le décalage tient compte du bandeau
   d'environnement, mesuré et non codé en dur — il vaut zéro en production.

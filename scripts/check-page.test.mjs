@@ -6,6 +6,7 @@ import {
   NOMBRE_DE_KIOSQUES,
   NOMBRE_DE_CRENEAUX,
   NOMBRE_DE_ROTATIONS,
+  NOMBRE_DE_SALLES,
 } from './check-page.mjs';
 
 const PAGE = 'worker/public/testing-event-2026/index.html';
@@ -18,6 +19,16 @@ function creneauxValides(nombre = NOMBRE_DE_CRENEAUX) {
   ).join('\n');
 }
 
+/** Table du plan témoin : une entrée par salle, chacune avec sa description. */
+function tablePlan(cles = ['moselle', 'liffey', 'loire', 'tajo', 'tevere',
+                           'adige', 'douro', 'rhone', 'wisla', 'rhin'],
+                   descriptions = null) {
+  const n = descriptions === null ? cles.length : descriptions;
+  const lignes = cles.map((c, i) =>
+    `    { cle: '${c}', nom: '${c}', x: 0, y: 0, l: 1, h: 1${i < n ? `,\n      ou: 'quelque part' ` : ' '}}`);
+  return `<script>var PLAN_SALLES = [\n${lignes.join(',\n')}\n  ];<\/script>`;
+}
+
 /** Rotations témoins, sans horodatage : elles ne comptent pas comme créneaux. */
 function rotations(nombre = NOMBRE_DE_ROTATIONS) {
   return Array.from({ length: nombre }, () => '<div class="rotation-slot"></div>').join('');
@@ -26,7 +37,8 @@ function rotations(nombre = NOMBRE_DE_ROTATIONS) {
 /** Page minimale conforme, pour isoler chaque contrôle. */
 function pageValide(salles = Object.fromEntries(
   Array.from({ length: NOMBRE_DE_KIOSQUES }, (_, i) => [String(i + 1), '']),
-), creneaux = creneauxValides(), rotationsHtml = rotations(), plafond = NOMBRE_DE_ROTATIONS) {
+), creneaux = creneauxValides(), rotationsHtml = rotations(),
+   plafond = NOMBRE_DE_ROTATIONS, plan = tablePlan()) {
   const cartes = Object.keys(salles)
     .map((n) => `<article class="kiosque-card" data-kiosque="${n}">` +
                 `<div data-salle>Salle à confirmer</div></article>`)
@@ -36,7 +48,7 @@ function pageValide(salles = Object.fromEntries(
     `<script type="application/json" id="salles-data">${JSON.stringify(salles)}</script>` +
     `</head><body>${cartes}${creneaux}${rotationsHtml}` +
     `<p><span>__ENV__</span><span>__VERSION__</span></p>` +
-    `<script>var MAX_SELECTION = ${plafond};</script></body></html>`;
+    `<script>var MAX_SELECTION = ${plafond};<\/script>${plan}</body></html>`;
 }
 
 test('la page réelle du dépôt passe tous les contrôles', () => {
@@ -173,4 +185,44 @@ test('un plafond de sélection absent est signalé', () => {
   const anomalies = verifierPage(pageValide().replace(/var MAX_SELECTION = \d+;/, ''));
   assert.equal(anomalies.length, 1);
   assert.match(anomalies[0], /MAX_SELECTION/);
+});
+
+test('une salle manquante dans la table du plan est signalée', () => {
+  const anomalies = verifierPage(
+    pageValide(undefined, undefined, undefined, undefined,
+      tablePlan(['loire', 'tajo'])),
+  );
+  assert.equal(anomalies.length, 1);
+  assert.match(anomalies[0], /salle\(s\) dans la table du plan/);
+});
+
+test('une salle en double dans la table du plan est signalée', () => {
+  const cles = ['moselle', 'liffey', 'loire', 'tajo', 'tevere',
+                'adige', 'douro', 'rhone', 'wisla', 'loire'];
+  const anomalies = verifierPage(
+    pageValide(undefined, undefined, undefined, undefined, tablePlan(cles)),
+  );
+  assert.equal(anomalies.length, 1);
+  assert.match(anomalies[0], /figure deux fois/);
+});
+
+test('une clef contenue dans une autre est signalée', () => {
+  // Le cas qui casserait la recherche par sous-chaîne : « rhin » saisi
+  // désignerait aussi bien « rhin » que « rhinbis ».
+  const cles = ['moselle', 'liffey', 'loire', 'tajo', 'tevere',
+                'adige', 'douro', 'rhone', 'rhin', 'rhinbis'];
+  const anomalies = verifierPage(
+    pageValide(undefined, undefined, undefined, undefined, tablePlan(cles)),
+  );
+  assert.equal(anomalies.length, 1);
+  assert.match(anomalies[0], /recherche par sous-chaîne/);
+});
+
+test('une salle sans description textuelle est signalée', () => {
+  const anomalies = verifierPage(
+    pageValide(undefined, undefined, undefined, undefined,
+      tablePlan(undefined, NOMBRE_DE_SALLES - 1)),
+  );
+  assert.equal(anomalies.length, 1);
+  assert.match(anomalies[0], /situable sans voir le plan/);
 });
