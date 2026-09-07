@@ -114,6 +114,32 @@ parti à l'impression ne puisse pas dériver silencieusement.
 **Préférer le SVG pour l'impression** : le code reste vectoriel, donc net à
 toute taille. Le PNG est une rasterisation de dépannage.
 
+## Plans de salle
+
+Les kiosques se tiennent au rez-de-jardin du Business Center CAA. Dix salles
+sont concernées, repérables sur le plan à leur couleur magenta — les autres
+espaces sont d'une autre teinte (Sumida et Alzette en violet, Garonne en bleu
+foncé, Seine et Donau en vert) :
+
+| Salle | Salle | Salle |
+|---|---|---|
+| Moselle | Loire | Douro |
+| Liffey | Tajo | Rhône |
+| Tevere | Wisla | |
+| Adige | Rhin | |
+
+`worker/public/assets/plans/plan-<salle>.png` contient, pour chacune, le plan
+complet avec **cette salle seule mise en évidence** : elle garde ses couleurs
+d'origine et reçoit un anneau, le reste du plan est éclairci sans disparaître.
+Les circulations, les escaliers et l'entrée restent lisibles — ce sont eux qui
+servent à s'orienter, la salle seule ne suffirait pas.
+
+Les images sont régénérées par `outils/plans/generer-plans.py`, **hors chaîne
+de production** : le script demande Pillow et numpy, le CI ne l'exécute pas.
+Les coordonnées des dix zones y sont figées plutôt que redétectées à chaque
+fois — un changement de plan doit être constaté et revu, pas absorbé en
+silence. Le plan d'origine est conservé à côté du script.
+
 ## Comportements de la page
 
 Tout est facultatif : **sans JavaScript, le programme reste complet et juste.**
