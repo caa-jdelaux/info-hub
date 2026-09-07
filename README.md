@@ -304,6 +304,12 @@ publiée et compare le bloc des salles qu'elle sert à celui du dépôt. Il ferm
 scénario redouté : déploiement au vert, mais URL servant encore l'affectation
 de la veille.
 
+La propagation Cloudflare n'étant pas instantanée, l'URL répond 200 en servant
+encore la version précédente pendant quelques secondes. Le contrôle réessaie
+donc **jusqu'à ce que la page servie corresponde**, huit fois à cinq secondes
+d'intervalle — et non jusqu'à ce qu'elle réponde, ce qui produisait un rouge
+au bout d'une seconde sur un déploiement parfaitement sain.
+
 ### Prérequis à configurer une seule fois
 
 Secrets du dépôt (*Settings → Secrets and variables → Actions*) :

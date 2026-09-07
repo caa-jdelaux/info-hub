@@ -9,7 +9,15 @@
 
 import { readFileSync } from 'node:fs';
 
-export const TENTATIVES = 5;
+/*
+ * La propagation d'un déploiement Cloudflare n'est pas instantanée : l'URL
+ * répond 200 en servant encore la version précédente. Le contrôle réessaie
+ * donc jusqu'à ce que la page servie corresponde, et pas seulement jusqu'à ce
+ * qu'elle réponde — c'était le défaut de la première version, qui concluait à
+ * une panne au bout d'une seconde. Trente-cinq secondes d'attente ne coûtent
+ * rien, même le 14 au matin ; un faux rouge, si.
+ */
+export const TENTATIVES = 8;
 export const ATTENTE_MS = 5000;
 
 /** Extrait le bloc de données d'une page. @returns {object|null} */
@@ -72,6 +80,55 @@ export function comparer(htmlServi, sallesAttendues, versionAttendue) {
   return anomalies;
 }
 
+/**
+ * Interroge l'URL jusqu'à ce qu'elle serve la version attendue.
+ *
+ * Les dépendances externes sont injectables pour que la boucle soit testable
+ * sans réseau ni attente réelle.
+ *
+ * @returns {Promise<string[]>} Anomalies restantes ; vide si tout concorde.
+ */
+export async function attendreConformite(url, attendues, version, options = {}) {
+  const {
+    tentatives = TENTATIVES,
+    attenteMs = ATTENTE_MS,
+    recuperer = (u) => fetch(u, { headers: { 'Cache-Control': 'no-cache' } }),
+    patienter = (ms) => new Promise((r) => setTimeout(r, ms)),
+    journal = () => {},
+  } = options;
+
+  let dernieres = [`${url} n'a jamais répondu.`];
+
+  for (let n = 1; n <= tentatives; n += 1) {
+    let html = null;
+    try {
+      const reponse = await recuperer(url);
+      if (reponse.ok) {
+        html = await reponse.text();
+      } else {
+        dernieres = [`${url} : HTTP ${reponse.status}.`];
+      }
+    } catch (erreur) {
+      dernieres = [`${url} : ${erreur.message}`];
+    }
+
+    if (html !== null) {
+      dernieres = comparer(html, attendues, version);
+      if (dernieres.length === 0) {
+        journal(`tentative ${n}/${tentatives} : conforme.`);
+        return [];
+      }
+    }
+
+    journal(`tentative ${n}/${tentatives} : ${dernieres[0]}`);
+    if (n < tentatives) {
+      await patienter(attenteMs);
+    }
+  }
+
+  return dernieres;
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const [url, cheminLocal, version] = process.argv.slice(2);
   if (!url || !cheminLocal) {
@@ -87,33 +144,13 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(1);
   }
 
-  // Le Worker vient d'être publié : on laisse à la propagation le temps
-  // d'aboutir avant de conclure à une panne.
-  let html = null;
-  for (let tentative = 1; tentative <= TENTATIVES; tentative += 1) {
-    try {
-      const reponse = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
-      if (reponse.ok) {
-        html = await reponse.text();
-        break;
-      }
-      console.log(`tentative ${tentative} : HTTP ${reponse.status}`);
-    } catch (erreur) {
-      console.log(`tentative ${tentative} : ${erreur.message}`);
-    }
-    if (tentative < TENTATIVES) {
-      await new Promise((r) => setTimeout(r, ATTENTE_MS));
-    }
-  }
-
-  if (html === null) {
-    console.error(`::error::${url} ne répond pas après ${TENTATIVES} tentatives.`);
-    process.exit(1);
-  }
-
-  const anomalies = comparer(html, attendues, version);
+  const anomalies = await attendreConformite(url, attendues, version, {
+    journal: (ligne) => console.log(ligne),
+  });
   if (anomalies.length === 0) {
-    console.log(`✓ ${url} sert bien la version poussée (${Object.keys(attendues).length} kiosques).`);
+    console.log(
+      `✓ ${url} sert bien la version poussée (${Object.keys(attendues).length} kiosques).`,
+    );
     process.exit(0);
   }
   for (const anomalie of anomalies) console.error(`::error::${anomalie}`);
