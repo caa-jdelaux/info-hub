@@ -31,6 +31,7 @@ import sys
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.oxml.ns import qn
 from pptx.util import Cm, Pt
 
 RACINE = pathlib.Path(__file__).resolve().parents[2]
@@ -125,6 +126,12 @@ def bloc(diapo, x, y, l, h, couleur):
     forme.fill.fore_color.rgb = couleur
     forme.line.fill.background()
     forme.shadow.inherit = False
+    # LibreOffice applique l'ombre portée du thème (<a:effectRef>) malgré le
+    # <a:effectLst/> vide que pose python-pptx. On retire le style de thème :
+    # le remplissage et le contour sont fixés explicitement juste au-dessus.
+    style = forme._element.find(qn('p:style'))
+    if style is not None:
+        forme._element.remove(style)
     return forme
 
 

@@ -193,6 +193,35 @@ Il demande `python-pptx`, `pymupdf`, LibreOffice Impress et les polices Barlow
 et Barlow Condensed. Le CI ne l'exécute pas.
 
 
+## Affiche A3 de l'événement
+
+`outils/affiches/generer-affiche-evenement.py` produit une affiche A3 paysage
+d'accueil, en deux chartes à comparer, d'après le modèle Word de signalétique
+du Business Center (`01. A3 TEMPLATE.docx`).
+
+| Fichier | Charte |
+|---|---|
+| `affiche-evenement-caa.pdf` | celle du modèle : photo du lieu, panneau vert #00795C à 85 %, Century Gothic et Arial Black |
+| `affiche-evenement-programme.pdf` | celle du programme : fond blanc, panneau #1A1A2E, monogramme, Barlow Condensed |
+
+Les mesures viennent du modèle lui-même (page 42 × 29,7 cm, photo 44,4 × 29,6
+débordante, panneau 36,3 × 24,2, corps 72 et 48 pt), pour que la comparaison
+porte sur la charte et non sur la maquette.
+
+Deux écarts assumés au modèle :
+
+- **La flèche disparaît.** Elle fait du modèle une signalétique de couloir
+  (« c'est par là »), pas une affiche d'accueil. Le QR prend sa place au
+  centre : c'est lui qui, ici, envoie le lecteur quelque part.
+- **Les deux logos disparaissent.** Ce sont ceux de Crédit Agricole
+  Île-de-France et de Prestige Affaires — une autre entité, un autre
+  événement. Le bas du panneau leur reste réservé.
+
+`ressources/business-center.jpg` est la photo extraite du modèle (2722 × 1815,
+soit environ 155 ppp au format A3 : c'est la résolution du modèle d'origine,
+pas une dégradation).
+
+
 ## Comportements de la page
 
 Tout est facultatif : **sans JavaScript, le programme reste complet et juste.**
