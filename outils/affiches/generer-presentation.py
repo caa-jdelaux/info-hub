@@ -36,6 +36,11 @@ PAGE = RACINE / 'worker' / 'public' / 'testing-event-2026' / 'index.html'
 RES = pathlib.Path(__file__).parent / 'ressources'
 QR = RACINE / 'qr' / 'testing-event-2026.png'
 LOGO = RES / 'logo-testing-event.png'
+# Le même logo, animé d'un balayage lumineux toutes les 30 secondes. Posé sur
+# la couverture à la place de l'image fixe quand il a été produit : un GIF animé
+# boucle de lui-même, sans réglage de lecture automatique ni de répétition —
+# donc sans rien qui puisse ne pas se déclencher le jour J.
+LOGO_ANIME = pathlib.Path(__file__).parent / 'couverture-logo.gif'
 SORTIE = pathlib.Path(__file__).parent
 
 LARGEUR, HAUTEUR = Cm(33.87), Cm(19.05)
@@ -206,7 +211,8 @@ def carte(diapo, x, y, l, h, fond=BLANC, liseré=None):
 def d01_couverture(diapo, prog):
     bloc(diapo, 0, 0, LARGEUR, HAUTEUR, ENCRE)
     bloc(diapo, 0, Cm(12.1), LARGEUR, Cm(1.5), ROUGE)
-    diapo.shapes.add_picture(str(LOGO), Cm(9.44), Cm(4.6), Cm(15.0),
+    marque = LOGO_ANIME if LOGO_ANIME.exists() else LOGO
+    diapo.shapes.add_picture(str(marque), Cm(9.44), Cm(4.6), Cm(15.0),
                              Cm(15.0 * 104 / 480))
     texte(diapo, MARGE, Cm(12.42), UTILE, Cm(1.0),
           [ligne('★  ' + prog['signature'].upper() + '  ★', CONDENSEE, 18, BLANC, True, 1.0)],

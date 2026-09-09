@@ -289,6 +289,47 @@ ont été trouvés à l'œil sur le rendu (colonne du matin en diapo 3, pitchs e
 diapo 10, étapes 2 et 4 en diapo 11) et corrigés par la géométrie.
 
 
+## Animation de la page de garde
+
+`outils/affiches/generer-animation.py` produit un balayage lumineux qui
+traverse le logo : **2,6 s de mouvement, puis 27,4 s d'arrêt, en boucle**. Sur
+trente secondes d'affichage il ne se passe quelque chose que pendant deux —
+c'est la traduction de « en boucle, mais pas trop constant ».
+
+| Fichier | Usage |
+|---|---|
+| `couverture-logo.gif` | le bloc du logo seul, posé sur la diapo 1 du PPTX |
+| `couverture-testing-event.mp4` | la couverture entière en 1920 × 1080, pour un écran |
+
+**Un GIF et non une vidéo dans le PPTX.** Un GIF animé boucle de lui-même :
+rien à régler, donc rien qui puisse ne pas se déclencher. Une vidéo demande
+« lecture automatique » et « en boucle jusqu'à l'arrêt », deux réglages qui
+dépendent de la version de PowerPoint et de la machine. Le GIF ne couvre que le
+bloc du logo : la signature, la date et le QR restent du texte natif.
+
+La lumière est découpée sur l'alpha du logo — elle ne passe que sur les
+lettres, jamais sur le fond marine, sinon le calque se verrait.
+
+Le MP4 est composé à partir de la **page 1 du PDF de la présentation** : il
+montre la diapo elle-même, pas une reconstitution qui pourrait en diverger.
+D'où l'ordre d'exécution :
+
+```
+python3 outils/affiches/generer-animation.py     # le GIF
+python3 outils/affiches/generer-presentation.py  # le deck, qui l'embarque
+python3 outils/affiches/generer-animation.py     # le MP4, tiré du PDF produit
+```
+
+Le contrôle vérifie que la boucle est infinie, que le total fait bien trente
+secondes et que la pause finale dure ce qu'elle doit durer. Il a servi dès le
+premier essai : le codeur GIF fusionne les images de pause identiques, et la
+durée totale tombait à côté.
+
+**Non vérifié :** le rendu dans PowerPoint. Cet environnement n'a que
+LibreOffice. Ce qui est mesuré, c'est le fichier — 20 images, boucle infinie,
+30,0 s — et son intégration dans le `.pptx`.
+
+
 ## Comportements de la page
 
 Tout est facultatif : **sans JavaScript, le programme reste complet et juste.**
