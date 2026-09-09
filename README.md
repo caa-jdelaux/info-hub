@@ -268,7 +268,7 @@ la projection.
 
 | | | |
 |---|---|---|
-| 1 Couverture | 6 Conférence 2 | 11 Le jeu : fiche, urne, tirage |
+| 1 Couverture | 6 Conférence 2 | 11 Le jeu : cinq fiches, une urne |
 | 2 Gabarit | 7 Table ronde | 12 Le QR et ce qu'il ouvre |
 | 3 Programme de la journée | 8 Pause déjeuner | 13 Clôture et remise des lots |
 | 4 Ouverture | 9 L'après-midi, mode d'emploi | 14 Merci |

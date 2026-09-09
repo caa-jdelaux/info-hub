@@ -375,14 +375,15 @@ def d10_kiosques(diapo, prog):
 
 def d11_jeu(diapo, prog):
     chrome(diapo, prog, 11)
-    y = titre_diapo(diapo, 'Le jeu — une fiche, une urne, trois gagnants',
+    y = titre_diapo(diapo, 'Le jeu — cinq fiches, une urne, trois gagnants',
                     'Chaque kiosque visité vous rapproche du tirage au sort de fin de journée.')
     etapes = [
-        ('1', 'Une fiche', "Vous recevez une fiche en début d'après-midi."),
-        ('2', 'Cinq lignes', 'À chaque kiosque, vous y inscrivez vos nom et prénom '
-                             'et le numéro du kiosque — cinq fois dans l\'après-midi.'),
-        ('3', "Dans l'urne", 'En fin de parcours, vous déposez votre fiche dans '
-                             "l'urne prévue à cet effet."),
+        ('1', 'Une fiche par kiosque', 'À chaque kiosque auquel vous assistez, '
+                                       'une fiche vous est remise.'),
+        ('2', 'Vos nom et prénom', 'Vous y inscrivez vos nom et prénom, et le numéro '
+                                   'du kiosque.'),
+        ('3', "Dans l'urne", 'Vous déposez la fiche dans l\'urne. Cinq kiosques '
+                             'dans l\'après-midi, donc cinq fiches.'),
         ('4', 'Trois gagnants', 'Tirage au sort de trois personnes pour trois lots '
                                 'distincts, remis au mot de clôture.'),
     ]
@@ -403,6 +404,7 @@ def d11_jeu(diapo, prog):
     yy = y + Cm(7.3)
     carte(diapo, MARGE, yy, UTILE, Cm(1.9), CYAN_CLAIR)
     texte(diapo, Cm(3.0), yy + Cm(0.5), Cm(27.5), Cm(1.0), [([
+        ('Cinq fiches déposées, cinq chances au tirage. ', COURANTE, 13, TEAL, True),
         ('Les trois lots : ', COURANTE, 13, GRIS, False),
         (A_COMPLETER, COURANTE, 13, ROUGE_FONCE, True),
     ], 1.0)])
