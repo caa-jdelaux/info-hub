@@ -208,12 +208,16 @@ def carte(diapo, x, y, l, h, fond=BLANC, liseré=None):
 
 # ── Les quinze diapos ──────────────────────────────────────────────────
 
-def d01_couverture(diapo, prog):
+def d01_couverture(diapo, prog, marque=True):
+    """La page de garde. `marque=False` laisse la place du logo libre : le
+    générateur de couverture vidéo y pose une vidéo à la place, sans que la
+    composition ait à être écrite deux fois."""
     bloc(diapo, 0, 0, LARGEUR, HAUTEUR, ENCRE)
     bloc(diapo, 0, Cm(12.1), LARGEUR, Cm(1.5), ROUGE)
-    marque = LOGO_ANIME if LOGO_ANIME.exists() else LOGO
-    diapo.shapes.add_picture(str(marque), Cm(9.44), Cm(4.6), Cm(15.0),
-                             Cm(15.0 * 104 / 480))
+    if marque:
+        image = LOGO_ANIME if LOGO_ANIME.exists() else LOGO
+        diapo.shapes.add_picture(str(image), Cm(9.44), Cm(4.6), Cm(15.0),
+                                 Cm(15.0 * 104 / 480))
     texte(diapo, MARGE, Cm(12.42), UTILE, Cm(1.0),
           [ligne('★  ' + prog['signature'].upper() + '  ★', CONDENSEE, 18, BLANC, True, 1.0)],
           align=PP_ALIGN.CENTER)

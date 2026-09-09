@@ -330,6 +330,43 @@ LibreOffice. Ce qui est mesuré, c'est le fichier — 20 images, boucle infinie,
 30,0 s — et son intégration dans le `.pptx`.
 
 
+## Page de garde animée par vidéo
+
+`outils/affiches/generer-couverture-video.py` produit
+`couverture-testing-event.pptx` — **une diapo**, celle de garde, où une vidéo
+de dix secondes prend la place du logo, joue, puis reste vingt secondes sur sa
+dernière image avant de recommencer. La présentation à quinze diapos garde, elle,
+la version GIF.
+
+Quatre choses sont refaites sur la source (`ressources/couverture-source.mov`),
+et chacune évite une panne :
+
+| | |
+|---|---|
+| **Conteneur** | HEVC/.mov → **H.264/.mp4**. PowerPoint lit le second sans extension de codec ; le premier n'est pas garanti sur un poste d'entreprise. |
+| **Son** | La source porte une piste AAC. Une page de garde qui boucle avec du son toutes les trente secondes est intenable : la piste est retirée. |
+| **Niveaux** | Source en `yuvj420p` (échelle pleine) : convertie sans précaution, noirs bouchés ou délavés selon le lecteur. La conversion est explicite. |
+| **Bords** | Fondus vers l'encre de la charte. |
+
+Le dernier point ne se voit qu'une fois la vidéo posée. Le fond de la source
+est un marine proche du nôtre au centre, mais son canal bleu s'effondre sur les
+bords gauche et droit — de 43 à 24, quand la charte est à 46. Posée telle
+quelle, la vidéo dessinait un rectangle plus sombre au milieu de la page de
+garde. Après fondu **et pré-compensation de l'échelle télé** (`#1D1C2F` pour
+retomber sur `#1A1A2E` après codage), l'écart mesuré entre l'intérieur et
+l'extérieur du cadre sur la diapo rendue est de **0**.
+
+La pause de vingt secondes fige la dernière image : vingt secondes d'images
+identiques ne coûtent presque rien au codeur. La source fait 5,1 Mo, la vidéo
+de trente secondes 518 Ko.
+
+**Non vérifié :** le déclenchement automatique et la répétition sont inscrits
+dans le XML de la diapo, mais cet environnement n'a pas PowerPoint. Le réglage
+manuel, s'il le fallait : onglet **Lecture** → *Démarrer : Automatiquement* et
+*En boucle jusqu'à l'arrêt*. L'image d'affiche est la dernière image de la
+vidéo : la diapo reste juste même si rien ne se lance.
+
+
 ## Comportements de la page
 
 Tout est facultatif : **sans JavaScript, le programme reste complet et juste.**

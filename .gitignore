@@ -2,3 +2,6 @@ node_modules/
 .wrangler/
 .dev.vars
 *.log
+
+# Chargement du générateur de présentation par importlib
+__pycache__/
