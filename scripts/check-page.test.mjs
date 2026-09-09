@@ -20,9 +20,10 @@ function creneauxValides(nombre = NOMBRE_DE_CRENEAUX) {
 }
 
 /** Table du plan témoin : une entrée par salle, chacune avec sa description. */
-function tablePlan(cles = ['moselle', 'liffey', 'loire', 'tajo', 'tevere',
-                           'adige', 'douro', 'rhone', 'wisla', 'rhin'],
-                   descriptions = null) {
+const CLES_PLAN = ['moselle', 'liffey', 'loire', 'tajo', 'tevere', 'adige',
+                   'douro', 'rhone', 'wisla', 'rhin', 'sumida', 'alzette'];
+
+function tablePlan(cles = CLES_PLAN, descriptions = null) {
   const n = descriptions === null ? cles.length : descriptions;
   const lignes = cles.map((c, i) =>
     `    { cle: '${c}', nom: '${c}', x: 0, y: 0, l: 1, h: 1${i < n ? `,\n      ou: 'quelque part' ` : ' '}}`);
@@ -197,8 +198,7 @@ test('une salle manquante dans la table du plan est signalée', () => {
 });
 
 test('une salle en double dans la table du plan est signalée', () => {
-  const cles = ['moselle', 'liffey', 'loire', 'tajo', 'tevere',
-                'adige', 'douro', 'rhone', 'wisla', 'loire'];
+  const cles = CLES_PLAN.with(-1, 'loire');
   const anomalies = verifierPage(
     pageValide(undefined, undefined, undefined, undefined, tablePlan(cles)),
   );
@@ -209,8 +209,7 @@ test('une salle en double dans la table du plan est signalée', () => {
 test('une clef contenue dans une autre est signalée', () => {
   // Le cas qui casserait la recherche par sous-chaîne : « rhin » saisi
   // désignerait aussi bien « rhin » que « rhinbis ».
-  const cles = ['moselle', 'liffey', 'loire', 'tajo', 'tevere',
-                'adige', 'douro', 'rhone', 'rhin', 'rhinbis'];
+  const cles = CLES_PLAN.with(-1, 'rhinbis');
   const anomalies = verifierPage(
     pageValide(undefined, undefined, undefined, undefined, tablePlan(cles)),
   );

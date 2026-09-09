@@ -10,18 +10,19 @@ Deux sorties, deux usages différents :
   worker/public/assets/plans/rez-de-jardin.png
       Le plan nu, servi tel quel par la page. La mise en évidence d'une salle
       est dessinée par-dessus en SVG, dans la page — une seule image sert donc
-      les dix salles, et l'anneau reste net à n'importe quel zoom.
+      toutes les salles, et l'anneau reste net à n'importe quel zoom.
 
   outils/plans/apercus/plan-<salle>.png
       Une image par salle, gravée. Sert de référence visuelle et de contrôle
       des coordonnées ; la page ne les charge pas.
 
-Les dix zones ont été relevées par segmentation de la couleur magenta du plan
-(#DF2E85), qui distingue les salles de kiosques des autres espaces : Sumida et
-Alzette sont violettes, Garonne bleu foncé, Seine et Donau vertes. Les
-coordonnées sont figées ici plutôt que redétectées à chaque exécution : un
-changement de plan doit être constaté et revu, pas absorbé en silence. Elles
-sont reprises à l'identique dans la table PLAN_SALLES de la page.
+Les zones ont été relevées par segmentation de couleur : magenta (#DF2E85)
+pour les dix salles repérées d'abord, violet (#7E76A1) pour Sumida et Alzette,
+ajoutées ensuite. Garonne (vert foncé), Seine et Donau restent hors liste : ce
+ne sont pas des salles de kiosque. Les coordonnées sont figées ici plutôt que
+redétectées à chaque exécution : un changement de plan doit être constaté et
+revu, pas absorbé en silence. Elles sont reprises à l'identique dans la table
+PLAN_SALLES de la page.
 """
 from PIL import Image, ImageDraw
 import numpy as np
@@ -44,6 +45,8 @@ SALLES = [
     ('rhone',   'RHÔNE',   529, 385, 594, 464),
     ('wisla',   'WISLA',   182, 537, 284, 596),
     ('rhin',    'RHIN',    182, 601, 284, 667),
+    ('sumida',  'SUMIDA',  717, 542, 753, 580),
+    ('alzette', 'ALZETTE', 719, 584, 758, 622),
 ]
 
 ENCRE = (26, 26, 46)   # --te-dark de la page programme

@@ -116,31 +116,35 @@ toute taille. Le PNG est une rasterisation de dépannage.
 
 ## Plan des salles
 
-Les kiosques se tiennent au rez-de-jardin du Business Center CAA. Dix salles
-sont concernées, repérables sur le plan à leur couleur magenta — les autres
-espaces sont d'une autre teinte (Sumida et Alzette en violet, Garonne en bleu
-foncé, Seine et Donau en vert) :
+Les kiosques se tiennent au rez-de-jardin du Business Center CAA. Douze salles
+sont situables sur le plan : les dix magenta, plus Sumida et Alzette, violettes
+et de six places, en bas à droite. Garonne (bleu foncé), Seine et Donau (vert)
+n'en font pas partie.
 
 | | | |
 |---|---|---|
-| Moselle | Tajo | Douro |
-| Liffey | Tevere | Rhône |
-| Loire | Adige | Wisla |
-| | | Rhin |
+| Moselle | Tevere | Wisla |
+| Liffey | Adige | Rhin |
+| Loire | Douro | Sumida |
+| Tajo | Rhône | Alzette |
+
+Une salle dans cette table est **situable**, pas affectée : l'affectation reste
+le bloc `salles-data` en tête de page. Il y a douze salles pour dix kiosques.
 
 **Une seule image est servie** — `worker/public/assets/plans/rez-de-jardin.png`,
 27 Ko, le plan nu. La mise en évidence d'une salle est dessinée par-dessus en
 SVG dans la page : un voile percé d'un trou au rectangle de la salle, puis un
-halo blanc et un anneau sombre. Dix images gravées auraient pesé 297 Ko, se
-seraient pixellisées au zoom, et changer une salle aurait demandé de
-recommitter des binaires. Ici, une salle coûte quatre nombres dans la table
-`PLAN_SALLES` de la page.
+halo blanc et un anneau sombre. Une image gravée par salle aurait pesé une
+trentaine de Ko pièce, se serait pixellisée au zoom, et changer une salle
+aurait demandé de recommitter des binaires. Ici, une salle coûte quatre nombres
+dans la table `PLAN_SALLES` de la page — c'est ce qui a rendu l'ajout de Sumida
+et d'Alzette trivial.
 
 Ces coordonnées viennent de `outils/plans/generer-plans.py`, qui les tient de
-la segmentation du magenta. Elles sont figées dans le script comme dans la
-page — un changement de plan doit être constaté et revu, pas absorbé en
-silence. Le script régénère aussi dix aperçus gravés dans
-`outils/plans/apercus/`, qui servent de contrôle visuel et ne sont pas servis.
+la segmentation des aplats de couleur. Elles sont figées dans le script comme
+dans la page — un changement de plan doit être constaté et revu, pas absorbé en
+silence. Le script régénère aussi les aperçus gravés, un par salle, dans
+`outils/plans/apercus/` : ils servent de contrôle visuel et ne sont pas servis.
 Il demande Pillow et numpy ; le CI ne l'exécute pas.
 
 ## Comportements de la page
