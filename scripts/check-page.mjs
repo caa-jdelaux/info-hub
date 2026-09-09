@@ -19,7 +19,7 @@ export const NOMBRE_DE_CRENEAUX = 13;
 export const NOMBRE_DE_ROTATIONS = 5;
 
 /** Salles de kiosques du rez-de-jardin, repérées sur le plan. */
-export const NOMBRE_DE_SALLES = 12;
+export const NOMBRE_DE_SALLES = 13;
 
 /**
  * @param {string} html Contenu de la page.
@@ -157,7 +157,7 @@ export function verifierPage(html) {
   }
 
   // ── Plan des salles ──────────────────────────────────────────────────
-  // La table de la page doit couvrir les douze salles, et chacune porter sa
+  // La table de la page doit couvrir les treize salles, et chacune porter sa
   // description textuelle : un plan est muet pour un lecteur d'écran, et à
   // 390 px de large le nom gravé sur l'image fait 5 px de haut. Une entrée
   // sans « ou » passerait inaperçue jusqu'à ce que quelqu'un en ait besoin.

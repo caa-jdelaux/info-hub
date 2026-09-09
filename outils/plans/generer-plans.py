@@ -18,11 +18,11 @@ Deux sorties, deux usages différents :
 
 Les zones ont été relevées par segmentation de couleur : magenta (#DF2E85)
 pour les dix salles repérées d'abord, violet (#7E76A1) pour Sumida et Alzette,
-ajoutées ensuite. Garonne (vert foncé), Seine et Donau restent hors liste : ce
-ne sont pas des salles de kiosque. Les coordonnées sont figées ici plutôt que
-redétectées à chaque exécution : un changement de plan doit être constaté et
-revu, pas absorbé en silence. Elles sont reprises à l'identique dans la table
-PLAN_SALLES de la page.
+vert foncé (#006A4E) pour Donau. Garonne, mitoyenne de Sumida et Alzette, et
+l'auditorium Seine restent hors liste : aucun kiosque ne s'y tient. Les
+coordonnées sont figées ici plutôt que redétectées à chaque exécution : un
+changement de plan doit être constaté et revu, pas absorbé en silence. Elles
+sont reprises à l'identique dans la table PLAN_SALLES de la page.
 """
 from PIL import Image, ImageDraw
 import numpy as np
@@ -43,6 +43,7 @@ SALLES = [
     ('adige',   'ADIGE',   712, 259, 797, 328),
     ('douro',   'DOURO',   406, 384, 472, 464),
     ('rhone',   'RHÔNE',   529, 385, 594, 464),
+    ('donau',   'DONAU',   406, 468, 595, 527),
     ('wisla',   'WISLA',   182, 537, 284, 596),
     ('rhin',    'RHIN',    182, 601, 284, 667),
     ('sumida',  'SUMIDA',  717, 542, 753, 580),

@@ -21,7 +21,8 @@ function creneauxValides(nombre = NOMBRE_DE_CRENEAUX) {
 
 /** Table du plan témoin : une entrée par salle, chacune avec sa description. */
 const CLES_PLAN = ['moselle', 'liffey', 'loire', 'tajo', 'tevere', 'adige',
-                   'douro', 'rhone', 'wisla', 'rhin', 'sumida', 'alzette'];
+                   'douro', 'rhone', 'donau', 'wisla', 'rhin', 'sumida',
+                   'alzette'];
 
 function tablePlan(cles = CLES_PLAN, descriptions = null) {
   const n = descriptions === null ? cles.length : descriptions;

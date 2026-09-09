@@ -116,20 +116,28 @@ toute taille. Le PNG est une rasterisation de dépannage.
 
 ## Plan des salles
 
-Les kiosques se tiennent au rez-de-jardin du Business Center CAA. Douze salles
-sont situables sur le plan : les dix magenta, plus Sumida et Alzette, violettes
-et de six places, en bas à droite. Garonne (bleu foncé), Seine et Donau (vert)
-n'en font pas partie.
+Les kiosques se tiennent au rez-de-jardin du Business Center CAA. Treize salles
+sont situables sur le plan : les dix magenta, Sumida et Alzette (violettes, en
+bas à droite) et Donau (verte, au centre). Garonne et l'auditorium Seine n'en
+font pas partie.
 
-| | | |
-|---|---|---|
-| Moselle | Tevere | Wisla |
-| Liffey | Adige | Rhin |
-| Loire | Douro | Sumida |
-| Tajo | Rhône | Alzette |
+| Kiosque | Salle | Kiosque | Salle |
+|---|---|---|---|
+| 1 | Wisla | 6 | Tajo |
+| 2 | Donau | 7 | Adige |
+| 3 | Liffey | 8 | Loire |
+| 4 | Douro | 9 | Moselle |
+| 5 | Rhône | 10 | Sumida **+** Alzette |
 
-Une salle dans cette table est **situable**, pas affectée : l'affectation reste
-le bloc `salles-data` en tête de page. Il y a douze salles pour dix kiosques.
+Tevere et Rhin restent dans la table sans être affectées : y figurer rend une
+salle **situable**, pas occupée. L'affectation, elle, tient dans le bloc
+`salles-data` en tête de page — c'est le seul endroit à toucher le 14.
+
+**Un kiosque peut occuper plusieurs salles.** Il suffit de les nommer dans la
+même case (`"Sumida + Alzette"`) : la page les reconnaît toutes, perce un trou
+par salle dans le voile, et n'entoure d'un seul anneau que celles assez
+proches pour que deux anneaux se chevaucheraient. La phrase de repérage les
+nomme alors une par une.
 
 **Une seule image est servie** — `worker/public/assets/plans/rez-de-jardin.png`,
 27 Ko, le plan nu. La mise en évidence d'une salle est dessinée par-dessus en

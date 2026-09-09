@@ -21,16 +21,16 @@
      ═══════════════════════════════════════════════════════════════════════ -->
 <script type="application/json" id="salles-data">
 {
-  "1": "Douro",
-  "2": "",
-  "3": "",
-  "4": "",
-  "5": "",
-  "6": "",
-  "7": "",
-  "8": "",
-  "9": "",
-  "10": ""
+  "1": "Wisla",
+  "2": "Donau",
+  "3": "Liffey",
+  "4": "Douro",
+  "5": "Rhône",
+  "6": "Tajo",
+  "7": "Adige",
+  "8": "Loire",
+  "9": "Moselle",
+  "10": "Sumida + Alzette"
 }
 </script>
 
@@ -1034,13 +1034,15 @@
       ou: 'au centre-bas du plan, à gauche de Rhône, au-dessus de la salle Donau' },
     { cle: 'rhone',   nom: 'Rhône',   x: 529, y: 385, l:  66, h: 80,
       ou: 'au centre-bas du plan, à droite de Douro, au-dessus de la salle Donau' },
+    { cle: 'donau',   nom: 'Donau',   x: 406, y: 468, l: 190, h: 60,
+      ou: 'au centre-bas du plan, la grande salle verte qui court sous Douro et Rhône' },
     { cle: 'wisla',   nom: 'Wisla',   x: 182, y: 537, l: 103, h: 60,
       ou: "en bas à gauche du plan, sous l'auditorium Seine, au-dessus de Rhin" },
     { cle: 'rhin',    nom: 'Rhin',    x: 182, y: 601, l: 103, h: 67,
       ou: 'en bas à gauche du plan, sous Wisla' },
-    { cle: 'sumida',  nom: 'Sumida',  x: 717, y: 542, l:  37, h:  39,
+    { cle: 'sumida',  nom: 'Sumida',  x: 717, y: 542, l:  37, h: 39,
       ou: "en bas à droite du plan, dans la file de petites salles sous les sanitaires, juste au-dessus d'Alzette" },
-    { cle: 'alzette', nom: 'Alzette', x: 719, y: 584, l:  40, h:  39,
+    { cle: 'alzette', nom: 'Alzette', x: 719, y: 584, l:  40, h: 39,
       ou: 'en bas à droite du plan, entre Sumida et la salle Garonne' }
   ];
 
@@ -1049,18 +1051,31 @@
 
   /* La saisie du 14 au matin reste du texte libre — c'est indispensable au
      pouce. On la normalise donc avant de chercher : « Salle Loire », « loire »
-     et « LOIRE (RDJ) » désignent la même salle. Aucun des dix noms n'étant
-     contenu dans un autre, la recherche par sous-chaîne ne peut pas se
-     tromper de salle. Si rien ne correspond, il n'y a pas de plan : la carte
-     reste juste, simplement sans cette aide. */
-  function trouverPlan(valeur) {
-    if (typeof valeur !== 'string' || !valeur.trim()) { return null; }
+     et « LOIRE (RDJ) » désignent la même salle. Aucun des noms n'étant contenu
+     dans un autre, la recherche par sous-chaîne ne peut pas se tromper de
+     salle. Une case peut en nommer plusieurs — le kiosque 10 tient dans
+     Sumida et Alzette : on les rend toutes, dans l'ordre où elles sont
+     écrites, pour que le plan et la phrase suivent la saisie. Si rien ne
+     correspond, il n'y a pas de plan : la carte reste juste, simplement sans
+     cette aide. */
+  function trouverPlans(valeur) {
+    if (typeof valeur !== 'string' || !valeur.trim()) { return []; }
     var t = valeur.trim().toLowerCase();
     if (t.normalize) { t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+    var reperees = [];
     for (var i = 0; i < PLAN_SALLES.length; i += 1) {
-      if (t.indexOf(PLAN_SALLES[i].cle) !== -1) { return PLAN_SALLES[i]; }
+      var rang = t.indexOf(PLAN_SALLES[i].cle);
+      if (rang !== -1) { reperees.push({ rang: rang, salle: PLAN_SALLES[i] }); }
     }
-    return null;
+    reperees.sort(function (a, b) { return a.rang - b.rang; });
+    return reperees.map(function (e) { return e.salle; });
+  }
+
+  /* « A », « A et B », « A, B et C » : la modale nomme les salles dans une
+     phrase, pas dans une liste à puces. */
+  function enumerer(mots) {
+    if (mots.length <= 1) { return mots.join(''); }
+    return mots.slice(0, -1).join(', ') + ' et ' + mots[mots.length - 1];
   }
 
   /* Sans <dialog> natif, on n'active rien : réimplémenter à la main la mise
@@ -1098,12 +1113,13 @@
         /* La pastille ne devient une commande que si la salle saisie est
            reconnue. Une valeur libre non reconnue reste affichée telle
            quelle, simplement sans plan. */
-        var plan = planDisponible ? trouverPlan(valeur) : null;
-        cible.disabled = !plan;
-        if (plan) {
-          cible.dataset.plan = plan.cle;
+        var plans = planDisponible ? trouverPlans(valeur) : [];
+        cible.disabled = plans.length === 0;
+        if (plans.length) {
+          cible.dataset.plan = plans.map(function (p) { return p.cle; }).join(',');
           cible.setAttribute('aria-label',
-            'Situer la salle ' + plan.nom + ' sur le plan');
+            (plans.length > 1 ? 'Situer les salles ' : 'Situer la salle ') +
+            enumerer(plans.map(function (p) { return p.nom; })) + ' sur le plan');
         } else {
           delete cible.dataset.plan;
           cible.removeAttribute('aria-label');
@@ -1306,8 +1322,8 @@
 
      La modale n'est construite qu'au premier ouvert : tant que personne ne
      demande de plan, l'image de 27 Ko n'est pas téléchargée. */
-  var modale = null, mpTitre = null, mpRepere = null, mpTrou = null,
-      mpHalo = null, mpAnneau = null;
+  var modale = null, mpTitre = null, mpRepere = null, mpMasque = null,
+      mpTraits = null;
 
   var SVG = 'http://www.w3.org/2000/svg';
 
@@ -1359,12 +1375,10 @@
        est éclairci sans disparaître — les escaliers, les sanitaires et
        l'entrée servent à s'orienter. */
     var defs = document.createElementNS(SVG, 'defs');
-    var masque = document.createElementNS(SVG, 'mask');
-    masque.setAttribute('id', 'mp-trou');
-    masque.appendChild(rectSvg({ x: 0, y: 0, width: PLAN_LARGEUR, height: PLAN_HAUTEUR, fill: '#fff' }));
-    mpTrou = rectSvg({ x: 0, y: 0, width: 0, height: 0, rx: 4, fill: '#000' });
-    masque.appendChild(mpTrou);
-    defs.appendChild(masque);
+    mpMasque = document.createElementNS(SVG, 'mask');
+    mpMasque.setAttribute('id', 'mp-trou');
+    mpMasque.appendChild(rectSvg({ x: 0, y: 0, width: PLAN_LARGEUR, height: PLAN_HAUTEUR, fill: '#fff' }));
+    defs.appendChild(mpMasque);
     calque.appendChild(defs);
 
     calque.appendChild(rectSvg({
@@ -1373,13 +1387,11 @@
     }));
 
     /* Halo blanc puis anneau sombre : l'anneau doit se détacher aussi bien du
-       magenta de la salle que du gris du plan. */
-    mpHalo = rectSvg({ x: 0, y: 0, width: 0, height: 0, rx: 7,
-                       fill: 'none', stroke: '#fff', 'stroke-width': 7 });
-    mpAnneau = rectSvg({ x: 0, y: 0, width: 0, height: 0, rx: 11,
-                         fill: 'none', stroke: '#1A1A2E', 'stroke-width': 5 });
-    calque.appendChild(mpHalo);
-    calque.appendChild(mpAnneau);
+       magenta de la salle que du gris du plan. Le contenu du groupe dépend du
+       kiosque ouvert — il peut en occuper deux salles — et se redessine donc
+       à chaque ouverture. */
+    mpTraits = document.createElementNS(SVG, 'g');
+    calque.appendChild(mpTraits);
     cadre.appendChild(calque);
 
     mpRepere = document.createElement('p');
@@ -1402,39 +1414,103 @@
     document.body.appendChild(modale);
   }
 
-  function ouvrirPlan(cle, kiosque) {
-    var salle = null;
-    for (var i = 0; i < PLAN_SALLES.length; i += 1) {
-      if (PLAN_SALLES[i].cle === cle) { salle = PLAN_SALLES[i]; }
+  /* Deux salles mitoyennes — Sumida et Alzette n'ont que trois pixels entre
+     elles sur le plan — donneraient deux anneaux qui se chevauchent. On
+     fusionne donc les rectangles dont les anneaux se toucheraient, et on en
+     trace un seul autour du groupe ; deux salles éloignées gardent chacune le
+     sien. La marge est celle de l'anneau : c'est elle qui crée la collision. */
+  function grouperRectangles(salles, marge) {
+    var groupes = salles.map(function (s) {
+      return { x: s.x, y: s.y, x2: s.x + s.l, y2: s.y + s.h };
+    });
+    var fusionne = true;
+    while (fusionne) {
+      fusionne = false;
+      for (var a = 0; a < groupes.length && !fusionne; a += 1) {
+        for (var b = a + 1; b < groupes.length && !fusionne; b += 1) {
+          var g = groupes[a], h = groupes[b];
+          if (g.x - marge < h.x2 + marge && h.x - marge < g.x2 + marge &&
+              g.y - marge < h.y2 + marge && h.y - marge < g.y2 + marge) {
+            groupes[a] = {
+              x: Math.min(g.x, h.x), y: Math.min(g.y, h.y),
+              x2: Math.max(g.x2, h.x2), y2: Math.max(g.y2, h.y2)
+            };
+            groupes.splice(b, 1);
+            fusionne = true;
+          }
+        }
+      }
     }
-    if (!salle) { return; }
+    return groupes;
+  }
+
+  function ouvrirPlan(cles, kiosque) {
+    var demandees = String(cles).split(',');
+    var salles = [];
+    for (var d = 0; d < demandees.length; d += 1) {
+      for (var i = 0; i < PLAN_SALLES.length; i += 1) {
+        if (PLAN_SALLES[i].cle === demandees[d]) { salles.push(PLAN_SALLES[i]); }
+      }
+    }
+    if (!salles.length) { return; }
 
     construireModale();
 
-    mpTitre.textContent = (kiosque ? 'Kiosque ' + kiosque + ' — ' : '') + salle.nom;
+    var noms = salles.map(function (s) { return s.nom; });
+    mpTitre.textContent =
+      (kiosque ? 'Kiosque ' + kiosque + ' — ' : '') + noms.join(' + ');
 
-    mpTrou.setAttribute('x', salle.x);
-    mpTrou.setAttribute('y', salle.y);
-    mpTrou.setAttribute('width', salle.l);
-    mpTrou.setAttribute('height', salle.h);
+    /* Le premier enfant du masque est le rectangle blanc qui couvre le plan :
+       on ne garde que lui, puis on reperce un trou par salle. */
+    while (mpMasque.childNodes.length > 1) {
+      mpMasque.removeChild(mpMasque.lastChild);
+    }
+    while (mpTraits.firstChild) { mpTraits.removeChild(mpTraits.firstChild); }
+
+    var j;
+    for (j = 0; j < salles.length; j += 1) {
+      mpMasque.appendChild(rectSvg({
+        x: salles[j].x, y: salles[j].y,
+        width: salles[j].l, height: salles[j].h, rx: 4, fill: '#000'
+      }));
+    }
 
     /* Traits centrés sur le contour : le halo occupe la bande juste à
-       l'extérieur de la salle, l'anneau la bande suivante. */
-    mpHalo.setAttribute('x', salle.x - 3.5);
-    mpHalo.setAttribute('y', salle.y - 3.5);
-    mpHalo.setAttribute('width', salle.l + 7);
-    mpHalo.setAttribute('height', salle.h + 7);
-
-    mpAnneau.setAttribute('x', salle.x - 9.5);
-    mpAnneau.setAttribute('y', salle.y - 9.5);
-    mpAnneau.setAttribute('width', salle.l + 19);
-    mpAnneau.setAttribute('height', salle.h + 19);
+       l'extérieur du groupe, l'anneau la bande suivante. Tous les halos
+       d'abord — tracé après, un halo recouvrirait l'anneau voisin. */
+    var groupes = grouperRectangles(salles, 9.5);
+    for (j = 0; j < groupes.length; j += 1) {
+      mpTraits.appendChild(rectSvg({
+        x: groupes[j].x - 3.5, y: groupes[j].y - 3.5,
+        width: groupes[j].x2 - groupes[j].x + 7,
+        height: groupes[j].y2 - groupes[j].y + 7,
+        rx: 7, fill: 'none', stroke: '#fff', 'stroke-width': 7
+      }));
+    }
+    for (j = 0; j < groupes.length; j += 1) {
+      mpTraits.appendChild(rectSvg({
+        x: groupes[j].x - 9.5, y: groupes[j].y - 9.5,
+        width: groupes[j].x2 - groupes[j].x + 19,
+        height: groupes[j].y2 - groupes[j].y + 19,
+        rx: 11, fill: 'none', stroke: '#1A1A2E', 'stroke-width': 5
+      }));
+    }
 
     mpRepere.textContent = '';
     var fort = document.createElement('strong');
-    fort.textContent = 'Rez-de-jardin, salle ' + salle.nom;
+    fort.textContent = 'Rez-de-jardin, ' +
+      (salles.length > 1 ? 'salles ' : 'salle ') + enumerer(noms);
     mpRepere.appendChild(fort);
-    mpRepere.appendChild(document.createTextNode(' — ' + salle.ou + '.'));
+    if (salles.length === 1) {
+      mpRepere.appendChild(document.createTextNode(' — ' + salles[0].ou + '.'));
+    } else {
+      /* Deux salles, deux repères : les nommer évite d'avoir à deviner lequel
+         va avec laquelle. */
+      for (j = 0; j < salles.length; j += 1) {
+        mpRepere.appendChild(document.createTextNode(
+          (j === 0 ? ' — ' : ' ') + salles[j].nom + ' : ' + salles[j].ou + '.'));
+      }
+    }
 
     document.body.style.overflow = 'hidden';
     modale.showModal();
