@@ -259,6 +259,36 @@ Les logos CA Assurances, « Façonner demain ! » et Prestige Affaires viennent 
 ce modèle. Celui de CA Assurances sert aussi aux affiches A3 de l'événement.
 
 
+## Présentation de la journée
+
+`outils/affiches/generer-presentation.py` produit
+`presentation-testing-event.pptx` — quinze diapos 16:9 à la charte du
+programme, texte natif et non captures d'écran : modifiable, cherchable, net à
+la projection.
+
+| | | |
+|---|---|---|
+| 1 Couverture | 6 Conférence 2 | 11 Le jeu : fiche, urne, tirage |
+| 2 Gabarit | 7 Table ronde | 12 Le QR et ce qu'il ouvre |
+| 3 Programme de la journée | 8 Pause déjeuner | 13 Clôture et remise des lots |
+| 4 Ouverture | 9 L'après-midi, mode d'emploi | 14 Merci |
+| 5 Conférence 1 | 10 Les dix kiosques | 15 Fin |
+
+Contenus lus dans `index.html` : signature de l'événement, horaires, titres et
+citations des trois séances, titres et pitchs des dix kiosques.
+
+**Ce que le script ne sait pas.** Les noms — intervenant·es, animateur·rices,
+staff, partenaires — et les trois lots ne figurent nulle part dans le dépôt.
+Ils sont posés en rouge comme `[ à compléter ]` plutôt qu'inventés. La diapo 14
+est un gabarit à remplir, pas une liste.
+
+Le contrôle après génération vérifie les quinze diapos, le format 16:9, et
+qu'aucun texte ne sorte de la zone utile ni ne passe sous le pied de page. Il
+ne mesure pas la tenue du texte *dans sa carte* : trois débordements de ce type
+ont été trouvés à l'œil sur le rendu (colonne du matin en diapo 3, pitchs en
+diapo 10, étapes 2 et 4 en diapo 11) et corrigés par la géométrie.
+
+
 ## Comportements de la page
 
 Tout est facultatif : **sans JavaScript, le programme reste complet et juste.**
