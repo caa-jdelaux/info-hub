@@ -22,9 +22,10 @@ Deux écarts assumés au modèle :
   (« c'est par là »), pas une affiche d'accueil. Le QR prend sa place au
   centre : c'est lui, ici, qui envoie le lecteur quelque part.
 
-  Les deux logos disparaissent. Ce sont ceux de Crédit Agricole Île-de-France
-  et de Prestige Affaires — une autre entité et un autre événement. Le bas du
-  panneau leur reste réservé : y déposer le logo CAA est une ligne à ajouter.
+  Les logos du modèle disparaissent. Ce sont ceux de Crédit Agricole
+  Île-de-France et de Prestige Affaires — une autre entité, un autre
+  événement. À leur place, en bas à gauche du panneau, le logo CA Assurances
+  repris du modèle d'écrans du Business Center.
 
 Deux sorties :
     affiche-evenement-caa.pptx / .pdf       charte du modèle
@@ -65,6 +66,10 @@ BLEU_CLAIR = RGBColor(0xD9, 0xEF, 0xEF)
 BLANC = RGBColor(0xFF, 0xFF, 0xFF)
 
 MONOGRAMME = RACINE / 'qr' / 'monogramme-te.png'
+# Extrait du modèle d'écrans du Business Center, qui porte lui les logos de
+# l'entité organisatrice. Blanc sur fond transparent : il tient aussi bien sur
+# le panneau vert que sur le panneau sombre.
+LOGO_CAA = pathlib.Path(__file__).parent / 'ressources' / 'logo-ca-assurances.png'
 
 PROPOSITIONS = {
     # Charte du modèle : photo du lieu, panneau vert translucide, polices
@@ -180,6 +185,11 @@ def composer(diapo, p):
          Cm(plaque), Cm(plaque), BLANC)
     diapo.shapes.add_picture(str(QR), int((LARGEUR - Cm(code)) / 2),
                              Cm(y['qr'] + 0.4), Cm(code), Cm(code))
+
+    # 193 x 122 px : hauteur déduite pour ne pas déformer le logo. Il occupe
+    # le bas de panneau que le modèle réserve à l'entité organisatrice.
+    diapo.shapes.add_picture(str(LOGO_CAA), Cm(3.6), Cm(22.6), Cm(4.6),
+                             Cm(4.6 * 122 / 193))
 
     contenu, police, taille, couleur = p['legende']
     police_url, taille_url, couleur_url = p['url']

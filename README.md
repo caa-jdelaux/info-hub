@@ -213,13 +213,50 @@ Deux écarts assumés au modèle :
 - **La flèche disparaît.** Elle fait du modèle une signalétique de couloir
   (« c'est par là »), pas une affiche d'accueil. Le QR prend sa place au
   centre : c'est lui qui, ici, envoie le lecteur quelque part.
-- **Les deux logos disparaissent.** Ce sont ceux de Crédit Agricole
+- **Les logos du modèle disparaissent.** Ce sont ceux de Crédit Agricole
   Île-de-France et de Prestige Affaires — une autre entité, un autre
-  événement. Le bas du panneau leur reste réservé.
+  événement. À leur place, en bas à gauche du panneau, le logo CA Assurances
+  repris du modèle d'écrans du Business Center.
 
 `ressources/business-center.jpg` est la photo extraite du modèle (2722 × 1815,
 soit environ 155 ppp au format A3 : c'est la résolution du modèle d'origine,
 pas une dégradation).
+
+
+## Écrans du Business Center
+
+`outils/affiches/generer-ecrans.py` produit la diapo 16:9 du programme de la
+journée, en deux chartes, d'après le modèle d'écrans du Business Center
+(`Templates A écrans BC VF.pptx`, 1280 × 720, panneau vert #006B4F à 85 %,
+Poppins).
+
+| Fichier | Charte |
+|---|---|
+| `ecran-programme-caa.pptx` | celle du modèle : Poppins, panneau vert |
+| `ecran-programme-testing.pptx` | celle du programme : Barlow, panneau #1A1A2E, monogramme |
+
+**Deux fichiers et non un deck de deux diapos** : ce sont des variantes d'une
+même diapo, pas une séquence. Un écran qui boucle afficherait les deux.
+
+L'agenda du modèle tient cinq lignes ; la journée en compte neuf, et
+l'après-midi est un bloc de dix kiosques. D'où **deux colonnes** — la journée à
+gauche, les dix kiosques en deux fois cinq à droite — et le détail (pitch,
+salle, plan) derrière le QR : un écran de hall se lit en marchant.
+
+Deux écarts assumés au modèle :
+
+- **Les titres de conférence sont coupés à leur deux-points.** Le sous-titre
+  fait vingt mots ; il est illisible depuis un hall et reste sur la page.
+- **Les emojis du programme sautent.** Décoratifs à l'écran d'un téléphone,
+  ils parasitent la charte sur un panneau vert et dépendent d'une police
+  installée sur la machine qui diffuse.
+
+Le contrôle après génération vérifie le format 16:9, que rien ne sorte du
+panneau, **et que rien ne recouvre le bandeau de logos** — c'est ce dernier
+point qui a rattrapé les kiosques 9 et 10 écrits par-dessus les logos.
+
+Les logos CA Assurances, « Façonner demain ! » et Prestige Affaires viennent de
+ce modèle. Celui de CA Assurances sert aussi aux affiches A3 de l'événement.
 
 
 ## Comportements de la page
