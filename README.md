@@ -155,6 +155,44 @@ silence. Le script régénère aussi les aperçus gravés, un par salle, dans
 `outils/plans/apercus/` : ils servent de contrôle visuel et ne sont pas servis.
 Il demande Pillow et numpy ; le CI ne l'exécute pas.
 
+## Affiches A3 des kiosques
+
+`outils/affiches/generer-affiches.py` produit dix affiches A3 portrait, une par
+thème, à coller sur la porte des salles. Deux variantes à comparer sur papier :
+
+| Fichier | Usage |
+|---|---|
+| `affiches-kiosques-clair.pdf` | fond blanc — c'est le PDF qui part à l'impression |
+| `affiches-kiosques-sombre.pdf` | fond sombre, même contenu |
+| `affiches-kiosques-*.pptx` | pour corriger sur place ; suppose Barlow Condensed installée |
+
+**Les affiches ne nomment aucune salle.** Les affectations ont bougé deux fois
+la semaine de l'événement ; une affiche muette sur ce point se déplace d'une
+porte à l'autre au lieu de se réimprimer. Le kiosque 10 occupe deux salles :
+c'est la même affiche, tirée en deux exemplaires — soit **onze feuilles pour
+dix affiches**.
+
+Les thèmes ne sont pas ressaisis dans le script : il les lit dans
+`index.html`, qui reste la source unique. Une correction de pitch faite sur la
+page se retrouve sur l'affiche à la prochaine exécution, et une affiche ne peut
+pas diverger en silence de ce que les participants lisent sur leur téléphone.
+
+Trois pièges que le script traite, et qui font rater une affiche autrement :
+
+- **La taille de diapo.** PowerPoint ouvre en 33,87 × 19,05 cm ; le script fixe
+  29,7 × 42 cm pour que 1 diapo = 1 page A3 exacte, sans recadrage du pilote.
+- **La police.** Barlow Condensed est une police Google, absente de Windows et
+  d'Office. Le PDF l'embarque, donc l'impression est fidèle ; le `.pptx`, lui,
+  suppose qu'elle soit installée sur le poste qui l'ouvre.
+- **Le débordement.** Le script relit le PDF qu'il vient de produire et refuse
+  un titre qui mord sur le pitch, un pitch qui mord sur les horaires, ou un
+  texte trop près du bord (seuil calé sur la zone non imprimable d'un copieur,
+  ~10 mm). Sur un tirage A3 en onze exemplaires, l'erreur se découvre au mur.
+
+Il demande `python-pptx`, `pymupdf`, LibreOffice Impress et les polices Barlow
+et Barlow Condensed. Le CI ne l'exécute pas.
+
+
 ## Comportements de la page
 
 Tout est facultatif : **sans JavaScript, le programme reste complet et juste.**
