@@ -480,6 +480,25 @@
   .kiosque-name { font-weight: 700; font-size: 0.87rem; color: var(--te-dark); margin-bottom: 3px; }
   .kiosque-pitch { font-size: 0.78rem; color: var(--caa-gris-fonce); line-height: 1.4; }
 
+  /* ─── QUI ANIME ─────────────────────────────────────── */
+  /* L'entité d'abord : elle situe la séance avant même qu'on lise les noms
+     (équipe interne, filiale, partenaire). Les noms ensuite, pour reconnaître
+     un collègue. Une ligne par entité plutôt qu'une énumération ponctuée :
+     trois kiosques sont co-animés par deux structures, et une seule ligne
+     obligerait à inventer un séparateur qui se lit mal sur 160 px. */
+  .kiosque-qui, .conf-qui {
+    margin: 7px 0 0;
+    font-size: 0.74rem; line-height: 1.45;
+    color: var(--caa-gris-fonce);   /* 8,10:1 */
+  }
+  .conf-qui { font-size: 0.78rem; margin-top: 8px; }
+  .qui-groupe { display: block; }
+  .qui-org { font-weight: 700; color: var(--te-dark); }
+  .qui-org::after { content: ' · '; font-weight: 400; color: var(--caa-gris-fonce); }
+  /* Le modérateur n'est pas un intervenant de plus : il se détache de la
+     liste au lieu de s'y ajouter. */
+  .qui-anime { margin-top: 3px; font-style: italic; }
+
   /* La salle est l'information qu'on consulte debout, en marchant, entre
      deux rotations : elle s'affiche directement sur la carte plutôt que
      derrière une interaction. */
@@ -633,6 +652,7 @@
     box-shadow: 0 0 0 2px var(--te-cyan-dark), 0 2px 8px rgba(0,0,0,0.07);
   }
   .kiosques-grid.compacts .kiosque-pitch { display: none; }
+  .kiosques-grid.compacts .kiosque-qui { display: none; }
   .kiosques-grid.compacts .kiosque-body {
     padding: 9px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   }
@@ -867,6 +887,7 @@
     .mp-onde { display: none !important; }
     .section-title { position: static; }
     .kiosques-grid.compacts .kiosque-pitch { display: block; }
+    .kiosques-grid.compacts .kiosque-qui { display: block; }
     .conf-card, .kiosque-card, .special-slot { box-shadow: none; border: 1px solid #ddd; }
   }
 </style>
@@ -931,6 +952,9 @@
       <div class="conf-type conf1"><span aria-hidden="true">★</span> Conférence 1</div>
       <h3 class="conf-title">Des 7 principes du test aux 7 principes de la qualité</h3>
       <div class="conf-pitch"><em>« Un produit peut être parfaitement testé… et pourtant inutilisable. »</em></div>
+      <p class="conf-qui">
+        <span class="qui-groupe"><span class="qui-org">K-lagan</span>Julien CAHU</span>
+      </p>
     </div>
   </article>
 
@@ -941,6 +965,9 @@
       <div class="conf-type conf2"><span aria-hidden="true">★</span> Conférence 2</div>
       <h3 class="conf-title">De l'IA générative aux tests « augmentés » : les 7 leçons apprises pour industrialiser l'IA dans le cycle de test</h3>
       <div class="conf-pitch"><em>« Le rôle du testeur ne disparaît pas… il se transforme. »</em></div>
+      <p class="conf-qui">
+        <span class="qui-groupe"><span class="qui-org">Niji</span>Betty BEAUGE et Gilles NOUAIS</span>
+      </p>
     </div>
   </article>
 
@@ -951,6 +978,12 @@
       <div class="conf-type table"><span aria-hidden="true">★</span> Table ronde</div>
       <h3 class="conf-title">Mode produit et les tests</h3>
       <div class="conf-pitch"><em>« Mode produit ADE : comment CAAS transforme ses approches de test pour accompagner la fabrication agile ? »</em></div>
+      <p class="conf-qui">
+        <span class="qui-groupe"><span class="qui-org">TFC</span>Ghislaine DOPIERRE</span>
+        <span class="qui-groupe"><span class="qui-org">TMV</span>Gregory BARRANCO</span>
+        <span class="qui-groupe"><span class="qui-org">SDSI</span>Erwan PERIGAULT</span>
+        <span class="qui-groupe qui-anime">Animée par Fabrice CHATRON</span>
+      </p>
     </div>
   </article>
 
@@ -1000,6 +1033,9 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🎲</span> Ludopédagogie</h3>
         <div class="kiosque-pitch">Tour de Babel ou Marshmallow Challenge : découvrez par le jeu pourquoi il faut tester tôt !</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">CRAN Quality Experts</span>Guillaume COUSIN</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1009,6 +1045,9 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🤖</span> LynQA</h3>
         <div class="kiosque-pitch">L'agent IA qui exécute vos tests manuels pendant que vous dormez — sans scripting, sans restructuration.</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">Smartesting</span>Fabien NICOLET et Michel GUEZ</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1018,6 +1057,9 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">⚡</span> Écosystème d'agents IA</h3>
         <div class="kiosque-pitch">Coder, Tester, Automatiser… 3 agents IA, une chaîne de production de test automatisé !</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">TFC</span>Jérémy DELAUX</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1027,6 +1069,9 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🧭</span> Yest Companion</h3>
         <div class="kiosque-pitch">De la page blanche à la mise à jour : l'IA propose les parcours à partir de vos US Jira/Confluence, vous validez.</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">Smartesting</span>Arnaud BOUZY</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1036,6 +1081,9 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🏛️</span> Bâtisseurs de pyramides</h3>
         <div class="kiosque-pitch">Construisez votre VRAIE pyramide de tests en 3D interactive — trouvez le bon équilibre en mode collaboratif !</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">TFC</span>Olivier PROUTEAU et Mélanie DA COSTA</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1045,6 +1093,10 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">📋</span> Référentiel de tests X-Ray</h3>
         <div class="kiosque-pitch">Au revoir QC, bienvenue X-Ray ! Découvrez le produit et la trajectoire de migration 2027.</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">OPEN</span>Alexandre BRUN</span>
+          <span class="qui-groupe"><span class="qui-org">TFC</span>Fadi AIZOUKI</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1054,6 +1106,9 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🧠</span> SDSI Test &amp; IA</h3>
         <div class="kiosque-pitch">IACA &amp; IACT : deux agents IA pour générer critères d'acceptance et cas de test directement depuis vos US.</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">TFC</span>Donatien REVEAU et Elodie TORDJMAN</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1063,6 +1118,10 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🗄️</span> JADD</h3>
         <div class="kiosque-pitch">Les données de production à portée de clic pour vos tests : enrichissez, réutilisez, rechargez en quelques clics.</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">TFC</span>Gabriel MOROSAN et Laurie ZINGLE</span>
+          <span class="qui-groupe"><span class="qui-org">MCAD</span>Julien BAZZALI et Nicolas DROUET</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1072,6 +1131,10 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">📱</span> SauceLabs</h3>
         <div class="kiosque-pitch">Testez partout et homologuez en toute confiance — démos live sur la plateforme mobile, du dev à la validation.</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">TFC</span>Vincent TREVARIN</span>
+          <span class="qui-groupe"><span class="qui-org">DF</span>Aurore CAPLAN</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>
@@ -1081,6 +1144,9 @@
       <div class="kiosque-body">
         <h3 class="kiosque-name"><span aria-hidden="true">🎬</span> Vidéo TESTY — libre service</h3>
         <div class="kiosque-pitch">Plongez dans l'univers coloré et décalé de TESTY : le métier de testeur en épisodes courts, ludiques, sans jargon.</div>
+        <p class="kiosque-qui">
+          <span class="qui-groupe"><span class="qui-org">TFC</span>Elena TOMAS</span>
+        </p>
         <button type="button" class="kiosque-salle inconnue" data-salle disabled>Salle à confirmer</button>
       </div>
     </article>

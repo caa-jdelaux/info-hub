@@ -533,6 +533,39 @@ manuel, s'il le fallait : onglet **Lecture** → *Démarrer : Automatiquement* e
 vidéo : la diapo reste juste même si rien ne se lance.
 
 
+## Qui anime — sur les cartes du programme
+
+Les trois séances du matin portent leurs intervenants, les dix kiosques leurs
+animateurs. La source des kiosques est `Liste_des_kiosques.xlsx`, colonne C ;
+celle des conférences et de la table ronde est la liste transmise le 14/09, sans
+document de référence. Trois partis pris :
+
+- **L'entité avant les noms.** « Smartesting · Arnaud BOUZY » se lit dans cet
+  ordre parce que l'entité situe le kiosque avant qu'on lise le nom : équipe
+  interne, filiale, partenaire. C'est ce qui sert à choisir ; le nom sert à
+  reconnaître un collègue, ce qui vient après.
+- **Une ligne par entité.** Trois kiosques sont co-animés par deux structures
+  (6, 8, 9) et le 8 réunit quatre personnes. Sur une seule ligne il aurait fallu
+  inventer un séparateur qui tienne à 160 px de large ; empilées, les deux
+  lignes se lisent sans ponctuation acrobatique.
+- **Aucun verbe.** Ni « animé par », ni « présenté par ». Le kiosque 10 est en
+  libre service : personne ne l'anime, Elena TOMAS en est le contact. Un verbe
+  aurait contredit le pitch de la carte à trois lignes d'intervalle. Seule
+  exception, la table ronde, où « Animée par Fabrice CHATRON » distingue le
+  modérateur des trois intervenants — sans quoi la liste en compterait quatre.
+
+**Le mode compact masque le « qui » avec le pitch**, pour la même raison : il
+existe pour tenir les dix kiosques sur un écran quand on choisit ses cinq
+rotations, et deux lignes de plus par carte le videraient de son sens.
+**L'impression le rétablit**, comme le pitch — le papier n'a pas de mode
+compact.
+
+**La casse des noms de famille a été uniformisée en capitales**, la convention
+du fichier source pour huit kiosques sur dix. C'est le seul écart : les lettres
+sont celles du fichier, accents compris — donc aussi accents *absents*. Passer
+« BEAUGE » en « Beauge » aurait affirmé une absence d'accent que rien ne
+vérifie ; en capitales, l'ambiguïté reste visible et se corrige d'une ligne.
+
 ## Comportements de la page
 
 **Le logo du bandeau porte un reflet**, sur un cycle 50/50 : 2,6 s de
