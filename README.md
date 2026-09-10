@@ -289,6 +289,52 @@ ont été trouvés à l'œil sur le rendu (colonne du matin en diapo 3, pitchs e
 diapo 10, étapes 2 et 4 en diapo 11) et corrigés par la géométrie.
 
 
+## Diapo « le programme en main »
+
+    python3 outils/affiches/generer-diapo-en-main.py
+
+La diapo 12 de la présentation **dit** ce que le programme contient. Celle-ci
+le **montre** : deux captures d'écran du téléphone — la salle qui s'allume sur
+le plan, et le bouton « Repérer ». Elle se place après la diapo du QR code.
+
+Deux mises en page sont produites, parce que la contrainte n'est pas la place
+sur la diapo mais la lisibilité depuis le fond d'un auditorium de 254 places :
+
+| Fichier | Contenu | Hauteur des captures |
+|---|---|---|
+| `diapo-en-main-1-diapo.pptx` | les deux captures côte à côte | 7,65 cm |
+| `diapo-en-main-2-diapos.pptx` | une capture par diapo, cartouche à gauche | 10,5 cm |
+
+**C'est la hauteur qui limite, pas la largeur.** Sous le titre il reste 10,5 cm.
+À deux captures sur une diapo, chacune cède la place du cartouche ; à une
+capture par diapo, le cartouche passe à gauche et la capture prend toute la
+hauteur — un tiers de plus.
+
+**Fichiers séparés plutôt qu'insertion dans le générateur de la présentation.**
+La présentation est reprise à la main : régénérer les quinze diapos écraserait
+ces reprises, et insérer une diapo décalerait la numérotation du pied de page.
+Un fichier de une ou deux diapos s'importe dans une présentation déjà
+travaillée sans rien perdre. C'est aussi pourquoi ces diapos ne portent pas de
+numéro de page : leur pagination d'accueil n'est pas connue.
+
+**Les captures sont recadrées, pas reprises telles quelles.** Sur la capture du
+plan, les bandes sombres du fond assombri passeraient pour un défaut une fois
+projetées : on ne garde que la carte de la modale. Sur la capture des kiosques,
+deux cartes suffisent — une non repérée, une repérée, ce qui montre les deux
+états côte à côte ; la troisième portait le bouton flottant du téléphone, qui
+n'appartient pas à la page.
+
+Le contrôle relit le PDF produit et refuse trois choses : un nombre de pages
+inattendu, un format qui n'est pas du 16:9, et **tout texte qui passerait sous
+une capture ou sur le pied de page**. Ce dernier point a été ajouté après coup :
+la première version à une diapo avait une légende qui débordait sur deux
+lignes, la seconde disparaissant derrière la capture voisine — visible à l'œil,
+invisible pour un contrôle qui ne compare pas les encombrements.
+
+Les captures sont figées dans `outils/affiches/ressources/`. Elles datent d'un
+état de la page où les salles étaient déjà publiées : **si les affectations
+changent, il faut refaire les captures**, relancer le script ne suffit pas.
+
 ## Animation de la page de garde
 
 `outils/affiches/generer-animation.py` produit un balayage lumineux qui
