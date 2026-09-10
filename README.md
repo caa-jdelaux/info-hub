@@ -335,6 +335,54 @@ Les captures sont figées dans `outils/affiches/ressources/`. Elles datent d'un
 état de la page où les salles étaient déjà publiées : **si les affectations
 changent, il faut refaire les captures**, relancer le script ne suffit pas.
 
+## Écran complet de l'espace hospitalité
+
+    python3 outils/affiches/generer-ecran-complet.py
+
+Produit `ecran-programme-complet.pptx` : **tout le programme sur un seul
+écran**, pour l'espace hospitalité. Ce n'est pas la diapo 3 en plus dense, c'est
+un autre problème. La diapo 3 est projetée dans un auditorium et se lit depuis
+le fond : peu de mots, gros. Cet écran est regardé à deux ou trois mètres par
+quelqu'un qui passe, et il doit **se suffire à lui-même** — personne ne
+s'arrêtera pour scanner un QR code.
+
+D'où la densité assumée : les trois conférences avec leur accroche, les dix
+kiosques avec leur phrase de présentation **et leur salle**. Ce sont les deux
+informations qui manquaient à `generer-ecrans.py`, et sans lesquelles il faut
+aller chercher ailleurs. Le QR code reste en bas de colonne, pour qui voudra la
+version qui suit les changements de salle — mais l'écran ne repose pas dessus.
+
+Les salles sont lues dans le bloc `salles-data` de la page, celui qu'on rouvre
+le 14 au matin. Un kiosque sans salle publiée n'arrête rien : le script le
+signale et écrit « Salle à confirmer », comme la page.
+
+### Deux contrôles, et pourquoi il en fallait deux
+
+Le premier compare chaque fragment de texte du PDF aux **cellules dessinées** :
+rien ne doit sortir de sa case. Il fonctionne au fragment et non au bloc, parce
+que l'extracteur regroupe volontiers deux textes distants posés sur la même
+ligne de base — les deux intitulés de colonne arrivaient fusionnés en un pavé
+large de 18 cm qui ne correspondait à rien.
+
+Le second vérifie que **deux fragments ne se recouvrent jamais**. Il est
+indépendant du premier, et c'est lui qui compte : un titre trop long qui vient
+écrire par-dessus sa propre accroche reste à l'intérieur de sa cellule, donc
+invisible pour le contrôle de débordement. C'est exactement ce qui est arrivé à
+la conférence 2.
+
+### Les cartes de séance se dimensionnent sur leur contenu
+
+Le titre de la conférence 2 fait le double des autres. Les trois cartes mesurent
+donc ce qu'il leur faut — nombre de lignes du titre et de l'accroche — puis se
+partagent le reliquat, plutôt que d'être à hauteur fixe.
+
+Le calcul du nombre de lignes a demandé deux corrections. La première version
+tablait sur une hauteur de ligne devinée. La deuxième la calculait, mais oubliait
+que **l'interligne donné en nombre à python-pptx multiplie la hauteur naturelle
+de la police — environ 1,2 fois le corps — et non le corps lui-même** : chaque
+ligne était sous-estimée d'un cinquième. Les deux fois, c'est le contrôle de
+recouvrement qui l'a dit.
+
 ## Diapo 3 — le programme de la journée
 
 La première version reprenait la page web presque à l'identique, les dix

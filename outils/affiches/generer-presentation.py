@@ -19,6 +19,7 @@ posés en toutes lettres comme « à compléter », en rouge, plutôt qu'invent�
 La diapo de remerciements est un gabarit à remplir, pas une liste.
 """
 import html
+import json
 import pathlib
 import re
 import subprocess
@@ -102,6 +103,12 @@ def lire_programme():
             'citation': net(re.search(r'class="conf-pitch">(.*?)</div>', corps, re.S).group(1)),
         })
 
+    # Les salles vivent dans un bloc JSON à part, celui qu'on rouvre le 14 au
+    # matin quand les affectations tombent. Une salle manquante n'arrête rien :
+    # la page elle-même affiche « Salle à confirmer » dans ce cas.
+    bloc_salles = re.search(r'id="salles-data"[^>]*>(.*?)</script>', page, re.S)
+    salles = json.loads(bloc_salles.group(1)) if bloc_salles else {}
+
     kiosques = []
     for m in re.finditer(r'<article class="kiosque-card" data-kiosque="(\d+)">(.*?)</article>',
                          page, re.S):
@@ -110,6 +117,7 @@ def lire_programme():
             'numero': m.group(1),
             'titre': net(re.sub(r'<span aria-hidden="true">.*?</span>', '', nom)),
             'pitch': net(re.search(r'class="kiosque-pitch">(.*?)</div>', m.group(2), re.S).group(1)),
+            'salle': str(salles.get(m.group(1), '')).strip() or 'Salle à confirmer',
         })
 
     rotations = [(int(a), int(b)) for a, b in re.findall(
