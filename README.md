@@ -533,6 +533,59 @@ manuel, s'il le fallait : onglet **Lecture** → *Démarrer : Automatiquement* e
 vidéo : la diapo reste juste même si rien ne se lance.
 
 
+## Fiches de scène des animateurs
+
+    python3 outils/fiches/generer-fiches-animateurs.py
+
+Produit `fiches-animateurs.pptx` et `.pdf` : **vingt-trois cartes A5, un jeu par
+animateur, une carte par prise de parole**. À imprimer en A5, recto seul, 160 g
+au minimum.
+
+Le découpage n'est ni « une fiche par personne » ni « une fiche par créneau ».
+Une carte par créneau serait à partager — de 09h45 à 10h00, Ghislaine parle,
+Fabrice parle, Ghislaine reprend, Anas enchaîne, et une carte ne se tient pas
+par deux mains à deux moments différents. Une carte par personne ne tient pas
+davantage : Anas a onze prises de parole entre 09h56 et 17h00, et sur un seul
+recto il faut ou bien écrire trop petit, ou bien supprimer les trois quarts.
+D'où le croisement des deux, en cartes numérotées et chronologiques : on ne
+regarde jamais que celle du dessus.
+
+Trois choix qui viennent de la scène plutôt que de la maquette :
+
+- **L'heure de fin visée est en gros, à droite.** C'est l'information la plus
+  consultée en scène, avant même le contenu — celle qui tient la journée.
+- **Ce qui n'est pas tranché est imprimé en cadre à remplir au stylo**, pas
+  deviné. Les lots, la règle de présence, le nombre de participants et les deux
+  questions de secours d'Anas sont des blancs visibles. Une carte où le blanc a
+  été comblé par une supposition se dit sur scène et devient faux.
+- **Recto seul.** Retourner une carte en scène est une hésitation qui se voit.
+
+### Le contrôle relit les phrases, pas seulement les positions
+
+Deux pièges, et un seul se voyait.
+
+Le premier est le débordement : une carte trop pleine descend sous le pied de
+page. Il est refusé à la composition, avant même l'export.
+
+Le second est plus sournois. Une phrase mal mesurée n'est pas déplacée : elle
+est **coupée** au bord de sa boîte. La mesure des blocs ne peut pas le voir,
+puisque tout reste à sa place. C'est arrivé au message de 12h10, où « subie. »
+avait disparu — la largeur moyenne d'un signe avait été reprise de
+`generer-ecran-complet.py`, calée sur Barlow Condensed, et sous-estimait d'un
+cinquième les lignes de Barlow. Le contrôle relit donc **chaque phrase dans le
+PDF produit** et refuse ce qu'il n'y retrouve pas.
+
+C'est aussi ce contrôle qui a fait apparaître deux glyphes absents de Barlow —
+la flèche « → » et le « ᵉ » de « 2ᵉ » — que LibreOffice allait chercher dans
+une autre fonte. Ils ne cassaient rien, mais ils ne se composaient pas avec le
+reste de la ligne.
+
+Enfin, les colonnes du tableau des dix kiosques sont **calculées sur la plus
+longue chaîne de chacune**, pas écrites en dur : « CRAN Quality Experts »
+passait à la ligne et venait écrire sur le kiosque suivant. Si un porteur
+s'ajoute ou une salle change, le script refuse net plutôt que de le laisser
+découvrir à l'impression.
+
 ## Qui anime — sur les cartes du programme
 
 Les trois séances du matin portent leurs intervenants, les dix kiosques leurs
