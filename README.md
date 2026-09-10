@@ -360,6 +360,31 @@ Elle porte le créneau de 13h40, la bande « 10 kiosques · 5 rotations », les 
 pastilles horaires et la clôture. Les deux colonnes occupent 8,85 cm et
 finissent à la même hauteur.
 
+### Le programme avec les dix kiosques
+
+    python3 outils/affiches/generer-presentation.py --variante programme-kiosques
+
+Écrit `diapo-variante-programme-kiosques.pptx` : la même diapo 3, mais la
+colonne de l'après-midi porte les dix kiosques au lieu des pastilles de
+rotation. **Sans les pitchs** — dans 6,9 cm de large et 0,92 cm de haut ils
+tomberaient sous 7 pt et ne se liraient plus. Le titre du kiosque suffit à
+situer, le pitch reste sur la diapo 10.
+
+La bande des rotations se réduit alors à une ligne, `14h00 – 16h30 · 5
+rotations de 30 min · 10 kiosques en simultané`, pour libérer les cinq lignes
+de kiosques.
+
+### Diapo 10 — les dix kiosques
+
+Les kiosques sont rangés **dans l'ordre de lecture**, impairs à gauche et pairs
+à droite, et la couleur du numéro **alterne d'un kiosque au suivant** : c'est la
+règle de la page (`nth-child(odd)` cyan, `nth-child(even)` rouge). La version
+précédente mettait 1 à 5 à gauche, 6 à 10 à droite, et coloriait par colonne —
+deux écarts avec le programme que les participants auront sous les yeux.
+
+Le numéro est posé dans un pavé plein, pas signalé par un liseré, pour la même
+raison que sur la diapo 3.
+
 ### Remplacer une seule diapo
 
     python3 outils/affiches/generer-presentation.py --diapo 3
