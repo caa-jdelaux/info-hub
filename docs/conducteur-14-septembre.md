@@ -334,7 +334,7 @@ de façon que la rotation 1 démarre réellement à 14h00 et pas à 14h05.
 |---|---|---|---|
 | Accueil de reprise | Anas + 2ᵉ animateur | 1 min | 13h41 |
 | Principe des kiosques et des rotations | Anas + 2ᵉ animateur | 3 min | 13h44 |
-| Les 10 kiosques, 30 s chacun | les porteurs de kiosque | 5 min | 13h49 |
+| Les 10 kiosques, 30 s chacun | Anas (impairs) + 2ᵉ animateur (pairs) | 5 min | 13h49 |
 | Tirage au sort et lots | Anas + 2ᵉ animateur | 3 min | 13h52 |
 | Rappel salles + RDV 16h30 | Anas | 2 min | 13h54 |
 | Marge | — | 1 min | 13h55 |
@@ -352,18 +352,28 @@ Trois conséquences, dont deux favorables et une à surveiller.
 
 1. **Les pitches repassent à 30 secondes.** J'avais proposé de les couper à 20 s
    uniquement parce que la séquence TESTY mangeait le créneau. Les cinq minutes
-   qu'elle occupait rendent cet arbitrage inutile : 30 s tiennent. La consigne aux porteurs de
-   kiosque reste la même — **une phrase sur le contenu, une phrase sur la
-   salle, et on rend le micro** — et il faut toujours **deux micros HF passés en
-   alternance**, sinon dix passages de main coûtent à eux seuls plus d'une
-   minute. Trente secondes annoncées sans briefing préalable deviennent
-   cinquante, et les dix passages font huit minutes au lieu de cinq.
+   qu'elle occupait rendent cet arbitrage inutile : 30 s tiennent.
+
+   **Ce sont les animateurs qui pitchent, pas les porteurs.** *(arbitré le
+   10/09, après-coup)* Anas prend les kiosques impairs, le 2ᵉ animateur les
+   pairs ; chacun garde son micro d'un bout à l'autre et les porteurs restent
+   assis. Ce que ça fait gagner n'est pas tant la minute de passages de main
+   que **la variance** : deux animateurs qui ont répété tiennent cinq minutes,
+   dix intervenants qui montent chacun leur tour, non — trente secondes
+   annoncées sans briefing deviennent cinquante, et les dix passages font huit
+   minutes au lieu de cinq.
+
+   > **Ce que ça coûte, et comment le rendre.** La salle ne voit plus le visage
+   > de la personne qu'elle retrouvera en atelier, alors qu'elle doit choisir
+   > cinq kiosques sur dix. Contre-mesure gratuite, portée par les fiches :
+   > **l'animateur nomme le porteur et lui fait lever la main** pendant son
+   > pitch. Zéro seconde, et le visage est rendu.
 
 2. **Le kiosque 10 garde son exclusivité.** Plus personne n'aura vu l'épisode
    avant d'entrer en salle Sumida. En contrepartie, **le pitch du kiosque 10
    porte désormais seul tout le poids de TESTY** : c'est le seul des dix dont
-   les 30 secondes doivent donner envie plutôt qu'informer. À confier à Elena si
-   elle est disponible sur ce créneau.
+   les 30 secondes doivent donner envie plutôt qu'informer. Il revient au
+   2ᵉ animateur — le kiosque 10 est pair — et non plus à Elena.
 
    **Précision du 10/09 :** le kiosque 10 occupe ses deux salles à des usages
    différents — dans l'une, on présente le principe de la série et on diffuse
@@ -389,11 +399,13 @@ Trois conséquences, dont deux favorables et une à surveiller.
    le seul moment vivant du bloc ; les mettre en dernier, avant la dispersion,
    les ferait tomber dans le brouhaha des gens qui se lèvent.
 
-`[ à confirmer : Elena garde-t-elle une prise de parole ? ]` Sa séquence de
-3 minutes disparaît avec la vidéo. Par défaut je l'ai basculée sur le pitch de
-30 s du kiosque 10 — mais c'est une hypothèse de ma part, et elle avait
-probablement préparé autre chose. À lui dire avant le jour J plutôt que le
-matin même.
+**Elena n'a plus aucune prise de parole en plénière.** Sa séquence de 3 minutes
+a disparu avec la vidéo, et le pitch de 30 s du kiosque 10 vient de passer au
+2ᵉ animateur. Ce n'est pas un oubli, c'est la conséquence des deux décisions
+mises bout à bout — mais personne ne le lui a dit, et elle a probablement
+préparé quelque chose. Il reste les remerciements de 16h36, où les porteurs des
+dix kiosques montent sur scène. **À lui dire avant le jour J, pas le matin
+même.** Le même raisonnement vaut pour les neuf autres porteurs.
 
 #### Accueil de reprise (1 min)
 
@@ -574,7 +586,8 @@ plénier ; la vidéo n'existe plus que dans le kiosque n° 10, en libre service.
 
 - micros HF des animateurs + **quatre micros baladeurs pour les questions**,
   un par travée, tous testés en salle vide, piles neuves ;
-- deux micros HF supplémentaires pour les dix pitches de 13h44 ;
+- rien de plus pour les dix pitches de 13h44 : les deux animateurs gardent
+  leurs micros, il n'y a plus de passage de main ;
 - les trois génériques et les deux musiques chargés et repérés dans l'ordre du
   tableau ci-dessus ;
 - retour vidéo visible depuis la scène, sinon les animateurs parlent dos à
@@ -606,9 +619,11 @@ tranchées sont barrées, avec la décision.
    TimeKeeper par kiosque, signal sonore d'étage si le BC en dispose** (10/09).
    Reste à vérifier que le Business Center dispose d'une sonorisation d'étage,
    et à briefer les dix TimeKeepers.
-7. **La prise de parole d'Elena** : le pitch de 30 s du kiosque 10, ou rien ?
-   (§ 4.2) Et, depuis le 10/09, **comment Elena TOMAS et Jaber BENZEGOUTTA se
-   répartissent deux salles sur cinq rotations**, dont une diffusion présentée.
+7. ~~La prise de parole d'Elena~~ — **aucune** : les dix pitches passent aux
+   animateurs, le kiosque 10 étant pair il revient au 2ᵉ animateur. À lui dire
+   avant le 14 (§ 4.2). Reste ouvert : **comment Elena TOMAS et Jaber
+   BENZEGOUTTA se répartissent deux salles sur cinq rotations**, dont une
+   diffusion présentée.
 8. ~~L'ordre de la clôture~~ — **l'ordre du § 5 est retenu** (10/09).
 9. ~~La phrase sur la 4G~~ — **écartée** (10/09).
 10. ~~Le modérateur de la table ronde~~ — **Fabrice CHATRON** (14/09).
@@ -632,6 +647,12 @@ tranchées sont barrées, avec la décision.
     c'est la page publiée qui devra changer.
 17. **Le tirage : par nom, ou par rang et numéro de place ?** (§ 5.4) Les deux
     mécaniques ont été proposées ; elles ne récompensent pas la même chose.
+18. **Kiosque 1 : la tour de Babel ou le Marshmallow Challenge ?** Le fichier
+    source décrit les deux comme « Option 1 » et « Option 2 », et rien ne dit
+    laquelle est retenue. La page programme et la fiche de pitch annoncent donc
+    les deux. Guillaume COUSIN doit trancher, ou assumer de le faire en salle.
+19. **Qui prévient les dix porteurs de kiosque** qu'ils ne pitchent plus ?
+    (§ 4.2) La décision est prise ; elle ne leur a pas été dite.
 
 ---
 
@@ -641,13 +662,18 @@ Ce document est un conducteur : il sert à préparer, à briefer et à tenir la
 régie. **Il n'est pas tenable en main sur scène.** Il manque encore :
 
 - ~~Une antisèche recto par animateur~~ — **faite** :
-  `outils/fiches/generer-fiches-animateurs.py` produit vingt-trois cartes A5,
-  un jeu par animateur (Anas 12, Ghislaine 6, le second animateur 5), une carte
-  par prise de parole. Ce qui n'est pas tranché y est imprimé en cadre à
-  remplir au stylo plutôt que deviné. **Manque le jeu de Fabrice** — il parle
-  trois fois et anime la table ronde, mais il n'était pas dans la demande.
-- **Une fiche « porteur de kiosque »** — le pitch de 30 s, le numéro de salle,
-  la fin de rotation à 16h25, le rôle de TimeKeeper et la mécanique des fiches.
+  `outils/fiches/generer-fiches-animateurs.py` produit trente-trois cartes A5,
+  un jeu par animateur (Anas 17, Ghislaine 6, le second animateur 10), une carte
+  par prise de parole — dont **une carte par kiosque à pitcher**, cinq pour
+  chacun des deux animateurs de l'après-midi. Ce qui n'est pas tranché y est
+  imprimé en cadre à remplir au stylo plutôt que deviné. **Manque le jeu de
+  Fabrice** — il parle trois fois et anime la table ronde, mais il n'était pas
+  dans la demande.
+- **Une fiche « porteur de kiosque »** — le numéro de salle, la fin de rotation
+  à 16h25, le rôle de TimeKeeper et la mécanique des fiches. Le pitch de 30 s
+  n'y est plus : il est passé aux animateurs. En revanche il faut y dire
+  explicitement qu'ils ne pitchent plus, sinon dix personnes arrivent le 14 en
+  ayant préparé trente secondes.
   C'est le document le plus rentable qui manque encore : les fiches d'animateur
   protègent trois personnes, celle-ci protège les deux heures trente qui font
   60 % de la journée.

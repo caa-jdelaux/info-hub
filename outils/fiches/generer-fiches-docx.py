@@ -35,7 +35,7 @@ import tempfile
 import docx
 from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.enum.table import WD_ROW_HEIGHT_RULE
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 from docx.shared import Cm, Pt, RGBColor
@@ -64,7 +64,7 @@ COURANTE, CONDENSEE = 'Barlow', 'Barlow Condensed'
 # contrôle de pagination confirme que les vingt-trois cartes tiennent quand
 # même chacune sur sa page.
 T_HEURE, T_TITRE = 34, 19
-T_PUCE, T_DIRE, T_NOTE = F.T_PUCE, F.T_DIRE, F.T_NOTE
+T_PUCE, T_DIRE, T_NOTE, T_RESERVE = F.T_PUCE, F.T_DIRE, F.T_NOTE, F.T_RESERVE
 
 
 def _hex(valeur):
@@ -210,7 +210,21 @@ def _brique(doc, element, accent):
         _para(doc, None, COURANTE, 4, ENCRE, apres=0)
         return
 
+    if genre == 'reserve':
+        t = _tableau(doc, [LARGE])
+        cellule = t.rows[0].cells[0]
+        _bordures_cellule(cellule, GRIS_CLAIR, 6)
+        _marges_cellule(cellule, 60, 60, 120, 120)
+        _vider(cellule)
+        _para(cellule, 'LE TEXTE DU PORTEUR — À LIRE AVANT, PAS EN SCÈNE',
+              CONDENSEE, 9, GRIS_FONCE, gras=True, apres=4)
+        for ligne in element[1]:
+            _para(cellule, ligne, COURANTE, T_RESERVE, GRIS_FONCE, apres=3)
+        _para(doc, None, COURANTE, 4, ENCRE, apres=0)
+        return
+
     if genre == 'kiosques':
+        miens = element[2] if len(element) > 2 else None
         largeurs = [Cm(0.9), Cm(5.3), Cm(3.0), Cm(3.65)]
         t = _tableau(doc, largeurs)
         entetes = ('N°', 'KIOSQUE', 'SALLE', 'PORTÉ PAR')
@@ -225,9 +239,13 @@ def _brique(doc, element, accent):
                 cellules[i].width = large
                 _marges_cellule(cellules[i], 30, 30, 0, 60)
                 _vider(cellules[i])
-            _para(cellules[0], str(num), CONDENSEE, F.T_KIOSQUE[0], accent, gras=True, apres=0)
-            _para(cellules[1], theme, COURANTE, F.T_KIOSQUE[1], ENCRE, apres=0)
-            _para(cellules[2], salle, COURANTE, F.T_KIOSQUE[2], ENCRE, gras=True, apres=0)
+            mien = miens is None or num in miens
+            _para(cellules[0], str(num), CONDENSEE, F.T_KIOSQUE[0],
+                  accent if mien else GRIS_FONCE, gras=True, apres=0)
+            _para(cellules[1], theme, COURANTE, F.T_KIOSQUE[1],
+                  ENCRE if mien else GRIS_FONCE, apres=0)
+            _para(cellules[2], salle, COURANTE, F.T_KIOSQUE[2],
+                  ENCRE if mien else GRIS_FONCE, gras=mien, apres=0)
             _para(cellules[3], qui, COURANTE, F.T_KIOSQUE[3], GRIS_FONCE, apres=0)
         _para(doc, None, COURANTE, 5, ENCRE, apres=0)
         return
@@ -272,6 +290,7 @@ def _carte(doc, deck, accent, numero, total, fiche, premiere):
     filet = bandeau.add_row()
     filet.height, filet.height_rule = Cm(0.12), WD_ROW_HEIGHT_RULE.EXACTLY
     for cellule in filet.cells:
+        cellule.width = LARGE
         _ombrer(cellule, accent)
         _marges_cellule(cellule, 0, 0, 0, 0)
         _vider(cellule)
@@ -289,9 +308,10 @@ def _carte(doc, deck, accent, numero, total, fiche, premiere):
     if fiche.get('fin'):
         _ombrer(droite, accent)
         _marges_cellule(droite, 60, 60, 120, 140)
-        _para(droite, 'FIN VISÉE', CONDENSEE, 9, BLANC, gras=True,
-              align=WD_ALIGN_PARAGRAPH.RIGHT, apres=0)
-        _para(droite, fiche['fin'], CONDENSEE, 19, BLANC, gras=True,
+        _para(droite, fiche.get('etiquette', 'FIN VISÉE'), CONDENSEE, 9, BLANC,
+              gras=True, align=WD_ALIGN_PARAGRAPH.RIGHT, apres=0)
+        _para(droite, fiche['fin'], CONDENSEE,
+              19 if len(fiche['fin']) <= 8 else 12, BLANC, gras=True,
               align=WD_ALIGN_PARAGRAPH.RIGHT, apres=0)
     else:
         _para(droite, None, COURANTE, 8, ENCRE, apres=0)

@@ -537,8 +537,8 @@ vidéo : la diapo reste juste même si rien ne se lance.
 
     python3 outils/fiches/generer-fiches-animateurs.py
 
-Produit `fiches-animateurs.pptx` et `.pdf` : **vingt-trois cartes A5, un jeu par
-animateur, une carte par prise de parole**. Recto seul, 160 g au minimum.
+Produit `fiches-animateurs.pptx` et `.pdf` : **trente-trois cartes A5, un jeu
+par animateur, une carte par prise de parole**. Recto seul, 160 g au minimum.
 
 Les pages font **exactement 14,85 × 21 cm**, et le contrôle le vérifie page par
 page. Le seul moyen d'obtenir une carte plus grande que l'A5 est de laisser la
@@ -565,6 +565,34 @@ Trois choix qui viennent de la scène plutôt que de la maquette :
   questions de secours d'Anas sont des blancs visibles. Une carte où le blanc a
   été comblé par une supposition se dit sur scène et devient faux.
 - **Recto seul.** Retourner une carte en scène est une hésitation qui se voit.
+
+### Une carte par kiosque pour les dix pitches
+
+Ce sont les deux animateurs qui pitchent les dix kiosques à 13h44, pas les
+porteurs : Anas les impairs, le second les pairs. Chacun a donc, après le
+tableau récapitulatif, **cinq cartes de pitch** — une par kiosque — où
+l'essentiel est le nom de la salle, en gros, à la place de l'heure de fin.
+
+Chaque carte porte trois choses, dans cet ordre d'importance :
+
+1. **La salle**, dans le pavé de couleur. C'est la seule information dont la
+   salle a besoin pour choisir où aller.
+2. **La phrase à dire**, celle de la page programme. Elle fait sept à huit
+   secondes ; le créneau en compte trente, transitions comprises.
+3. **Le texte long du porteur**, en petit, encadré « à lire avant, pas en
+   scène ». Il vient du fichier source et fait trente à quarante secondes à
+   voix haute — dix fois quarante secondes, c'est six minutes pour un créneau
+   de cinq. Il n'est pas là pour être lu : il est là pour qu'on y prenne une
+   phrase, la veille.
+
+Le tableau des dix reste en tête de série, avec **les cinq kiosques de
+l'animateur en couleur** et les cinq autres en gris : il faut savoir quand
+vient son tour, pas ce que dit l'autre.
+
+Les données ne sont plus écrites en dur. Le titre, le pitch court, la salle et
+les noms des porteurs sont **relus dans la page** — celle dont on rouvre le
+bloc `salles-data` le 14 au matin. Seul le texte long vient du fichier Excel,
+et c'est la seule donnée de ces fiches à revérifier si le fichier change.
 
 ### La même chose en Word
 

@@ -42,7 +42,9 @@ Dépendances : python-pptx, pymupdf, LibreOffice Impress, les polices Barlow et
 Barlow Condensed.
 """
 
+import importlib.util
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -161,7 +163,7 @@ def _filet(diapo, x, y, l, couleur, pointille=False):
 # côté et dessiner de l'autre, c'est se garantir une dérive silencieuse le jour
 # où l'un des deux change.
 
-T_PUCE, T_DIRE, T_NOTE = 14, 14.5, 11
+T_PUCE, T_DIRE, T_NOTE, T_RESERVE = 14, 14.5, 11, 9
 RETRAIT = Cm(0.52)
 
 # Corps des quatre colonnes du tableau des kiosques : numéro, thème, salle,
@@ -238,8 +240,29 @@ def _brique(diapo, x, y, l, element, accent, dessiner=True):
                        l - Cm(0.6), GRIS_CLAIR, True)
         return h + Cm(0.26)
 
+    if genre == 'reserve':
+        lignes = element[1]
+        largeur = l - Cm(0.7)
+        hauteurs = [_lignes(t, largeur, T_RESERVE) * _haut_ligne(T_RESERVE, 1.1)
+                    for t in lignes]
+        h = Cm(0.58) + sum(hauteurs, Cm(0)) + Cm(0.09) * len(lignes) + Cm(0.14)
+        if dessiner:
+            _pave(diapo, x, y, l, h, None, GRIS_CLAIR)
+            _texte(diapo, x + Cm(0.35), y + Cm(0.14), l - Cm(0.7), Cm(0.42),
+                   'LE TEXTE DU PORTEUR — À LIRE AVANT, PAS EN SCÈNE',
+                   CONDENSEE, 9, GRIS_FONCE, True)
+            ly = y + Cm(0.58)
+            for texte, haut in zip(lignes, hauteurs):
+                _texte(diapo, x + Cm(0.35), ly, largeur, haut, texte,
+                       COURANTE, T_RESERVE, GRIS_FONCE, interligne=1.1)
+                ly += haut + Cm(0.09)
+        return h + Cm(0.24)
+
     if genre == 'kiosques':
         lignes = element[1]
+        # Les cinq kiosques de l'animateur ressortent ; les cinq autres sont là
+        # pour qu'il sache quand vient son tour, pas pour qu'il les dise.
+        miens = element[2] if len(element) > 2 else None
         cols, larges = _gabarit_kiosques(lignes, l)
         h = Cm(0.52) + len(lignes) * Cm(0.66)
         if dessiner:
@@ -250,10 +273,11 @@ def _brique(diapo, x, y, l, element, accent, dessiner=True):
             _filet(diapo, x, y + Cm(0.46), l, GRIS_CLAIR)
             for i, (num, theme, salle, qui) in enumerate(lignes):
                 ly = y + Cm(0.52) + i * Cm(0.66)
+                mien = miens is None or num in miens
                 cellules = (
-                    (str(num), CONDENSEE, accent, True),
-                    (theme, COURANTE, ENCRE, False),
-                    (salle, COURANTE, ENCRE, True),
+                    (str(num), CONDENSEE, accent if mien else GRIS_FONCE, True),
+                    (theme, COURANTE, ENCRE if mien else GRIS_FONCE, False),
+                    (salle, COURANTE, ENCRE if mien else GRIS_FONCE, mien),
                     (qui, COURANTE, GRIS_FONCE, False))
                 for c, (txt, police, couleur, gras) in enumerate(cellules):
                     _texte(diapo, x + cols[c], ly, larges[c], Cm(0.55), txt,
@@ -289,14 +313,19 @@ def _carte(prs, deck, accent, numero, total, fiche):
            CONDENSEE, 34, ENCRE, True)
     if fiche.get('fin'):
         large_fin = Cm(4.6)
+        # Une heure tient en cinq signes, un nom de salle pas toujours :
+        # « Sumida + Alzette » sortait du pavé au corps d'une heure.
+        taille_fin = 19 if len(fiche['fin']) <= 8 else 12
         _pave(diapo, LARGEUR - MARGE - large_fin, HAUT_HEURE + Cm(0.08),
               large_fin, Cm(1.35), accent)
         _texte(diapo, LARGEUR - MARGE - large_fin, HAUT_HEURE + Cm(0.22),
-               large_fin - Cm(0.3), Cm(0.4), 'FIN VISÉE',
+               large_fin - Cm(0.3), Cm(0.4), fiche.get('etiquette', 'FIN VISÉE'),
                CONDENSEE, 9, BLANC, True, 1.0, align=PP_ALIGN.RIGHT)
-        _texte(diapo, LARGEUR - MARGE - large_fin, HAUT_HEURE + Cm(0.56),
+        _texte(diapo, LARGEUR - MARGE - large_fin,
+               HAUT_HEURE + (Cm(0.56) if taille_fin > 14 else Cm(0.72)),
                large_fin - Cm(0.3), Cm(0.85), fiche['fin'],
-               CONDENSEE, 19, BLANC, True, interligne=1.0, align=PP_ALIGN.RIGHT)
+               CONDENSEE, taille_fin, BLANC, True, interligne=1.0,
+               align=PP_ALIGN.RIGHT)
 
     # Le titre prend une ou deux lignes selon sa longueur, et c'est lui qui
     # fixe le haut du corps. Réserver deux lignes pour tout le monde coûtait
@@ -342,18 +371,127 @@ def _carte(prs, deck, accent, numero, total, fiche):
 #                                       10/09/2026 (annotée par l'organisation)
 # Tout ce qui n'y figure pas est un `trou`, pas une hypothèse.
 
-KIOSQUES = [
-    (1, 'Ludopédagogie', 'Wisla', 'CRAN Quality Experts'),
-    (2, 'LynQA', 'Donau', 'Smartesting'),
-    (3, "Écosystème d'agents IA", 'Liffey', 'TFC'),
-    (4, 'Yest Companion', 'Douro', 'Smartesting'),
-    (5, 'Bâtisseurs de pyramides', 'Rhône', 'TFC'),
-    (6, 'Référentiel de tests X-RAY', 'Tajo', 'OPEN · TFC'),
-    (7, 'SDSI Test & IA', 'Adige', 'TFC · DF Dommage'),
-    (8, 'JADD', 'Loire', 'TFC · MCAD'),
-    (9, 'SauceLabs', 'Moselle', 'TFC · DF Dommage'),
-    (10, 'Vidéo TESTY', 'Sumida + Alzette', 'TFC'),
-]
+PAGE = ICI.parents[1] / 'worker' / 'public' / 'testing-event-2026' / 'index.html'
+
+
+def _programme():
+    """Titre, pitch court et salle viennent de la page, pas d'une copie.
+
+    Les salles rouvrent le 14 au matin : une carte qui les porte en dur
+    enverrait quelqu'un dans la mauvaise pièce. Le pitch court, lui, est déjà
+    calibré pour être dit — il fait sept à huit secondes, là où le texte long
+    du fichier source en fait trente à quarante.
+    """
+    spec = importlib.util.spec_from_file_location(
+        'generer_presentation',
+        ICI.parents[0] / 'affiches' / 'generer-presentation.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.lire_programme()['kiosques']
+
+
+def _qui():
+    """Les entités et les noms, relus dans la page qui les publie déjà."""
+    page = PAGE.read_text(encoding='utf-8')
+    qui = {}
+    for carte in re.finditer(
+            r'<article class="kiosque-card" data-kiosque="(\d+)">(.*?)</article>',
+            page, re.S):
+        groupes = re.findall(
+            r'<span class="qui-groupe">'
+            r'<span class="qui-org">(.*?)</span>(.*?)</span>',
+            carte.group(2), re.S)
+        qui[int(carte.group(1))] = [(o.strip(), n.strip()) for o, n in groupes]
+    if len(qui) != 10 or not all(qui.values()):
+        sys.exit('les animateurs des kiosques sont illisibles dans la page.')
+    return qui
+
+
+_PAGE_KIOSQUES, _QUI = _programme(), _qui()
+
+# (numéro, thème, salle, entités) — le tableau récapitulatif.
+KIOSQUES = [(int(k['numero']), k['titre'], k['salle'],
+             ' · '.join(o for o, _ in _QUI[int(k['numero'])]))
+            for k in _PAGE_KIOSQUES]
+
+# Qui tient le kiosque, entité et noms, pour que l'animateur le nomme.
+PORTEURS = {n: ' / '.join(f'{o} · {noms}' for o, noms in groupes)
+            for n, groupes in _QUI.items()}
+
+PITCH_COURT = {int(k['numero']): k['pitch'] for k in _PAGE_KIOSQUES}
+SALLES = {int(k['numero']): k['salle'] for k in _PAGE_KIOSQUES}
+TITRES = {int(k['numero']): k['titre'] for k in _PAGE_KIOSQUES}
+
+# Le texte long des porteurs, repris mot pour mot de `Liste_des_kiosques.xlsx`,
+# colonne D (version du 10/09/2026). Il n'est pas sur la page : c'est la seule
+# donnée de ce fichier qui soit recopiée ici, et donc la seule à revérifier si
+# le fichier source change. Il n'est pas fait pour être lu en scène — trente à
+# quarante secondes à voix haute pour un créneau qui en compte trente en tout,
+# transitions comprises. Il est là pour être lu avant, et pour y prendre une
+# phrase.
+PITCHES_LONGS = {
+    1: [
+        'Option 1 : La tour de Babel',
+        '"Quand les bugs s\'accumulent, tout s\'effondre."',
+        "Cet atelier participatif met en scène la fragilité progressive d'un système. À chaque itération, vous construisez en gérant l'apparition croissante de défauts cachés. Plus les bugs sont découverts tard, plus leurs conséquences deviennent catastrophiques.",
+        'Option 2 : Marshmallow Challenge',
+        '"Tester tôt, c\'est la vraie victoire."',
+        "Vous disposez de 18 minutes, 20 spaghettis, 1 chamallow. Construisez la tour la plus haute possible. Mais attention : chaque choix doit être validé rapidement ou vous risquez l'effondrement.",
+    ],
+    2: [
+        '"Lynqa : l\'agent IA qui exécute vos tests manuels pendant que vous dormez."',
+        "Savez-vous que 80% des tests fonctionnels restent manuels ? C'est normal : certains sont visuels, trop instables ou trop coûteux à automatiser. Mais ces campagnes manuelles répétitives pèsent lourd : fatigue des testeurs, risques d'erreurs, ressources mobilisées à chaque cycle.",
+        'Imaginez :',
+        "Un agent IA qui lit vos cas de test existants (sans modification), les exécute automatiquement 24h/24, 7j/7, et produit un rapport détaillé avec captures d'écran étape par étape. Pas de scripting, pas de no-code, pas de restructuration de vos scénarios.",
+    ],
+    3: [
+        '"Coder, Tester, Automatiser... 3 agents IA, une chaîne de production de tests automatisés !"',
+        '3 agents IA spécialisés se transmettent le travail : l’un lit le code et en extrait la structure technique, l’autre traduit le besoin métier en scénarios de tests bout en bout, le troisième assemble les deux pour produire les tests fonctionnels automatisés.',
+        "le 3ième agent ferme la boucle : un libellé qui a changé, une règle métier absente, un identifiant manquant - tout écart rencontré remonte vers l'agent concerné...",
+        "Chaque test automatisé produit enrichit la chaîne qui l'a produit.",
+    ],
+    4: [
+        'De la page blanche à la mise à jour, Yest Companion vous accompagne sur le parcours.',
+        'Explication',
+        "À partir de vos spécifications (US JIRA, pages Confluence), Yest Companion propose un premier parcours structuré, avec ses tâches métier et son enchaînement, puis le fait évoluer quand les exigences changent. Vous gardez la main à chaque étape : l'IA propose, vous validez ou vous ajustez.",
+        'Message clé',
+        'Yest Companion accélère la prise en main de Yest et la maintenance des parcours, donc celle des tests.',
+    ],
+    5: [
+        'Arrêtez les triangles et les quadrants : construisez votre VRAIE pyramide de tests !',
+        'Fini les théories abstraites ! Plongez les mains dans une pyramide 3D interactive et repositionnez les bons types de test sur chaque face pour construire une stratégie cohérente. Entre tests unitaires, composants, résilience et garantie produit, trouvez le bon équilibre en mode ludique.',
+        "Un jeu collaboratif où chaque équipe doit assembler sa pyramide parfaite en faisant glisser, placer et confronter ses choix—parce que comprendre par le jeu, c'est retenir pour de vrai !",
+    ],
+    6: [
+        'Au revoir QC, bienvenue XRAY !',
+        '"Moderniser notre outillage QC pour gagner en efficacité, résilience et performance opérationnelle."',
+        'Après des années de fidèles services, notre système QC historique va tirer sa révérence en 2027 pour laisser place à XRAY.',
+        'Venez découvrir le produit et la trajectoire de migration.',
+    ],
+    7: [
+        'IACA et IACT les assistants des QA en Squad :',
+        "Deux agents IA pour aider les QA dans la génération des critères d'acceptance et des cas de test associés sur la base d'US",
+        '- Analyser les US pour en extraire les règles, leurs complétudes et leurs cohérences',
+        "- Générer des critères d'acceptance et cas de test pour valider les règles identifiées",
+        '- Effectuer une couverture complète et optimisée des US',
+    ],
+    8: [
+        'JADD : Los données de production à portée de clic pour vos tests',
+        'JADD est un portail offrant différentes fonctionnalités pour gérer vos données de test',
+        'En quelques clics, adaptez vos besoins en données de test en un temps record : enrichissez, supprimez, réutilisez, rechargez à nouveau...',
+    ],
+    9: [
+        'SauceLabs à portée de main : développez, testez partout et homologuez en toute confiance.',
+        "Découvrez comment intégrer une plateforme de test mobile directement dans votre chaîne de développement locale et centrale, avec la possibilité d'exécuter vos tests d'homologation sur SauceLabs pour valider en conditions réelles.",
+        "Des démos live pour explorer les possibilités en temps réel et voir comment vos tests parcourent l'ensemble du cycle de vie – du développement à la validation d'homologation.",
+    ],
+    10: [
+        'TESTY : Mission Qualité Acceptée',
+        "Vous ne l'avez pas encore rencontré ?",
+        "Plongez dans l'univers coloré et décalé de TESTY, un personnage attachant qui vous fait découvrir les coulisses du métier de testeur à travers des épisodes courts, ludiques et accessibies, sans jargon incompréhensible. Entre des bugs improbables, des situations cocasses et des « ah-ha ! » révélateurs, découvrez que tester, c'est être un vrai détective du code.",
+        'Visionnage en libre service.',
+    ],
+}
 
 REPERES = ('horaires', [
     ('09h45', "Mot d'ouverture — Ghislaine, Fabrice, Anas"),
@@ -380,6 +518,84 @@ CARTE_REPERES = {
     ],
     'ensuite': 'Carte suivante : ta première prise de parole.',
 }
+
+
+# ── Les dix pitches, répartis entre les deux animateurs ──────────────────
+#
+# Ce sont les animateurs qui pitchent, pas les porteurs de kiosque : Anas les
+# impairs, le second les pairs. Chacun garde son micro d'un bout à l'autre —
+# ce que ça fait gagner n'est pas tant la minute de passages de main que la
+# variance : deux animateurs qui ont répété tiennent cinq minutes, dix
+# intervenants qui montent chacun leur tour, non.
+#
+# En contrepartie la salle ne voit plus le visage de qui elle retrouvera en
+# atelier. D'où la consigne, sur chaque carte, de nommer le porteur et de lui
+# faire lever la main : c'est gratuit en temps, et ça rend ce que la mécanique
+# enlève.
+
+IMPAIRS, PAIRS = [1, 3, 5, 7, 9], [2, 4, 6, 8, 10]
+
+
+def _carte_kiosque(numero, autre):
+    if numero == 10:
+        ensuite = 'Ensuite — 13h49 · le tirage au sort et les lots.'
+    elif numero == 9:
+        ensuite = (f'Ensuite — le kiosque 10 est pour {autre}, '
+                   'puis 13h49 · le tirage au sort.')
+    else:
+        ensuite = (f'Ensuite — le kiosque {numero + 1} est pour {autre}. '
+                   f'Tu reprends au kiosque {numero + 2}.')
+    carte = {
+        'heure': f'Kiosque {numero}',
+        'etiquette': 'SALLE',
+        'fin': SALLES[numero],
+        'titre': TITRES[numero],
+        'corps': [
+            ('puce', f'Porté par {PORTEURS[numero]}.'),
+            ('note', 'Nomme-les et fais-leur lever la main : la salle doit voir '
+                     'le visage qu’elle retrouvera en atelier.'),
+            ('dire', PITCH_COURT[numero]),
+            ('reserve', PITCHES_LONGS[numero]),
+        ],
+        'ensuite': ensuite,
+    }
+    if numero == 10:
+        # Deux sources disent deux choses, et c'est ce pitch-là qui les dira à
+        # la salle. Mieux vaut que l'animateur le sache avant d'ouvrir la
+        # bouche que de le découvrir en salle Sumida.
+        carte['alerte'] = (
+            '« Libre service » selon la page ; diffusion présentée de '
+            'l’épisode 4 selon le conducteur du 10/09. À trancher avant de le dire.')
+    return carte
+
+
+def _carte_repartition(miens, moi, autre_moitie, autre):
+    return {
+        'heure': '13h44', 'fin': '13h49',
+        'titre': f'Les dix pitches — tu prends les {moi}',
+        'corps': [
+            ('note', f'Vous vous partagez les dix : toi les {moi}, {autre} les '
+                     f'{autre_moitie}. Chacun garde son micro d’un bout à '
+                     'l’autre — il n’y a plus aucun passage de main, et les '
+                     'porteurs de kiosque restent assis.'),
+            ('kiosques', KIOSQUES, set(miens)),
+            ('note', 'Tes cinq sont en couleur, et chacun a sa carte juste '
+                     'après celle-ci. Trente secondes chacun : la phrase à dire '
+                     'en fait moins de dix, le reste c’est la salle, les noms, '
+                     'et ce que tu veux y ajouter.'),
+            ('note', 'Si ça déborde après 13h50 : le rappel des salles passe de '
+                     '2 min à 1 min et le tirage se dit debout, sans slide. La '
+                     'dispersion de 13h55 ne se sacrifie jamais.'),
+        ],
+        'ensuite': (f'Ensuite — le kiosque {miens[0]}, ta première carte.'
+                    if miens[0] == 1 else
+                    f'Ensuite — {autre} ouvre avec le kiosque 1 ; '
+                    f'ta première carte est le kiosque {miens[0]}.'),
+    }
+
+
+PITCHS_ANAS = [_carte_kiosque(n, 'le deuxième animateur') for n in IMPAIRS]
+PITCHS_SECOND = [_carte_kiosque(n, 'Anas') for n in PAIRS]
 
 
 ANAS = [
@@ -485,19 +701,8 @@ ANAS = [
         ],
         'ensuite': 'Ensuite — 13h44 · les dix pitches de 30 secondes.',
     },
-    {
-        'heure': '13h44', 'fin': '13h49',
-        'titre': 'Les dix pitches, 30 secondes chacun',
-        'corps': [
-            ('kiosques', KIOSQUES),
-            ('note', 'Deux micros HF passés en alternance : dix passages de main '
-                     'coûtent à eux seuls plus d’une minute.'),
-            ('note', 'Si ça déborde après 13h50 : le rappel des salles passe de 2 min '
-                     'à 1 min et le tirage se dit debout, sans slide. La dispersion de '
-                     '13h55 ne se sacrifie jamais.'),
-        ],
-        'ensuite': 'Ensuite — 13h49 · le tirage au sort et les lots.',
-    },
+    _carte_repartition(IMPAIRS, 'impairs', 'pairs', 'le deuxième animateur'),
+    *PITCHS_ANAS,
     {
         'heure': '13h49', 'fin': '14h00',
         'titre': 'Lots, rappel des salles, dispersion',
@@ -647,16 +852,8 @@ SECOND = [
         ],
         'ensuite': 'Ensuite — 13h44 · les dix pitches, portés par les kiosques.',
     },
-    {
-        'heure': '13h44', 'fin': '13h49',
-        'titre': 'Les dix pitches — tu appelles, ils parlent',
-        'corps': [
-            ('kiosques', KIOSQUES),
-            ('note', 'Trente secondes chacun, deux micros HF en alternance. Une '
-                     'phrase de contenu, une phrase de salle, et on rend le micro.'),
-        ],
-        'ensuite': 'Ensuite — 13h49 · le tirage au sort et les lots.',
-    },
+    _carte_repartition(PAIRS, 'pairs', 'impairs', 'Anas'),
+    *PITCHS_SECOND,
     {
         'heure': '13h49', 'fin': '13h52',
         'titre': 'Le tirage au sort et les lots',
@@ -698,6 +895,8 @@ def _attendus(fiche):
     est coupée au bord de sa boîte. Aucune mesure de position ne le voit.
     """
     textes = [fiche['titre']]
+    if fiche.get('fin'):
+        textes += [fiche.get('etiquette', 'FIN VISÉE'), fiche['fin']]
     if fiche.get('alerte'):
         textes.append(fiche['alerte'])
     for element in fiche['corps']:
@@ -708,6 +907,9 @@ def _attendus(fiche):
             textes.append('« ' + element[1] + ' »')
         elif genre == 'trou':
             textes.append('À REMPLIR — ' + element[1].upper())
+        elif genre == 'reserve':
+            textes.append('LE TEXTE DU PORTEUR — À LIRE AVANT, PAS EN SCÈNE')
+            textes += element[1]
         elif genre == 'kiosques':
             for num, theme, salle, qui in element[1]:
                 textes += [theme, salle, qui]
