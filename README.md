@@ -538,8 +538,14 @@ vidéo : la diapo reste juste même si rien ne se lance.
     python3 outils/fiches/generer-fiches-animateurs.py
 
 Produit `fiches-animateurs.pptx` et `.pdf` : **vingt-trois cartes A5, un jeu par
-animateur, une carte par prise de parole**. À imprimer en A5, recto seul, 160 g
-au minimum.
+animateur, une carte par prise de parole**. Recto seul, 160 g au minimum.
+
+Les pages font **exactement 14,85 × 21 cm**, et le contrôle le vérifie page par
+page. Le seul moyen d'obtenir une carte plus grande que l'A5 est de laisser la
+boîte de dialogue d'impression l'agrandir : « Ajuster à la page » sur une
+imprimante chargée en A4 remonte l'A5 à l'A4 sans rien dire. Imprimer en
+**« Taille réelle » / 100 %**, ou — si le bac n'a que de l'A4 — en **« 2 pages
+par feuille »**, qui réduit légèrement et ne dépasse donc jamais l'A5.
 
 Le découpage n'est ni « une fiche par personne » ni « une fiche par créneau ».
 Une carte par créneau serait à partager — de 09h45 à 10h00, Ghislaine parle,

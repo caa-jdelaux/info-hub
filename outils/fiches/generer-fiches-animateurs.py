@@ -28,8 +28,15 @@ scène et devient faux.
     python3 outils/fiches/generer-fiches-animateurs.py
 
 Produit `fiches-animateurs.pptx` (modifiable jusqu'au dernier moment) et
-`fiches-animateurs.pdf` (à imprimer en A5, recto seul, 160 g minimum).
-Le contrôle relit le PDF et refuse une carte dont le texte sort de sa zone.
+`fiches-animateurs.pdf`. Le contrôle relit le PDF et refuse une carte dont le
+texte sort de sa zone, ou dont une phrase a été coupée.
+
+**Impression — recto seul, 160 g minimum, et surtout à l'échelle réelle.**
+Les pages font exactement 14,85 × 21 cm. Le seul moyen d'obtenir une carte plus
+grande que l'A5 est de laisser la boîte de dialogue agrandir : « Ajuster à la
+page » sur une imprimante chargée en A4 remonte l'A5 à l'A4 sans le dire.
+Choisir « Taille réelle » / « 100 % » — ou, si le bac n'a que de l'A4,
+« 2 pages par feuille », qui réduit un peu et ne dépasse donc jamais l'A5.
 
 Dépendances : python-pptx, pymupdf, LibreOffice Impress, les polices Barlow et
 Barlow Condensed.
@@ -40,6 +47,7 @@ import subprocess
 import sys
 
 from pptx import Presentation
+from pptx.oxml.ns import qn
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
@@ -766,6 +774,11 @@ def verifier(pdf, attendus):
 def main():
     prs = Presentation()
     prs.slide_width, prs.slide_height = LARGEUR, HAUTEUR
+    # python-pptx garde le type de format d'origine (« screen4x3 ») même quand
+    # on impose des dimensions. Les lecteurs se fient à cx/cy, mais laisser un
+    # type qui contredit les dimensions est une invitation à ce qu'un jour
+    # l'un d'eux propose de « remettre au bon format ».
+    prs._element.find(qn('p:sldSz')).set('type', 'custom')
     attendus = []
     for deck, accent, fiches in JEUX:
         for i, fiche in enumerate(fiches, 1):
