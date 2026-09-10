@@ -378,6 +378,27 @@ aucun octet d'image : la source du logo est déclarée une seule fois dans
 `--te-logo`, sert de fond au bandeau **et** de masque au reflet. Écrite deux
 fois, elle aurait ajouté 26 Ko à une page qui en fait 95.
 
+**Une onde signale la salle sur le plan.** À l'ouverture de la modale, un
+anneau turquoise part du contour de la salle, s'écarte et s'éteint, toutes les
+1,5 s. Trois choix, chacun contraint par un constat plutôt que par le goût :
+
+- **Une onde et non un reflet.** L'effet du bandeau ne se transpose pas : une
+  bande qui met 2,6 s à traverser 240 px de logo traverse Sumida, large de
+  40 px sur le plan, en moins d'une demi-seconde. Ce serait un clignotement.
+- **Un cycle court.** La modale reste ouverte quelques secondes — on l'ouvre,
+  on situe la salle, on ferme. Une animation dont le premier temps tombe à 2 s
+  ne serait vue par personne.
+- **Une distance de propagation constante, pas un pourcentage.** Un facteur
+  d'agrandissement fixe donne une distance proportionnelle à la salle : mesuré
+  sur Donau, 190 px de large, l'onde traversait Douro et Rhône avant de
+  s'éteindre. Le facteur est donc calculé au tracé pour que l'onde parcoure
+  toujours 16 unités de plan, quelle que soit la salle.
+
+L'onde passe sous l'anneau et ne revient jamais sur la salle elle-même :
+vérifié dans Chromium à sept instants du cycle, la zone de la salle est
+strictement identique d'un instant à l'autre. Elle disparaît sous
+`prefers-reduced-motion` et à l'impression.
+
 Trois précautions, chacune vérifiée dans le navigateur :
 
 - **Le masque, sinon rien.** Sans masquage, la bande claire barrerait tout le

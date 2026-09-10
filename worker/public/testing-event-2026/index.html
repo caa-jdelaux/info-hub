@@ -686,6 +686,41 @@
   .mp-cadre img { display: block; width: 100%; height: auto; }
   .mp-calque { position: absolute; inset: 0; width: 100%; height: 100%; }
 
+  /* Une onde qui s'écarte de l'anneau, comme un point qu'on vient de poser
+     sur une carte. Le reflet du logo ne se transpose pas ici : une bande qui
+     traverse 240 px de logo en 2,6 s traverserait Sumida, large de 40 px sur
+     le plan, en moins d'une demi-seconde — un clignotement, pas un reflet.
+
+     Le cycle est court, 1,6 s, parce que la modale ne reste ouverte que
+     quelques secondes : on l'ouvre, on situe la salle, on ferme. Une
+     animation dont le premier temps tombe à 2 s ne serait vue par personne.
+
+     L'onde part de l'anneau et s'écarte vers l'extérieur — elle ne repasse
+     jamais sur la salle, dont le nom est déjà écrit en tout petit. */
+  .mp-onde { opacity: 0; }
+  @supports (transform-box: fill-box) {
+    .mp-onde {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: mp-onde 1.5s cubic-bezier(0.15, 0.6, 0.35, 1) infinite;
+    }
+  }
+  /* L'opacité s'éteint au même moment que l'écartement se termine : sur les
+     1,5 s du cycle il y a toujours une onde en route, sans temps mort.
+
+     L'agrandissement n'est pas le même pour toutes les salles. Un facteur
+     fixe se traduit par une distance proportionnelle à la taille : sur Donau,
+     190 px de large, l'onde traversait Douro et Rhône avant de s'éteindre.
+     Le facteur est donc calculé au tracé pour que l'onde parcoure toujours la
+     même distance, quelle que soit la salle — cf. ECART_ONDE. */
+  @keyframes mp-onde {
+    0%   { transform: scale(1);                      opacity: 0.85; }
+    100% { transform: scale(var(--mp-echelle, 1.3)); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mp-onde { animation: none; opacity: 0; }
+  }
+
   /* À 390 px de large, le nom écrit sur le plan fait 5 px de haut : la
      position doit aussi être donnée en toutes lettres. */
   .mp-repere {
@@ -829,6 +864,7 @@
        bordure, la feuille imprimée reste celle du participant. */
     .kiosque-card.repere { border: 2px solid var(--te-cyan-dark) !important; }
     .encours { outline: none !important; }
+    .mp-onde { display: none !important; }
     .section-title { position: static; }
     .kiosques-grid.compacts .kiosque-pitch { display: block; }
     .conf-card, .kiosque-card, .special-slot { box-shadow: none; border: 1px solid #ddd; }
@@ -1517,6 +1553,20 @@
     return groupes;
   }
 
+  /* Distance dont l'onde s'écarte de l'anneau, en unités du plan (840 de
+     large). Seize, c'est un peu plus que l'épaisseur de l'anneau : assez pour
+     que le mouvement se voie, trop peu pour atteindre la salle d'à côté. */
+  var ECART_ONDE = 16;
+
+  /* Un agrandissement s étire le plus grand côté de (s-1)×côté, soit la
+     moitié de chaque côté du contour. Pour parcourir ECART_ONDE de chaque
+     côté : s = 1 + 2×ECART_ONDE / côté. Borné pour que les salles minuscules
+     ne produisent pas une onde démesurée. */
+  function echelleOnde(cote) {
+    var s = 1 + (2 * ECART_ONDE) / cote;
+    return Math.min(1.45, Math.max(1.1, s)).toFixed(3);
+  }
+
   function ouvrirPlan(cles, kiosque) {
     var demandees = String(cles).split(',');
     var salles = [];
@@ -1552,6 +1602,23 @@
        l'extérieur du groupe, l'anneau la bande suivante. Tous les halos
        d'abord — tracé après, un halo recouvrirait l'anneau voisin. */
     var groupes = grouperRectangles(salles, 9.5);
+    /* L'onde d'abord : tracée avant le halo, elle passe dessous et l'anneau
+       reste net pendant qu'elle s'écarte. Son facteur d'agrandissement est
+       déduit de la taille du groupe pour que la distance parcourue reste la
+       même partout : un facteur fixe donnerait une onde discrète sur une
+       petite salle et une onde qui recouvre les voisines sur une grande. */
+    for (j = 0; j < groupes.length; j += 1) {
+      var ol = groupes[j].x2 - groupes[j].x + 19;
+      var oh = groupes[j].y2 - groupes[j].y + 19;
+      var onde = rectSvg({
+        'class': 'mp-onde',
+        x: groupes[j].x - 9.5, y: groupes[j].y - 9.5,
+        width: ol, height: oh,
+        rx: 11, fill: 'none', stroke: '#008080', 'stroke-width': 6
+      });
+      onde.style.setProperty('--mp-echelle', echelleOnde(Math.max(ol, oh)));
+      mpTraits.appendChild(onde);
+    }
     for (j = 0; j < groupes.length; j += 1) {
       mpTraits.appendChild(rectSvg({
         x: groupes[j].x - 3.5, y: groupes[j].y - 3.5,
