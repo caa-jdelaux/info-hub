@@ -24,7 +24,7 @@ n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 | Sponsor | Fabrice | 09h49 → 09h53 · 16h45 → 16h50 |
 | Fil rouge, matin et après-midi | Anas | 09h56 → fin de journée |
 | 2ᵉ animateur (après-midi) | `[ à compléter : prénom ]` | 13h35 → 14h00 · 16h25 → fin |
-| Séquence TESTY | Elena | 13h41 → 13h46 |
+| Kiosque 10 — TESTY | Elena `[ à confirmer, cf. § 4.2 ]` | 13h44 → 13h49 |
 | Conférence 1 | `[ à compléter : intervenant(s) ]` | 09h55 (coulisses) → 10h45 |
 | Conférence 2 | `[ à compléter : intervenant(s) ]` | 10h40 (coulisses) → 11h30 |
 | Table ronde | `[ à compléter : modérateur + intervenants ]` | 11h25 (coulisses) → 12h15 |
@@ -32,8 +32,9 @@ n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 | Porteurs de micro (×2) | `[ à compléter ]` | 09h45 → 12h15 |
 | Doublure d'Anas | `[ à compléter ]` | toute la journée |
 
-> **Point de vigilance.** Anas est seul en scène de 09h56 à 12h15, puis de 13h40
-> à 14h00, puis à la clôture. Aucune doublure n'est nommée à ce jour. Une
+> **Point de vigilance.** Anas est seul en scène de 09h56 à 12h15 — l'après-midi
+> il est épaulé par le 2ᵉ animateur, la matinée non. Aucune doublure n'est
+> nommée à ce jour. Une
 > extinction de voix ou un imprévu à 11h00 laisse la matinée sans animateur.
 > Désigner quelqu'un qui a lu ce document, même s'il ne monte jamais sur scène.
 
@@ -51,7 +52,7 @@ n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 | 11h30 | Table ronde — *Mode produit et les tests* | 45 min | Anas |
 | 12h15 | Cocktail déjeunatoire | 85 min | — |
 | 13h36 | Musique de reprise | 4 min | régie |
-| 13h40 | Présentation de l'organisation des kiosques | 20 min | Anas + 2ᵉ animateur + Elena |
+| 13h40 | Présentation de l'organisation des kiosques | 15 min + 5 min de dispersion | Anas + 2ᵉ animateur |
 | 14h00 | Rotation 1 | 30 min | kiosques |
 | 14h30 | Rotation 2 | 30 min | kiosques |
 | 15h00 | Rotation 3 | 30 min | kiosques |
@@ -286,68 +287,70 @@ au signal des animateurs, pas à 13h40 pile.
 
 ### 4.2 — 13h40 · Organisation de l'après-midi (20 min)
 
-> **Ce créneau est le point de tension de la journée.** Il fait 20 minutes et il
-> doit contenir six choses. Le découpage ci-dessous tient **à condition** de
-> retenir les deux arbitrages signalés. Sans eux, le contenu décrit pèse 21 à
-> 23 minutes et la rotation 1 démarre en retard — or les cinq rotations
-> s'enchaînent sans marge jusqu'à 16h30.
+**Séquence arrêtée : pas de diffusion vidéo.** La mini-série TESTY n'est plus
+présentée en plénière — elle reste le kiosque n° 10, en libre service toute
+l'après-midi salles Sumida et Alzette. Le créneau se joue donc en deux temps :
+**15 minutes de présentation, puis 5 minutes pour se disperser dans les salles**,
+de façon que la rotation 1 démarre réellement à 14h00 et pas à 14h05.
 
 | Sous-séquence | Qui | Durée | Fin visée |
 |---|---|---|---|
 | Accueil de reprise | Anas + 2ᵉ animateur | 1 min | 13h41 |
-| Séquence TESTY | Elena | 5 min | 13h46 |
-| Principe des kiosques et des rotations | Anas + 2ᵉ animateur | 2 min | 13h48 |
-| Les 10 kiosques, 20 s chacun | les porteurs de kiosque | 3 min 30 | 13h52 |
-| Tirage au sort et lots | Anas + 2ᵉ animateur | 3 min | 13h55 |
-| Rappel salles + RDV 16h30 | Anas | 2 min | 13h57 |
-| Marge et dispersion | — | 3 min | 14h00 |
+| Principe des kiosques et des rotations | Anas + 2ᵉ animateur | 3 min | 13h44 |
+| Les 10 kiosques, 30 s chacun | les porteurs de kiosque | 5 min | 13h49 |
+| Tirage au sort et lots | Anas + 2ᵉ animateur | 3 min | 13h52 |
+| Rappel salles + RDV 16h30 | Anas | 2 min | 13h54 |
+| Marge | — | 1 min | 13h55 |
+| **Dispersion vers les salles** | — | 5 min | 14h00 |
 
-#### Arbitrage n° 1 — la vidéo TESTY
+Quatorze minutes de contenu pour quinze : une minute de marge, pas plus.
+**Règle de rattrapage si les pitches débordent après 13h50** : le rappel des
+salles passe de 2 min à 1 min, et le tirage au sort est dit debout, sans slide.
+Ce qu'on ne sacrifie jamais, c'est la dispersion de 13h55 — c'est elle qui fait
+démarrer les dix kiosques à l'heure.
 
-**Proposé : 3 min de présentation par Elena + un teaser de 90 s, au lieu des
-6 minutes d’épisode complet. Gain : 4 min.**
+#### Ce que la suppression de la vidéo change
 
-Le raisonnement n'est pas seulement une histoire de minutes. **Le kiosque n° 10
-*est* « Vidéo TESTY — libre service »**, sur deux salles (Sumida + Alzette),
-ouvert toute l'après-midi. Diffuser l'épisode entier en plénière retire au
-kiosque 10 sa raison d'exister : qui irait voir en salle ce qu'il vient de voir
-en entier sur grand écran ? Un teaser fait l'inverse — il crée le manque que le
-kiosque comble. Et il rend cohérente la phrase d'Elena : *« si vous avez des
-questions, venez au kiosque TESTY. »*
+Trois conséquences, dont deux favorables et une à surveiller.
 
-`[ décision à prendre : teaser 90 s ou épisode complet ]`
+1. **Les pitches repassent à 30 secondes.** J'avais proposé de les couper à 20 s
+   uniquement parce que la séquence TESTY mangeait le créneau. Les cinq minutes
+   qu'elle occupait rendent cet arbitrage inutile : 30 s tiennent. La consigne aux porteurs de
+   kiosque reste la même — **une phrase sur le contenu, une phrase sur la
+   salle, et on rend le micro** — et il faut toujours **deux micros HF passés en
+   alternance**, sinon dix passages de main coûtent à eux seuls plus d'une
+   minute. Trente secondes annoncées sans briefing préalable deviennent
+   cinquante, et les dix passages font huit minutes au lieu de cinq.
 
-#### Arbitrage n° 2 — les pitches de kiosque
+2. **Le kiosque 10 garde son exclusivité.** Plus personne n'aura vu l'épisode
+   avant d'entrer en salle Sumida. En contrepartie, **le pitch du kiosque 10
+   porte désormais seul tout le poids de TESTY** : c'est le seul des dix dont
+   les 30 secondes doivent donner envie plutôt qu'informer. À confier à Elena si
+   elle est disponible sur ce créneau.
 
-**Proposé : 20 secondes par kiosque au lieu de 30. Gain : 1 min 40.**
+3. **Le point à surveiller : ce bloc n'a plus aucun moment de respiration.**
+   Quinze minutes d'instructions d'organisation, juste après un cocktail, dans
+   le creux digestif de 13h40 — c'était le seul rôle utile que jouait la vidéo.
+   Deux contre-mesures, gratuites : **faire alterner Anas et le 2ᵉ animateur**
+   plutôt que laisser l'un dérouler seul la liste, et **placer les dix pitches
+   tôt** (13h44), pendant que la salle est encore disponible. Les pitches sont
+   le seul moment vivant du bloc ; les mettre en dernier, avant la dispersion,
+   les ferait tomber dans le brouhaha des gens qui se lèvent.
 
-Le pitch écrit de chaque kiosque est **déjà** derrière le QR code, mot pour mot.
-Le rôle du passage sur scène n'est donc pas de le relire : c'est de mettre un
-visage sur un kiosque et de donner un numéro de salle. Vingt secondes suffisent
-pour *« kiosque 3, écosystème d'agents IA, salle Liffey, on vous montre trois
-agents qui fabriquent des tests de bout en bout — venez »*.
-
-Consigne à donner aux porteurs de kiosque **avant** le jour J, sinon les dix
-passages font sept minutes : une phrase sur le contenu, une phrase sur la salle,
-et on rend le micro. Prévoir **deux micros HF passés en alternance** — dix
-passages de main sur un seul micro coûtent à eux seuls plus d'une minute.
+`[ à confirmer : Elena garde-t-elle une prise de parole ? ]` Sa séquence de
+3 minutes disparaît avec la vidéo. Par défaut je l'ai basculée sur le pitch de
+30 s du kiosque 10 — mais c'est une hypothèse de ma part, et elle avait
+probablement préparé autre chose. À lui dire avant le jour J plutôt que le
+matin même.
 
 #### Accueil de reprise (1 min)
 
-Anas et le 2ᵉ animateur ensemble. Court. Ils annoncent qu'en vingt minutes la
-salle saura exactement où aller et pourquoi.
+Anas et le 2ᵉ animateur ensemble. Court, et il annonce le format : *« quinze
+minutes, et vous saurez exactement où aller, avec qui, et ce qu'il y a à
+gagner. »* Donner la durée dès la première phrase tient la salle.
 
-#### Séquence TESTY — Elena (4 min 30)
 
-1. Ce qu'est TESTY, le principe de la mini-série : le métier de testeur en
-   épisodes courts, ludiques, sans jargon.
-2. Où en est la série, ce qu'est ce nouvel épisode.
-3. Diffusion.
-4. **Phrase de sortie, obligatoire** : *« si vous avez des questions sur TESTY,
-   le kiosque 10 vous accueille en libre service tout l'après-midi, salles
-   Sumida et Alzette. »*
-
-#### Principe des kiosques et des rotations (2 min 30)
+#### Principe des kiosques et des rotations (3 min)
 
 Slide de l'après-midi à l'écran. Quatre messages, pas plus :
 
@@ -498,18 +501,20 @@ la journée `[ à confirmer : jusqu'à quand la page reste-t-elle en ligne ? ]`.
 | 6 | 10h45 | **Générique 15 s** — conférence 2 | au top d'Anas |
 | 7 | 11h30 | **Générique 15 s** — table ronde | au top d'Anas |
 | 8 | 13h36 | Musique de reprise | fondu au signal des animateurs |
-| 9 | ≈ 13h43 | **Vidéo TESTY** (teaser ou épisode complet) | — |
-| 10 | 13h46 | Slide après-midi / rotations | — |
-| 11 | 13h55 | Slide QR code | — |
+| 9 | 13h41 | Slide après-midi / rotations | — |
+| 10 | 13h44 | Slide des 10 kiosques (numéro + salle, un par pitch) | — |
+| 11 | 13h52 | Slide QR code | maintenue jusqu'à 14h00 |
 | 12 | 16h25 | Musique d'attente pendant que la salle se remplit | fondu à 16h33 |
 | 13 | ≈ 16h56 | Musique de fin | — |
+
+**Aucune diffusion vidéo à 13h40.** La séquence TESTY est supprimée du
+plénier ; la vidéo n'existe plus que dans le kiosque n° 10, en libre service.
 
 **Vérifications matérielles avant 09h30 :**
 
 - micros HF des animateurs + **deux micros baladeurs pour les questions**, tous
   testés en salle vide, piles neuves ;
-- deux micros HF supplémentaires pour les dix pitches de 13h48 ;
-- son de la vidéo TESTY testé **au volume salle**, pas au casque ;
+- deux micros HF supplémentaires pour les dix pitches de 13h44 ;
 - les trois génériques et les deux musiques chargés et repérés dans l'ordre du
   tableau ci-dessus ;
 - retour vidéo visible depuis la scène, sinon les animateurs parlent dos à
@@ -533,13 +538,13 @@ les ai pas comblées par une hypothèse.
 4. **Le contenu des trois lots.**
 5. **La règle de présence pour gagner** (§ 3.6, point 5).
 6. **Le signal de fin de rotation** dans les dix salles (§ 4.3).
-7. **Teaser 90 s ou épisode TESTY complet** (§ 4.2, arbitrage 1).
-8. **Pitches de 20 s ou 30 s** (§ 4.2, arbitrage 2).
-9. **L'ordre de la clôture** : initial ou celui du § 5.
-10. **La phrase sur la 4G** au moment du QR code (§ 3.2).
-11. **Le modérateur de la table ronde** : Anas ou quelqu'un d'autre ?
-12. **Les noms des intervenants** des deux conférences et de la table ronde.
-13. **Durée de mise en ligne de la page** après le 14 septembre.
+7. **La prise de parole d'Elena** : le pitch de 30 s du kiosque 10, ou rien ?
+   (§ 4.2) Sa séquence plénière de 3 minutes a disparu avec la vidéo.
+8. **L'ordre de la clôture** : initial ou celui du § 5.
+9. **La phrase sur la 4G** au moment du QR code (§ 3.2).
+10. **Le modérateur de la table ronde** : Anas ou quelqu'un d'autre ?
+11. **Les noms des intervenants** des deux conférences et de la table ronde.
+12. **Durée de mise en ligne de la page** après le 14 septembre.
 
 ---
 
