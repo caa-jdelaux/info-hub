@@ -370,9 +370,9 @@ vidéo : la diapo reste juste même si rien ne se lance.
 ## Comportements de la page
 
 **Le logo du bandeau porte un reflet**, qui le traverse 2,6 s toutes les
-10 s. Le mouvement dure le même temps que sur la page de garde de la
-présentation, mais l'attente entre deux passages est de 7,4 s au lieu de
-27,4 : sur la page web le reflet est visible un quart du temps. Il ne coûte
+7 s. Le mouvement dure le même temps que sur la page de garde de la
+présentation, mais l'attente entre deux passages est de 4,4 s au lieu de
+27,4 : sur la page web le reflet est allumé 37 % du temps. Il ne coûte
 aucun octet d'image : la source du logo est déclarée une seule fois dans
 `--te-logo`, sert de fond au bandeau **et** de masque au reflet. Écrite deux
 fois, elle aurait ajouté 26 Ko à une page qui en fait 95.

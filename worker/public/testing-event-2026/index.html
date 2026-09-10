@@ -214,9 +214,9 @@
     position: relative;
   }
 
-  /* Un reflet traverse le logo 2,6 s toutes les 10 s. Le mouvement dure le
-     même temps qu'avant, c'est l'attente entre deux passages qui est passée
-     de 27,4 s à 7,4 s : le reflet est donc visible un quart du temps.
+  /* Un reflet traverse le logo 2,6 s toutes les 7 s. Le mouvement garde sa
+     durée ; c'est l'attente entre deux passages qui vaut 4,4 s. Le reflet
+     est donc allumé 37 % du temps — proche du scintillement continu.
 
      C'est le fond qui se déplace, pas l'élément : le masque doit rester en
      place pendant que la bande glisse dessous. Et sans masque, la bande
@@ -231,8 +231,9 @@
       pointer-events: none;
       /* La bande fait 12 % d'un fond deux fois plus large que le logo, soit
          un quart de sa largeur. Plus large, elle ne sortait jamais tout à
-         fait du cadre et laissait le logo éclairci au repos — or c'est
-         l'image de repos qu'on voit trois secondes sur quatre. */
+         fait du cadre et laissait le logo éclairci au repos — et même à ce
+         rythme, c'est encore l'image de repos qu'on voit la majorité du
+         temps. */
       background-image: linear-gradient(105deg,
         rgba(255,255,255,0) 44%,
         rgba(255,255,255,0.85) 50%,
@@ -253,17 +254,17 @@
       mask-size: contain;
       mask-position: center;
       mask-repeat: no-repeat;
-      animation: te-reflet 10s linear infinite;
+      animation: te-reflet 7s linear infinite;
     }
   }
-  /* Les pourcentages sont relatifs aux 10 s du cycle : 1,5 % = 0,15 s.
-     Le passage occupe 0 → 26 %, soit les 2,6 s de mouvement ; le reste du
+  /* Les pourcentages sont relatifs aux 7 s du cycle : 2,1 % = 0,15 s.
+     Le passage occupe 0 → 37,1 %, soit les 2,6 s de mouvement ; le reste du
      cycle, l'opacité est à zéro et le pseudo-élément n'existe pas à l'œil. */
   @keyframes te-reflet {
     0%    { background-position: 150% 0; opacity: 0; }
-    1.5%  { opacity: 1; }
-    24.5% { opacity: 1; }
-    26%   { background-position: -50% 0; opacity: 0; }   /* 2,6 s sur 10 s */
+    2.1%  { opacity: 1; }
+    35%   { opacity: 1; }
+    37.1% { background-position: -50% 0; opacity: 0; }   /* 2,6 s sur 7 s */
     100%  { background-position: -50% 0; opacity: 0; }
   }
   /* Le mouvement est décoratif : il disparaît si le système le demande. */
