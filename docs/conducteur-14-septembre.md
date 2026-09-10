@@ -27,7 +27,7 @@ n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 | Kiosque 10 — TESTY | Elena TOMAS et Jaber BENZEGOUTTA · prise de parole `[ à confirmer, cf. § 4.2 ]` | 13h44 → 13h49 |
 | Conférence 1 | K-LAGAN / Julien CAHU | 09h55 (coulisses) → 10h45 |
 | Conférence 2 | Niji / Betty BEAUGE et Gilles NOUAIS | 10h40 (coulisses) → 11h30 |
-| Table ronde — intervenants | TFC / Ghislaine DOPIERRE · TMV / Gregory BARRANCO · SDSI / Erwan PERIGAULT | 11h25 (coulisses) → 12h15 |
+| Table ronde — intervenants | TFC / Ghislaine DOPIERRE · TMV / Grégory BARRANCO · SDSI / Erwan PERIGAULT | 11h25 (coulisses) → 12h15 |
 | Table ronde — animation | Fabrice CHATRON | 11h25 → 12h15 |
 | Régie son / vidéo | `[ à compléter ]` | 09h00 → fin |
 | Porteurs de micro (×2) | `[ à compléter ]` | 09h45 → 12h15 |
@@ -246,7 +246,7 @@ Sans ça, les gens se retiennent ou partent définitivement.
 Titre : *Mode produit et les tests.* Angle : *« Mode produit ADE : comment CAAS
 transforme ses approches de test pour accompagner la fabrication agile ? »*
 
-**Intervenants** : Ghislaine DOPIERRE (TFC), Gregory BARRANCO (TMV), Erwan
+**Intervenants** : Ghislaine DOPIERRE (TFC), Grégory BARRANCO (TMV), Erwan
 PERIGAULT (SDSI). **Animation** : Fabrice CHATRON.
 
 **Deux conséquences de cette répartition, à trancher.** Fabrice anime la
@@ -562,8 +562,9 @@ les ai pas comblées par une hypothèse.
 9. **La phrase sur la 4G** au moment du QR code (§ 3.2).
 10. ~~Le modérateur de la table ronde~~ — **Fabrice CHATRON** (14/09).
 11. ~~Les noms des intervenants~~ — reçus le 14/09, cf. § 1. Restent à
-    confirmer : les accents de Gregory BARRANCO, Erwan PERIGAULT et Elodie
-    TORDJMAN, absents du fichier source et donc absents de la page.
+    confirmer : les accents d'Erwan PERIGAULT et Elodie TORDJMAN, absents du
+    fichier source et donc absents de la page. Grégory BARRANCO corrigé le
+    14/09 ; Betty BEAUGE reste à vérifier.
 12. **Durée de mise en ligne de la page** après le 14 septembre.
 13. **Les questions de la table ronde** : Fabrice les ouvre, Anas les cadre ?
     (§ 3.5)
