@@ -335,6 +335,53 @@ Les captures sont figées dans `outils/affiches/ressources/`. Elles datent d'un
 état de la page où les salles étaient déjà publiées : **si les affectations
 changent, il faut refaire les captures**, relancer le script ne suffit pas.
 
+## Diapo 3 — le programme de la journée
+
+La première version reprenait la page web presque à l'identique, les dix
+kiosques compris : dense, et redondante avec la diapo 10 qui les détaille déjà.
+La deuxième était lisible mais grise. La version actuelle garde la structure
+aérée de la seconde et reprend **les couleurs de la page**, créneau par créneau :
+
+| Moment | Pavé de l'heure | Fond du libellé |
+|---|---|---|
+| Accueil café, clôture | `#008080` | `#E0F7F7` |
+| Mot d'ouverture, 13h40 | `#1A1A2E` | `#F0F0F8` |
+| Cocktail | `#C01020` | `#FFF3E0`, texte `#8B4500` |
+| Conférence 1 / 2 / table ronde | `#1A1A2E` | blanc, barre `#00B4B4` / `#ED1B2F` / `#9EBE38` |
+| Bande des rotations | — | `#1A1A2E`, texte `#00B4B4` |
+| Pastilles de rotation | — | `#D9EFEF`, filet `#008080` |
+
+**C'est le couple pavé d'heure plein + fond teinté qui porte la couleur**, pas
+un liseré de 2 mm : à la projection, un filet ne se voit pas depuis le fond de
+la salle. Les trois couleurs de séance sont celles des badges de la page.
+
+La colonne de l'après-midi ne liste pas les dix kiosques — c'est la diapo 10.
+Elle porte le créneau de 13h40, la bande « 10 kiosques · 5 rotations », les cinq
+pastilles horaires et la clôture. Les deux colonnes occupent 8,85 cm et
+finissent à la même hauteur.
+
+### Remplacer une seule diapo
+
+    python3 outils/affiches/generer-presentation.py --diapo 3
+
+Écrit `diapo-03-seule.pptx`, avec son numéro de page. La présentation est
+reprise à la main (les noms, les lots) : quand une diapo change, on la remplace
+dans le fichier déjà travaillé plutôt que de régénérer les quinze et d'écraser
+les reprises.
+
+### Ce que le contrôle refuse désormais
+
+Le vérificateur ne regardait que le texte, et seulement celui qui *commençait*
+au-dessus du pied de page. Deux angles morts, tous deux exploités par le premier
+jet de cette diapo :
+
+- une ligne entièrement enfoncée dans le pied n'était pas signalée ;
+- **un pavé de couleur pouvait déborder sans aucun texte en cause** — le texte
+  est centré dans la carte, c'est le bas de la carte qui mord.
+
+Les deux sont contrôlés. Les fonds pleine page et la bande du pied elle-même
+sont écartés, la couverture et la diapo de fin aussi, qui n'ont pas de pied.
+
 ## Animation de la page de garde
 
 `outils/affiches/generer-animation.py` produit un balayage lumineux qui
