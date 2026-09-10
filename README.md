@@ -545,9 +545,10 @@ document de référence. Trois partis pris :
   interne, filiale, partenaire. C'est ce qui sert à choisir ; le nom sert à
   reconnaître un collègue, ce qui vient après.
 - **Une ligne par entité.** Trois kiosques sont co-animés par deux structures
-  (6, 8, 9) et le 8 réunit quatre personnes. Sur une seule ligne il aurait fallu
-  inventer un séparateur qui tienne à 160 px de large ; empilées, les deux
-  lignes se lisent sans ponctuation acrobatique.
+  (6, 8, 9), le 7 par trois, et le 8 réunit quatre personnes. Sur une seule
+  ligne il aurait fallu inventer un séparateur qui tienne dans 288 px — la
+  colonne la plus étroite, juste au-dessus de la bascule à 720 px. Empilées,
+  les lignes se lisent sans ponctuation acrobatique.
 - **Aucun verbe.** Ni « animé par », ni « présenté par ». Le kiosque 10 est en
   libre service : personne ne l'anime, Elena TOMAS et Jaber BENZEGOUTTA en sont
   les contacts. Un verbe
