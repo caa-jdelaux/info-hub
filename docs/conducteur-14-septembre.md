@@ -24,8 +24,8 @@ n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 | Sponsor | Fabrice | 09h49 → 09h53 · 16h45 → 16h50 |
 | Fil rouge, matin et après-midi | Anas | 09h56 → fin de journée |
 | 2ᵉ animateur (après-midi) | `[ à compléter : prénom ]` | 13h35 → 14h00 · 16h25 → fin |
-| Kiosque 10 — TESTY | Elena `[ à confirmer, cf. § 4.2 ]` | 13h44 → 13h49 |
-| Conférence 1 | K-lagan / Julien CAHU | 09h55 (coulisses) → 10h45 |
+| Kiosque 10 — TESTY | Elena TOMAS et Jaber BENZEGOUTTA · prise de parole `[ à confirmer, cf. § 4.2 ]` | 13h44 → 13h49 |
+| Conférence 1 | K-LAGAN / Julien CAHU | 09h55 (coulisses) → 10h45 |
 | Conférence 2 | Niji / Betty BEAUGE et Gilles NOUAIS | 10h40 (coulisses) → 11h30 |
 | Table ronde — intervenants | TFC / Ghislaine DOPIERRE · TMV / Gregory BARRANCO · SDSI / Erwan PERIGAULT | 11h25 (coulisses) → 12h15 |
 | Table ronde — animation | Fabrice CHATRON | 11h25 → 12h15 |
@@ -165,7 +165,7 @@ Slide QR code à l'écran, plein cadre, et **laissé affiché pendant qu'il parl
 | Questions | 9 min | 10h42 |
 | Annonce de la conférence 2 | 3 min | 10h45 |
 
-Intervenant : **Julien CAHU** (K-lagan).
+Intervenant : **Julien CAHU** (K-LAGAN).
 
 **Le générique de 15 s sert à faire monter les intervenants sur scène.**
 Personne ne parle par-dessus. L'animateur quitte la scène pendant qu'il tourne.
@@ -562,12 +562,14 @@ les ai pas comblées par une hypothèse.
 9. **La phrase sur la 4G** au moment du QR code (§ 3.2).
 10. ~~Le modérateur de la table ronde~~ — **Fabrice CHATRON** (14/09).
 11. ~~Les noms des intervenants~~ — reçus le 14/09, cf. § 1. Restent à
-    confirmer : l'orthographe exacte de « K-lagan », et les accents de
-    Gregory BARRANCO, Erwan PERIGAULT et Elodie TORDJMAN, absents du fichier
-    source et donc absents de la page.
+    confirmer : les accents de Gregory BARRANCO, Erwan PERIGAULT et Elodie
+    TORDJMAN, absents du fichier source et donc absents de la page.
 12. **Durée de mise en ligne de la page** après le 14 septembre.
 13. **Les questions de la table ronde** : Fabrice les ouvre, Anas les cadre ?
     (§ 3.5)
+14. **Aurore CAPLAN (DF Dommage) est-elle aussi au kiosque 8 ?** Le fichier
+    source ne la place qu'au kiosque 9, et la correction du 14/09 nomme le
+    kiosque 8. Seule l'écriture « DF Dommage » a été appliquée, au kiosque 9.
 
 ---
 

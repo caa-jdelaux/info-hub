@@ -549,7 +549,8 @@ document de référence. Trois partis pris :
   inventer un séparateur qui tienne à 160 px de large ; empilées, les deux
   lignes se lisent sans ponctuation acrobatique.
 - **Aucun verbe.** Ni « animé par », ni « présenté par ». Le kiosque 10 est en
-  libre service : personne ne l'anime, Elena TOMAS en est le contact. Un verbe
+  libre service : personne ne l'anime, Elena TOMAS et Jaber BENZEGOUTTA en sont
+  les contacts. Un verbe
   aurait contredit le pitch de la carte à trois lignes d'intervalle. Seule
   exception, la table ronde, où « Animée par Fabrice CHATRON » distingue le
   modérateur des trois intervenants — sans quoi la liste en compterait quatre.
