@@ -19,6 +19,7 @@ posés en toutes lettres comme « à compléter », en rouge, plutôt qu'invent�
 La diapo de remerciements est un gabarit à remplir, pas une liste.
 """
 import html
+import json
 import pathlib
 import re
 import subprocess
@@ -57,6 +58,11 @@ TEAL_FOND = RGBColor(0x00, 0x80, 0x80)
 CYAN = RGBColor(0x00, 0xB4, 0xB4)
 CYAN_CLAIR = RGBColor(0xE0, 0xF7, 0xF7)
 BLEU_CLAIR = RGBColor(0xD9, 0xEF, 0xEF)
+VERT_PRAIRIE = RGBColor(0x9E, 0xBE, 0x38)   # --caa-vert-prairie, table ronde
+VERT_FONCE = RGBColor(0x00, 0x6A, 0x4E)    # --caa-vert-fonce
+LILAS = RGBColor(0xF0, 0xF0, 0xF8)         # fond des créneaux « ouverture »
+ORANGE_CLAIR = RGBColor(0xFF, 0xF3, 0xE0)  # fond du cocktail
+BRUN = RGBColor(0x8B, 0x45, 0x00)          # texte du cocktail
 GRIS = RGBColor(0x4A, 0x4A, 0x49)
 GRIS_CLAIR = RGBColor(0xF4, 0xF4, 0xF4)
 BLANC = RGBColor(0xFF, 0xFF, 0xFF)
@@ -97,6 +103,12 @@ def lire_programme():
             'citation': net(re.search(r'class="conf-pitch">(.*?)</div>', corps, re.S).group(1)),
         })
 
+    # Les salles vivent dans un bloc JSON à part, celui qu'on rouvre le 14 au
+    # matin quand les affectations tombent. Une salle manquante n'arrête rien :
+    # la page elle-même affiche « Salle à confirmer » dans ce cas.
+    bloc_salles = re.search(r'id="salles-data"[^>]*>(.*?)</script>', page, re.S)
+    salles = json.loads(bloc_salles.group(1)) if bloc_salles else {}
+
     kiosques = []
     for m in re.finditer(r'<article class="kiosque-card" data-kiosque="(\d+)">(.*?)</article>',
                          page, re.S):
@@ -105,6 +117,7 @@ def lire_programme():
             'numero': m.group(1),
             'titre': net(re.sub(r'<span aria-hidden="true">.*?</span>', '', nom)),
             'pitch': net(re.search(r'class="kiosque-pitch">(.*?)</div>', m.group(2), re.S).group(1)),
+            'salle': str(salles.get(m.group(1), '')).strip() or 'Salle à confirmer',
         })
 
     rotations = [(int(a), int(b)) for a, b in re.findall(
@@ -247,37 +260,129 @@ def d02_gabarit(diapo, prog):
     ])
 
 
+def _creneau(diapo, x, y, l, h, heure, libelle, fond_heure, fond, encre_libelle):
+    """Un créneau tel que la page le dessine : un pavé d'heure plein, puis le
+    libellé sur un fond teinté. C'est ce couple qui porte la couleur — pas un
+    liseré de 2 mm, qui ne se voit pas depuis le fond de l'auditorium."""
+    largeur_heure = Cm(2.75)
+    bloc(diapo, x, y, largeur_heure, h, fond_heure)
+    bloc(diapo, x + largeur_heure, y, l - largeur_heure, h, fond)
+    texte(diapo, x, y + (h - Cm(0.62)) // 2, largeur_heure, Cm(0.7),
+          [ligne(heure, CONDENSEE, 16, BLANC, True, 1.0)], align=PP_ALIGN.CENTER)
+    texte(diapo, x + largeur_heure + Cm(0.55), y + (h - Cm(0.58)) // 2,
+          l - largeur_heure - Cm(1.0), Cm(0.7),
+          [ligne(libelle, COURANTE, 12.5, encre_libelle, True, 1.0)])
+
+
+def _seance_ligne(diapo, x, y, l, h, heure, genre, titre, accent, encre_genre):
+    """Une conférence : pavé d'heure sombre, corps blanc, et la barre de
+    couleur qui distingue conférence 1, conférence 2 et table ronde — les
+    mêmes trois couleurs que les badges de la page."""
+    largeur_heure = Cm(2.75)
+    bloc(diapo, x, y, largeur_heure, h, ENCRE)
+    bloc(diapo, x + largeur_heure, y, l - largeur_heure, h, BLANC)
+    bloc(diapo, x + largeur_heure, y, Cm(0.22), h, accent)
+    texte(diapo, x, y + (h - Cm(0.62)) // 2, largeur_heure, Cm(0.7),
+          [ligne(heure, CONDENSEE, 16, BLANC, True, 1.0)], align=PP_ALIGN.CENTER)
+    texte(diapo, x + largeur_heure + Cm(0.6), y + Cm(0.24),
+          l - largeur_heure - Cm(1.05), Cm(1.5), [
+              ligne('★ ' + genre.upper(), CONDENSEE, 11, encre_genre, True, 1.0),
+              ligne(titre, COURANTE, 12, ENCRE, True, 1.28),
+          ])
+
+
+def _colonne_matin(diapo, prog, x, y, l, ecart, haut_creneau, haut_seance):
+    m, s = prog['moments'], prog['seances']
+    yy = y
+    _creneau(diapo, x, yy, l, haut_creneau, hhmm(540), m[540][1],
+             TEAL_FOND, CYAN_CLAIR, TEAL)
+    yy += haut_creneau + ecart
+    _creneau(diapo, x, yy, l, haut_creneau, hhmm(585), m[585][1], ENCRE, LILAS, ENCRE)
+    yy += haut_creneau + ecart
+    # Le titre garde son genre, mais sur sa propre ligne : posé en préfixe il
+    # faisait passer trois cartes à deux lignes et la colonne débordait.
+    accents = [(CYAN, TEAL), (ROUGE, ROUGE_FONCE), (VERT_PRAIRIE, VERT_FONCE)]
+    for seance, (accent, encre_genre) in zip(s, accents):
+        _seance_ligne(diapo, x, yy, l, haut_seance, hhmm(seance['debut']),
+                      seance['genre'], seance['titre'].split(' : ')[0],
+                      accent, encre_genre)
+        yy += haut_seance + ecart
+    _creneau(diapo, x, yy, l, haut_creneau, hhmm(735), m[735][1],
+             ROUGE_FONCE, ORANGE_CLAIR, BRUN)
+
+
+def _entetes_colonnes(diapo, y, l):
+    for colonne, intitule in enumerate(
+            ('MATIN — CONFÉRENCES', 'APRÈS-MIDI — KIOSQUES & ATELIERS')):
+        texte(diapo, MARGE + Cm(colonne * 15.1), y, l, Cm(0.9),
+              [ligne(intitule, CONDENSEE, 17,
+                     TEAL if colonne == 0 else ROUGE_FONCE, True, 1.0)])
+
+
+def _pastille_kiosque(diapo, x, y, l, h, kiosque, pitch=None):
+    """Le numéro dans un pavé plein, comme sur la page — où la couleur alterne
+    d'un kiosque au suivant, pas d'une colonne à l'autre."""
+    fond = TEAL_FOND if int(kiosque['numero']) % 2 else ROUGE_FONCE
+    largeur_num = Cm(1.15)
+    bloc(diapo, x, y, largeur_num, h, fond)
+    bloc(diapo, x + largeur_num, y, l - largeur_num, h, BLANC)
+    texte(diapo, x, y + (h - Cm(0.72)) // 2, largeur_num, Cm(0.8),
+          [ligne(kiosque['numero'], CONDENSEE, 19, BLANC, True, 1.0)],
+          align=PP_ALIGN.CENTER)
+    corps = [ligne(kiosque['titre'], CONDENSEE, 15 if pitch else 12, ENCRE, True, 1.0)]
+    if pitch:
+        corps.append(ligne(pitch, COURANTE, 8.5, GRIS, interligne=1.4))
+    haut_corps = Cm(1.4) if pitch else Cm(0.6)
+    texte(diapo, x + largeur_num + Cm(0.5), y + (h - haut_corps) // 2,
+          l - largeur_num - Cm(0.9), haut_corps, corps)
+
+
 def d03_programme(diapo, prog):
     chrome(diapo, prog, 3)
     y = titre_diapo(diapo, 'Le programme de la journée')
-    m, s, r = prog['moments'], prog['seances'], prog['rotations']
+    m, r = prog['moments'], prog['rotations']
+    l = Cm(14.2)
+    # Sous le titre il reste 9,15 cm ; les deux colonnes en occupent 8,85 et
+    # finissent à la même hauteur, à un demi-centimètre du pied. Ce n'est pas
+    # gratuit : au premier jet le cocktail débordait sur la bande du pied, et
+    # au deuxième il la touchait.
+    ecart = Cm(0.22)
+    haut_creneau, haut_seance = Cm(1.02), Cm(1.55)
 
-    # Les clefs sont des minutes depuis minuit, pas des heures écrites.
-    matin = [(540, m[540][1]), (585, m[585][1])]
-    # Le genre (« Conférence 1 », « Table ronde ») est retiré ici : avec lui,
-    # trois cartes passaient à deux lignes et la colonne du matin descendait
-    # dans le pied de page. Il est porté par les diapos 5 à 7.
-    matin += [(x['debut'], x['titre'].split(' : ')[0]) for x in s]
-    matin += [(735, m[735][1])]
-    matin.sort()
-    apresmidi = [(820, m[820][1]),
-                 (r[0][0], f"5 rotations de 30 min · 10 kiosques en simultané"),
-                 (990, m[990][1])]
+    _entetes_colonnes(diapo, y, l)
+    _colonne_matin(diapo, prog, MARGE, y + Cm(1.2), l,
+                   ecart, haut_creneau, haut_seance)
 
-    for colonne, (intitule, entrees) in enumerate((
-            ('MATIN — CONFÉRENCES', matin), ('APRÈS-MIDI — KIOSQUES & ATELIERS', apresmidi))):
-        x = MARGE + Cm(colonne * 15.1)
-        texte(diapo, x, y, Cm(14.2), Cm(0.9),
-              [ligne(intitule, CONDENSEE, 17, TEAL if colonne == 0 else ROUGE_FONCE, True, 1.0)])
-        yy = y + Cm(1.2)
-        for debut, libelle in entrees:
-            carte(diapo, x, yy, Cm(14.2), Cm(1.28), BLANC,
-                  TEAL_FOND if colonne == 0 else ROUGE)
-            texte(diapo, x + Cm(0.6), yy + Cm(0.32), Cm(2.4), Cm(0.8),
-                  [ligne(hhmm(debut), CONDENSEE, 16, ENCRE, True, 1.0)])
-            texte(diapo, x + Cm(3.2), yy + Cm(0.36), Cm(10.6), Cm(0.9),
-                  [ligne(libelle, COURANTE, 12, ENCRE, interligne=1.1)])
-            yy += Cm(1.5)
+    # ── Après-midi. Pas la liste des dix kiosques : c'est la diapo 10, et la
+    # variante « programme-kiosques » pour qui la veut sur la même diapo.
+    x = MARGE + Cm(15.1)
+    yy = y + Cm(1.2)
+    _creneau(diapo, x, yy, l, Cm(1.22), hhmm(820), m[820][1], ENCRE, LILAS, ENCRE)
+    yy += Cm(1.22) + Cm(0.72)
+
+    bloc(diapo, x, yy, l, Cm(2.32), ENCRE)
+    texte(diapo, x + Cm(0.7), yy + Cm(0.52), l - Cm(1.4), Cm(1.5), [
+        ligne('10 KIOSQUES EN SIMULTANÉ · 5 ROTATIONS IDENTIQUES',
+              CONDENSEE, 15, CYAN, True, 1.0),
+        ligne("20 min d'atelier · 5 min de questions — choisissez vos sessions !",
+              COURANTE, 10.5, BLEU_CLAIR, interligne=1.45),
+    ])
+    yy += Cm(2.32) + Cm(0.72)
+
+    # Cinq pastilles, comme la bande de rotations de la page.
+    large = (l - 4 * Cm(0.36)) // 5
+    for i, (debut, _fin) in enumerate(r):
+        xr = x + i * (large + Cm(0.36))
+        bloc(diapo, xr, yy, large, Cm(1.85), BLEU_CLAIR)
+        bloc(diapo, xr, yy, Cm(0.14), Cm(1.85), TEAL_FOND)
+        texte(diapo, xr, yy + Cm(0.38), large, Cm(1.2), [
+            ligne(hhmm(debut), CONDENSEE, 15, TEAL, True, 1.0),
+            ligne(f'Rotation {i + 1}', COURANTE, 8, GRIS, interligne=1.5),
+        ], align=PP_ALIGN.CENTER)
+    yy += Cm(1.85) + Cm(0.82)
+
+    _creneau(diapo, x, yy, l, Cm(1.22), hhmm(990), m[990][1],
+             TEAL_FOND, CYAN_CLAIR, TEAL)
 
 
 def _seance(diapo, prog, index, numero):
@@ -370,17 +475,14 @@ def d10_kiosques(diapo, prog):
     chrome(diapo, prog, 10)
     y = titre_diapo(diapo, 'Les dix kiosques')
     largeur = Cm(14.4)
+    # Ordre de lecture, comme la page : les impairs à gauche, les pairs à
+    # droite. L'ancienne disposition mettait 1 à 5 à gauche et 6 à 10 à
+    # droite, et coloriait par colonne — deux écarts avec le programme que
+    # les participants auront sous les yeux.
     for i, k in enumerate(prog['kiosques']):
-        colonne, rang = i // 5, i % 5
-        x = MARGE + int(colonne * (largeur + Cm(0.67)))
-        yy = y + int(rang * Cm(2.06))
-        carte(diapo, x, yy, largeur, Cm(1.92), BLANC, TEAL_FOND if colonne == 0 else ROUGE)
-        texte(diapo, x + Cm(0.5), yy + Cm(0.38), Cm(1.5), Cm(1.0),
-              [ligne(k['numero'], CONDENSEE, 22, TEAL if colonne == 0 else ROUGE_FONCE, True, 1.0)])
-        texte(diapo, x + Cm(2.3), yy + Cm(0.28), largeur - Cm(2.8), Cm(1.4), [
-            ligne(k['titre'], CONDENSEE, 15, ENCRE, True, 1.0),
-            ligne(k['pitch'], COURANTE, 8.5, GRIS, interligne=1.35),
-        ])
+        x = MARGE + int((i % 2) * (largeur + Cm(0.67)))
+        yy = y + int((i // 2) * Cm(2.06))
+        _pastille_kiosque(diapo, x, yy, largeur, Cm(1.92), k, k['pitch'])
 
 
 def d11_jeu(diapo, prog):
@@ -500,6 +602,48 @@ def d15_fin(diapo, prog):
     diapo.shapes.add_picture(str(QR), Cm(15.34), Cm(13.65), Cm(3.2), Cm(3.2))
 
 
+def v_programme_kiosques(diapo, prog):
+    """Le programme de la journée avec les dix kiosques sur la même diapo.
+
+    Les pitchs n'y sont pas : dans 6,9 cm de large et 0,92 cm de haut, ils
+    tomberaient sous 7 pt et ne se liraient plus. Le titre du kiosque suffit
+    à situer, le pitch est sur la diapo 10.
+    """
+    chrome(diapo, prog, 3)
+    y = titre_diapo(diapo, 'Le programme de la journée')
+    m, r = prog['moments'], prog['rotations']
+    l = Cm(14.2)
+    ecart = Cm(0.22)
+    haut_creneau, haut_seance = Cm(1.02), Cm(1.55)
+
+    _entetes_colonnes(diapo, y, l)
+    _colonne_matin(diapo, prog, MARGE, y + Cm(1.2), l,
+                   ecart, haut_creneau, haut_seance)
+
+    x = MARGE + Cm(15.1)
+    yy = y + Cm(1.2)
+    _creneau(diapo, x, yy, l, Cm(1.0), hhmm(820), m[820][1], ENCRE, LILAS, ENCRE)
+    yy += Cm(1.0) + Cm(0.28)
+
+    bloc(diapo, x, yy, l, Cm(1.0), ENCRE)
+    texte(diapo, x + Cm(0.6), yy + Cm(0.26), l - Cm(1.2), Cm(0.6),
+          [ligne(f'{hhmm(r[0][0])} – {hhmm(r[-1][1])} · 5 ROTATIONS DE 30 MIN '
+                 '· 10 KIOSQUES EN SIMULTANÉ', CONDENSEE, 13, CYAN, True, 1.0)])
+    yy += Cm(1.0) + Cm(0.28)
+
+    largeur = (l - Cm(0.3)) // 2
+    for i, k in enumerate(prog['kiosques']):
+        _pastille_kiosque(diapo, x + int((i % 2) * (largeur + Cm(0.3))),
+                          yy + int((i // 2) * Cm(1.04)), largeur, Cm(0.92), k)
+    yy += 5 * Cm(1.04) - Cm(0.12) + Cm(0.28)
+
+    _creneau(diapo, x, yy, l, Cm(0.93), hhmm(990), m[990][1],
+             TEAL_FOND, CYAN_CLAIR, TEAL)
+
+
+VARIANTES = {'programme-kiosques': v_programme_kiosques}
+
+
 DIAPOS = [
     d01_couverture, d02_gabarit, d03_programme, d04_ouverture,
     lambda d, p: _seance(d, p, 0, 5),
@@ -556,17 +700,70 @@ def verifier(pdf):
             # posé exprès n'est pas un débordement. La couverture et la diapo
             # de fin n'ont pas de pied et occupent toute la hauteur.
             plancher = 18.7 if n in (1, len(DIAPOS)) else 17.6
-            if b[1] / cm < 17.75 and b[3] / cm > plancher:
+            # Le texte du pied commence à 18,1 cm : il est posé là exprès.
+            # Tout le reste qui descend sous le plancher déborde, y compris
+            # ce qui commence déjà en dessous — la condition précédente ne
+            # regardait que ce qui commençait au-dessus, et laissait passer
+            # une ligne entièrement enfoncée dans le pied.
+            if b[3] / cm > plancher and b[1] / cm < 17.95:
                 anomalies.append(f'd{n} : un texte passe sous le pied de page '
                                  f'({b[3] / cm:.1f} cm) — {contenu[:40]!r}')
             if b[0] / cm < 2.0 or b[2] / cm > 31.9:
                 anomalies.append(f'd{n} : un texte sort de la zone utile '
                                  f'({b[0] / cm:.1f}→{b[2] / cm:.1f}) — {contenu[:40]!r}')
+
+        # Les pavés de couleur aussi. Une carte peut déborder sur le pied sans
+        # que son texte y descende : le texte est centré dans la carte, et
+        # c'est le bas de la carte qui mord. On écarte les fonds pleine page
+        # et la bande du pied elle-même, qui commence justement à 17,70.
+        if n in (1, len(DIAPOS)):
+            continue
+        for trace in page.get_drawings():
+            if not trace.get('fill'):
+                continue
+            cadre = trace['rect']
+            haut, bas = cadre.y0 / cm, cadre.y1 / cm
+            if bas - haut > 18:
+                continue
+            if 0.05 < haut < 17.65 and bas > 17.75:
+                anomalies.append(f'd{n} : un pavé déborde sur le pied de page '
+                                 f'({haut:.1f}→{bas:.1f} cm).')
     return anomalies
+
+
+def une_diapo(prog, rang):
+    """Écrit une seule diapo dans son propre fichier, à sa place et avec son
+    numéro de page. La présentation est reprise à la main : quand une diapo
+    change, on veut pouvoir la remplacer dans le fichier déjà travaillé
+    plutôt que de régénérer les quinze et d'écraser les reprises."""
+    prez = Presentation()
+    prez.slide_width, prez.slide_height = LARGEUR, HAUTEUR
+    DIAPOS[rang - 1](prez.slides.add_slide(prez.slide_layouts[6]), prog)
+    chemin = SORTIE / f'diapo-{rang:02d}-seule.pptx'
+    prez.save(chemin)
+    return chemin
 
 
 def main():
     prog = lire_programme()
+    if len(sys.argv) == 3 and sys.argv[1] == '--variante':
+        nom = sys.argv[2]
+        if nom not in VARIANTES:
+            sys.exit(f'variantes connues : {", ".join(sorted(VARIANTES))}.')
+        prez = Presentation()
+        prez.slide_width, prez.slide_height = LARGEUR, HAUTEUR
+        VARIANTES[nom](prez.slides.add_slide(prez.slide_layouts[6]), prog)
+        chemin = SORTIE / f'diapo-variante-{nom}.pptx'
+        prez.save(chemin)
+        print(f'✓ {chemin.name}')
+        return
+    if len(sys.argv) == 3 and sys.argv[1] == '--diapo':
+        rang = int(sys.argv[2])
+        if not 1 <= rang <= len(DIAPOS):
+            sys.exit(f'diapo {rang} : il y en a {len(DIAPOS)}.')
+        chemin = une_diapo(prog, rang)
+        print(f'✓ {chemin.name} — la diapo {rang} seule, à réimporter.')
+        return
     print(f"{len(prog['seances'])} séances, {len(prog['kiosques'])} kiosques, "
           f"{len(prog['rotations'])} rotations lus dans la page.")
     pptx = construire(prog)

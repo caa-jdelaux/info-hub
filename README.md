@@ -289,6 +289,172 @@ ont été trouvés à l'œil sur le rendu (colonne du matin en diapo 3, pitchs e
 diapo 10, étapes 2 et 4 en diapo 11) et corrigés par la géométrie.
 
 
+## Diapo « le programme en main »
+
+    python3 outils/affiches/generer-diapo-en-main.py
+
+La diapo 12 de la présentation **dit** ce que le programme contient. Celle-ci
+le **montre** : deux captures d'écran du téléphone — la salle qui s'allume sur
+le plan, et le bouton « Repérer ». Elle se place après la diapo du QR code.
+
+Deux mises en page sont produites, parce que la contrainte n'est pas la place
+sur la diapo mais la lisibilité depuis le fond d'un auditorium de 254 places :
+
+| Fichier | Contenu | Hauteur des captures |
+|---|---|---|
+| `diapo-en-main-1-diapo.pptx` | les deux captures côte à côte | 7,65 cm |
+| `diapo-en-main-2-diapos.pptx` | une capture par diapo, cartouche à gauche | 10,5 cm |
+
+**C'est la hauteur qui limite, pas la largeur.** Sous le titre il reste 10,5 cm.
+À deux captures sur une diapo, chacune cède la place du cartouche ; à une
+capture par diapo, le cartouche passe à gauche et la capture prend toute la
+hauteur — un tiers de plus.
+
+**Fichiers séparés plutôt qu'insertion dans le générateur de la présentation.**
+La présentation est reprise à la main : régénérer les quinze diapos écraserait
+ces reprises, et insérer une diapo décalerait la numérotation du pied de page.
+Un fichier de une ou deux diapos s'importe dans une présentation déjà
+travaillée sans rien perdre. C'est aussi pourquoi ces diapos ne portent pas de
+numéro de page : leur pagination d'accueil n'est pas connue.
+
+**Les captures sont recadrées, pas reprises telles quelles.** Sur la capture du
+plan, les bandes sombres du fond assombri passeraient pour un défaut une fois
+projetées : on ne garde que la carte de la modale. Sur la capture des kiosques,
+deux cartes suffisent — une non repérée, une repérée, ce qui montre les deux
+états côte à côte ; la troisième portait le bouton flottant du téléphone, qui
+n'appartient pas à la page.
+
+Le contrôle relit le PDF produit et refuse trois choses : un nombre de pages
+inattendu, un format qui n'est pas du 16:9, et **tout texte qui passerait sous
+une capture ou sur le pied de page**. Ce dernier point a été ajouté après coup :
+la première version à une diapo avait une légende qui débordait sur deux
+lignes, la seconde disparaissant derrière la capture voisine — visible à l'œil,
+invisible pour un contrôle qui ne compare pas les encombrements.
+
+Les captures sont figées dans `outils/affiches/ressources/`. Elles datent d'un
+état de la page où les salles étaient déjà publiées : **si les affectations
+changent, il faut refaire les captures**, relancer le script ne suffit pas.
+
+## Écran complet de l'espace hospitalité
+
+    python3 outils/affiches/generer-ecran-complet.py
+
+Produit `ecran-programme-complet.pptx` : **tout le programme sur un seul
+écran**, pour l'espace hospitalité. Ce n'est pas la diapo 3 en plus dense, c'est
+un autre problème. La diapo 3 est projetée dans un auditorium et se lit depuis
+le fond : peu de mots, gros. Cet écran est regardé à deux ou trois mètres par
+quelqu'un qui passe, et il doit **se suffire à lui-même** — personne ne
+s'arrêtera pour scanner un QR code.
+
+D'où la densité assumée : les trois conférences avec leur accroche, les dix
+kiosques avec leur phrase de présentation **et leur salle**. Ce sont les deux
+informations qui manquaient à `generer-ecrans.py`, et sans lesquelles il faut
+aller chercher ailleurs. Le QR code reste en bas de colonne, pour qui voudra la
+version qui suit les changements de salle — mais l'écran ne repose pas dessus.
+
+Les salles sont lues dans le bloc `salles-data` de la page, celui qu'on rouvre
+le 14 au matin. Un kiosque sans salle publiée n'arrête rien : le script le
+signale et écrit « Salle à confirmer », comme la page.
+
+### Deux contrôles, et pourquoi il en fallait deux
+
+Le premier compare chaque fragment de texte du PDF aux **cellules dessinées** :
+rien ne doit sortir de sa case. Il fonctionne au fragment et non au bloc, parce
+que l'extracteur regroupe volontiers deux textes distants posés sur la même
+ligne de base — les deux intitulés de colonne arrivaient fusionnés en un pavé
+large de 18 cm qui ne correspondait à rien.
+
+Le second vérifie que **deux fragments ne se recouvrent jamais**. Il est
+indépendant du premier, et c'est lui qui compte : un titre trop long qui vient
+écrire par-dessus sa propre accroche reste à l'intérieur de sa cellule, donc
+invisible pour le contrôle de débordement. C'est exactement ce qui est arrivé à
+la conférence 2.
+
+### Les cartes de séance se dimensionnent sur leur contenu
+
+Le titre de la conférence 2 fait le double des autres. Les trois cartes mesurent
+donc ce qu'il leur faut — nombre de lignes du titre et de l'accroche — puis se
+partagent le reliquat, plutôt que d'être à hauteur fixe.
+
+Le calcul du nombre de lignes a demandé deux corrections. La première version
+tablait sur une hauteur de ligne devinée. La deuxième la calculait, mais oubliait
+que **l'interligne donné en nombre à python-pptx multiplie la hauteur naturelle
+de la police — environ 1,2 fois le corps — et non le corps lui-même** : chaque
+ligne était sous-estimée d'un cinquième. Les deux fois, c'est le contrôle de
+recouvrement qui l'a dit.
+
+## Diapo 3 — le programme de la journée
+
+La première version reprenait la page web presque à l'identique, les dix
+kiosques compris : dense, et redondante avec la diapo 10 qui les détaille déjà.
+La deuxième était lisible mais grise. La version actuelle garde la structure
+aérée de la seconde et reprend **les couleurs de la page**, créneau par créneau :
+
+| Moment | Pavé de l'heure | Fond du libellé |
+|---|---|---|
+| Accueil café, clôture | `#008080` | `#E0F7F7` |
+| Mot d'ouverture, 13h40 | `#1A1A2E` | `#F0F0F8` |
+| Cocktail | `#C01020` | `#FFF3E0`, texte `#8B4500` |
+| Conférence 1 / 2 / table ronde | `#1A1A2E` | blanc, barre `#00B4B4` / `#ED1B2F` / `#9EBE38` |
+| Bande des rotations | — | `#1A1A2E`, texte `#00B4B4` |
+| Pastilles de rotation | — | `#D9EFEF`, filet `#008080` |
+
+**C'est le couple pavé d'heure plein + fond teinté qui porte la couleur**, pas
+un liseré de 2 mm : à la projection, un filet ne se voit pas depuis le fond de
+la salle. Les trois couleurs de séance sont celles des badges de la page.
+
+La colonne de l'après-midi ne liste pas les dix kiosques — c'est la diapo 10.
+Elle porte le créneau de 13h40, la bande « 10 kiosques · 5 rotations », les cinq
+pastilles horaires et la clôture. Les deux colonnes occupent 8,85 cm et
+finissent à la même hauteur.
+
+### Le programme avec les dix kiosques
+
+    python3 outils/affiches/generer-presentation.py --variante programme-kiosques
+
+Écrit `diapo-variante-programme-kiosques.pptx` : la même diapo 3, mais la
+colonne de l'après-midi porte les dix kiosques au lieu des pastilles de
+rotation. **Sans les pitchs** — dans 6,9 cm de large et 0,92 cm de haut ils
+tomberaient sous 7 pt et ne se liraient plus. Le titre du kiosque suffit à
+situer, le pitch reste sur la diapo 10.
+
+La bande des rotations se réduit alors à une ligne, `14h00 – 16h30 · 5
+rotations de 30 min · 10 kiosques en simultané`, pour libérer les cinq lignes
+de kiosques.
+
+### Diapo 10 — les dix kiosques
+
+Les kiosques sont rangés **dans l'ordre de lecture**, impairs à gauche et pairs
+à droite, et la couleur du numéro **alterne d'un kiosque au suivant** : c'est la
+règle de la page (`nth-child(odd)` cyan, `nth-child(even)` rouge). La version
+précédente mettait 1 à 5 à gauche, 6 à 10 à droite, et coloriait par colonne —
+deux écarts avec le programme que les participants auront sous les yeux.
+
+Le numéro est posé dans un pavé plein, pas signalé par un liseré, pour la même
+raison que sur la diapo 3.
+
+### Remplacer une seule diapo
+
+    python3 outils/affiches/generer-presentation.py --diapo 3
+
+Écrit `diapo-03-seule.pptx`, avec son numéro de page. La présentation est
+reprise à la main (les noms, les lots) : quand une diapo change, on la remplace
+dans le fichier déjà travaillé plutôt que de régénérer les quinze et d'écraser
+les reprises.
+
+### Ce que le contrôle refuse désormais
+
+Le vérificateur ne regardait que le texte, et seulement celui qui *commençait*
+au-dessus du pied de page. Deux angles morts, tous deux exploités par le premier
+jet de cette diapo :
+
+- une ligne entièrement enfoncée dans le pied n'était pas signalée ;
+- **un pavé de couleur pouvait déborder sans aucun texte en cause** — le texte
+  est centré dans la carte, c'est le bas de la carte qui mord.
+
+Les deux sont contrôlés. Les fonds pleine page et la bande du pied elle-même
+sont écartés, la couverture et la diapo de fin aussi, qui n'ont pas de pied.
+
 ## Animation de la page de garde
 
 `outils/affiches/generer-animation.py` produit un balayage lumineux qui
@@ -366,6 +532,41 @@ manuel, s'il le fallait : onglet **Lecture** → *Démarrer : Automatiquement* e
 *En boucle jusqu'à l'arrêt*. L'image d'affiche est la dernière image de la
 vidéo : la diapo reste juste même si rien ne se lance.
 
+
+## Qui anime — sur les cartes du programme
+
+Les trois séances du matin portent leurs intervenants, les dix kiosques leurs
+animateurs. La source des kiosques est `Liste_des_kiosques.xlsx`, colonne C ;
+celle des conférences et de la table ronde est la liste transmise le 14/09, sans
+document de référence. Trois partis pris :
+
+- **L'entité avant les noms.** « Smartesting · Arnaud BOUZY » se lit dans cet
+  ordre parce que l'entité situe le kiosque avant qu'on lise le nom : équipe
+  interne, filiale, partenaire. C'est ce qui sert à choisir ; le nom sert à
+  reconnaître un collègue, ce qui vient après.
+- **Une ligne par entité.** Trois kiosques sont co-animés par deux structures
+  (6, 8, 9), le 7 par trois, et le 8 réunit quatre personnes. Sur une seule
+  ligne il aurait fallu inventer un séparateur qui tienne dans 288 px — la
+  colonne la plus étroite, juste au-dessus de la bascule à 720 px. Empilées,
+  les lignes se lisent sans ponctuation acrobatique.
+- **Aucun verbe.** Ni « animé par », ni « présenté par ». Le kiosque 10 est en
+  libre service : personne ne l'anime, Elena TOMAS et Jaber BENZEGOUTTA en sont
+  les contacts. Un verbe
+  aurait contredit le pitch de la carte à trois lignes d'intervalle. Seule
+  exception, la table ronde, où « Animée par Fabrice CHATRON » distingue le
+  modérateur des trois intervenants — sans quoi la liste en compterait quatre.
+
+**Le mode compact masque le « qui » avec le pitch**, pour la même raison : il
+existe pour tenir les dix kiosques sur un écran quand on choisit ses cinq
+rotations, et deux lignes de plus par carte le videraient de son sens.
+**L'impression le rétablit**, comme le pitch — le papier n'a pas de mode
+compact.
+
+**La casse des noms de famille a été uniformisée en capitales**, la convention
+du fichier source pour huit kiosques sur dix. C'est le seul écart : les lettres
+sont celles du fichier, accents compris — donc aussi accents *absents*. Passer
+« BEAUGE » en « Beauge » aurait affirmé une absence d'accent que rien ne
+vérifie ; en capitales, l'ambiguïté reste visible et se corrige d'une ligne.
 
 ## Comportements de la page
 

@@ -24,10 +24,11 @@ n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 | Sponsor | Fabrice | 09h49 → 09h53 · 16h45 → 16h50 |
 | Fil rouge, matin et après-midi | Anas | 09h56 → fin de journée |
 | 2ᵉ animateur (après-midi) | `[ à compléter : prénom ]` | 13h35 → 14h00 · 16h25 → fin |
-| Kiosque 10 — TESTY | Elena `[ à confirmer, cf. § 4.2 ]` | 13h44 → 13h49 |
-| Conférence 1 | `[ à compléter : intervenant(s) ]` | 09h55 (coulisses) → 10h45 |
-| Conférence 2 | `[ à compléter : intervenant(s) ]` | 10h40 (coulisses) → 11h30 |
-| Table ronde | `[ à compléter : modérateur + intervenants ]` | 11h25 (coulisses) → 12h15 |
+| Kiosque 10 — TESTY | Elena TOMAS et Jaber BENZEGOUTTA · prise de parole `[ à confirmer, cf. § 4.2 ]` | 13h44 → 13h49 |
+| Conférence 1 | K-LAGAN / Julien CAHU | 09h55 (coulisses) → 10h45 |
+| Conférence 2 | Niji / Betty BEAUGE et Gilles NOUAIS | 10h40 (coulisses) → 11h30 |
+| Table ronde — intervenants | TFC / Ghislaine DOPIERRE · TMV / Gregory BARRANCO · SDSI / Erwan PERIGAULT | 11h25 (coulisses) → 12h15 |
+| Table ronde — animation | Fabrice CHATRON | 11h25 → 12h15 |
 | Régie son / vidéo | `[ à compléter ]` | 09h00 → fin |
 | Porteurs de micro (×2) | `[ à compléter ]` | 09h45 → 12h15 |
 | Doublure d'Anas | `[ à compléter ]` | toute la journée |
@@ -49,7 +50,7 @@ n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 | 09h45 | Mot d'ouverture | 15 min | Ghislaine → Fabrice → Ghislaine → Anas |
 | 10h00 | Conférence 1 — *Des 7 principes du test aux 7 principes de la qualité* | 45 min | Anas |
 | 10h45 | Conférence 2 — *De l'IA générative aux tests « augmentés »* | 45 min | Anas |
-| 11h30 | Table ronde — *Mode produit et les tests* | 45 min | Anas |
+| 11h30 | Table ronde — *Mode produit et les tests* | 45 min | Fabrice (Anas annonce et reprend) |
 | 12h15 | Cocktail déjeunatoire | 85 min | — |
 | 13h36 | Musique de reprise | 4 min | régie |
 | 13h40 | Présentation de l'organisation des kiosques | 15 min + 5 min de dispersion | Anas + 2ᵉ animateur |
@@ -164,6 +165,8 @@ Slide QR code à l'écran, plein cadre, et **laissé affiché pendant qu'il parl
 | Questions | 9 min | 10h42 |
 | Annonce de la conférence 2 | 3 min | 10h45 |
 
+Intervenant : **Julien CAHU** (K-LAGAN).
+
 **Le générique de 15 s sert à faire monter les intervenants sur scène.**
 Personne ne parle par-dessus. L'animateur quitte la scène pendant qu'il tourne.
 
@@ -212,6 +215,8 @@ Même structure, même budget :
 | Questions | 9 min | 11h27 |
 | Annonce de la table ronde | 3 min | 11h30 |
 
+Intervenants : **Betty BEAUGE et Gilles NOUAIS** (Niji).
+
 Titre : *De l'IA générative aux tests « augmentés » : les 7 leçons apprises pour
 industrialiser l'IA dans le cycle de test.*
 
@@ -241,8 +246,21 @@ Sans ça, les gens se retiennent ou partent définitivement.
 Titre : *Mode produit et les tests.* Angle : *« Mode produit ADE : comment CAAS
 transforme ses approches de test pour accompagner la fabrication agile ? »*
 
-`[ à compléter : modérateur — est-ce Anas ou un modérateur dédié ? ]` Si c'est
-Anas, il est sur scène en continu de 11h30 à 12h15 et il lui faut de l'eau.
+**Intervenants** : Ghislaine DOPIERRE (TFC), Gregory BARRANCO (TMV), Erwan
+PERIGAULT (SDSI). **Animation** : Fabrice CHATRON.
+
+**Deux conséquences de cette répartition, à trancher.** Fabrice anime la
+table ronde *et* revient à 16h45 comme sponsor : il est sur scène trois fois
+dans la journée, avec deux rôles différents. Anas l'annonce à 11h27 et le
+reprend à 12h03 — mais **qui tient les 7 minutes de questions ?** Fabrice est
+déjà au micro et connaît le sujet ; Anas tient la pendule et la discipline du
+micro baladeur. Par défaut : Fabrice ouvre les questions, Anas les cadre et
+coupe. À dire aux deux avant, sinon les deux hésitent en même temps.
+
+Ghislaine aussi est sur scène trois fois — ouverture, table ronde, clôture.
+Elle n'a pas de temps de préparation entre l'ouverture et 11h30 : c'est
+confortable, mais ça veut dire qu'elle ne peut pas être la solution de repli
+si quelque chose déraille au même moment.
 
 Fenêtre de questions volontairement plus courte : la table ronde produit
 elle-même du débat, et le message de 12h10 ne doit pas être sacrifié.
@@ -542,9 +560,16 @@ les ai pas comblées par une hypothèse.
    (§ 4.2) Sa séquence plénière de 3 minutes a disparu avec la vidéo.
 8. **L'ordre de la clôture** : initial ou celui du § 5.
 9. **La phrase sur la 4G** au moment du QR code (§ 3.2).
-10. **Le modérateur de la table ronde** : Anas ou quelqu'un d'autre ?
-11. **Les noms des intervenants** des deux conférences et de la table ronde.
+10. ~~Le modérateur de la table ronde~~ — **Fabrice CHATRON** (14/09).
+11. ~~Les noms des intervenants~~ — reçus le 14/09, cf. § 1. Restent à
+    confirmer : les accents de Gregory BARRANCO, Erwan PERIGAULT et Elodie
+    TORDJMAN, absents du fichier source et donc absents de la page.
 12. **Durée de mise en ligne de la page** après le 14 septembre.
+13. **Les questions de la table ronde** : Fabrice les ouvre, Anas les cadre ?
+    (§ 3.5)
+14. **Aurore CAPLAN (DF Dommage) est-elle aussi au kiosque 8 ?** Le fichier
+    source ne la place qu'au kiosque 9, et la correction du 14/09 nomme le
+    kiosque 8. Seule l'écriture « DF Dommage » a été appliquée, au kiosque 9.
 
 ---
 
