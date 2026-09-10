@@ -566,6 +566,34 @@ Trois choix qui viennent de la scène plutôt que de la maquette :
   été comblé par une supposition se dit sur scène et devient faux.
 - **Recto seul.** Retourner une carte en scène est une hésitation qui se voit.
 
+### La même chose en Word
+
+    python3 outils/fiches/generer-fiches-docx.py
+
+Produit `fiches-animateurs.docx` : les mêmes vingt-trois cartes, mêmes pages
+A5, mêmes corps de texte, mais **modifiables**. C'est la version qui circule
+avant le jour J — on remplit les blancs au clavier, on reformule une phrase, on
+réimprime. Celle qui monte sur scène reste le PDF.
+
+Le contenu n'est pas recopié : le script **importe** le générateur A5. Deux
+fichiers de contenu, ce serait deux vérités, et la seconde serait fausse le
+jour où l'une des deux change.
+
+Deux choses que Word ne rend pas comme le PDF, et qui ne se rattrapent pas :
+
+- **Le bandeau ne va pas bord à bord.** Word compose dans ses marges ; un aplat
+  pleine largeur demande un cadre flottant, qui se déplace dès qu'on tape une
+  ligne de trop.
+- **Le pied de page suit le texte au lieu de rester en bas.** Word répartit, il
+  ne pose pas. C'est aussi pour ça qu'une ligne ajoutée peut faire passer une
+  carte sur deux pages, sans erreur ni avertissement — d'où le contrôle, qui
+  convertit et **compte les pages** : vingt-trois cartes, vingt-trois pages.
+
+Cette conversion de contrôle écrit dans un dossier temporaire, jamais à côté du
+`.docx`. Écrite d'abord à côté, elle a écrasé puis supprimé
+`fiches-animateurs.pdf` — les deux fichiers ne diffèrent que par l'extension —
+en faisant son ménage, et sans rien signaler puisqu'elle avait « réussi ».
+
 ### Le contrôle relit les phrases, pas seulement les positions
 
 Deux pièges, et un seul se voyait.
