@@ -82,6 +82,28 @@ MARGE_LATERALE, MARGE_HAUTE = Cm(1.5), Cm(1.2)
 UTILE = PAGE_L - 2 * MARGE_LATERALE
 
 QR = RACINE / 'qr' / 'testing-event-2026.png'
+
+# Le kiosque 10 occupe deux salles, et depuis l'arbitrage du 11/09 elles ne
+# montrent pas la même chose. Les deux affiches ne sont donc plus
+# interchangeables : ce qui les distingue est écrit dessus, pas le nom de la
+# salle — qui peut encore bouger le matin même.
+SEANCES = {
+    '10': [
+        {
+            'label': 'SÉANCE PRÉSENTÉE',
+            'titre': 'Le principe de la série, puis l’épisode 4 en exclusivité',
+            'texte': 'On vous présente TESTY et les coulisses de la série, puis '
+                     'on diffuse le dernier épisode — le 4 — que personne n’a '
+                     'encore vu.',
+        },
+        {
+            'label': 'EN LIBRE SERVICE',
+            'titre': 'Les trois premiers épisodes, en continu',
+            'texte': 'Les épisodes 1, 2 et 3 se succèdent. Entrez et sortez '
+                     'quand vous voulez : il n’y a pas de séance à attendre.',
+        },
+    ],
+}
 URL = 'info-hub.jeremy-delaux.workers.dev/testing-event-2026/'
 
 # Corps de texte, calés sur la maquette PowerPoint. Une première version plus
@@ -90,7 +112,8 @@ URL = 'info-hub.jeremy-delaux.workers.dev/testing-event-2026/'
 # si ça tient — il a refusé avant d'accepter.
 T_MARQUE, T_DATE, T_SURTITRE = 40, 17, 24
 T_NUMERO, T_EMOJI, T_TITRE, T_TITRE_LONG = 170, 72, 60, 46
-T_PITCH = 34
+T_PITCH, T_PITCH_SEANCE = 34, 26
+T_SEANCE_LABEL, T_SEANCE_TITRE, T_SEANCE = 17, 30, 20
 T_INTERTITRE, T_ORG, T_NOMS = 24, 19, 26
 T_HEURE, T_FIN, T_LABEL = 34, 19, 14
 T_PIED_TITRE, T_PIED, T_URL = 30, 17, 14
@@ -171,9 +194,28 @@ def _identite(doc, kiosque):
     _para(doc, None, COURANTE, 12, ENCRE, apres=0)
 
 
-def _pitch(doc, kiosque):
-    p = _para(doc, kiosque['pitch'], COURANTE, T_PITCH, GRIS_FONCE, apres=0)
+def _pitch(doc, kiosque, seance):
+    # Plus petit quand une séance suit : le pitch dit ce qu'est le kiosque, la
+    # séance dit ce qui se passe derrière cette porte-là. La seconde prime.
+    taille = T_PITCH_SEANCE if seance else T_PITCH
+    p = _para(doc, kiosque['pitch'], COURANTE, taille, GRIS_FONCE, apres=0)
     p.paragraph_format.line_spacing = 1.25
+    _para(doc, None, COURANTE, 12, ENCRE, apres=0)
+
+
+def _seance(doc, seance):
+    """Ce qui distingue deux salles d'un même kiosque, dit en toutes lettres."""
+    t = _tableau(doc, [UTILE])
+    cellule = t.rows[0].cells[0]
+    _ombrer(cellule, TEAL_FONCE)
+    _marges_cellule(cellule, 200, 200, 240, 240)
+    _vider(cellule)
+    _para(cellule, seance['label'], CONDENSEE, T_SEANCE_LABEL, BLEU_CLAIR,
+          gras=True, apres=4)
+    _para(cellule, seance['titre'], CONDENSEE, T_SEANCE_TITRE, BLANC,
+          gras=True, apres=6)
+    p = _para(cellule, seance['texte'], COURANTE, T_SEANCE, BLANC, apres=0)
+    p.paragraph_format.line_spacing = 1.2
     _para(doc, None, COURANTE, 12, ENCRE, apres=0)
 
 
@@ -265,16 +307,18 @@ def _saut_de_page(doc):
     p.add_run().add_break(WD_BREAK.PAGE)
 
 
-def _affiche(doc, kiosque, rotations):
+def _affiche(doc, kiosque, rotations, seance=None):
     _bandeau_tete(doc)
     _identite(doc, kiosque)
-    _pitch(doc, kiosque)
+    _pitch(doc, kiosque, seance)
+    if seance:
+        _seance(doc, seance)
     _porteurs(doc, kiosque)
     _rotations(doc, rotations)
     _pied(doc)
 
 
-def _attendus(kiosque, rotations):
+def _attendus(kiosque, rotations, seance=None):
     """Tout ce qui doit se relire dans le PDF, exactement comme il y est écrit.
 
     L'emoji n'en fait pas partie : Barlow ne l'a pas, LibreOffice le prend
@@ -284,6 +328,8 @@ def _attendus(kiosque, rotations):
               'Lundi 14 septembre 2026 · Business Center CAA',
               kiosque['numero'], kiosque['titre'], kiosque['pitch'],
               'ANIMÉ PAR']
+    if seance:
+        textes += [seance['label'], seance['titre'], seance['texte']]
     for org, noms in kiosque['qui']:
         textes += [org, noms]
     for heure, label in rotations:
@@ -339,30 +385,42 @@ def verifier(chemin, attendues):
     return anomalies
 
 
-def main():
-    kiosques, rotations = A.lire_programme()
-
+def _produire(nom, pages, rotations):
+    """pages : liste de (kiosque, séance ou None). Une page par élément."""
     doc = docx.Document()
     _mise_en_page(doc)
-    for i, kiosque in enumerate(kiosques):
+    for i, (kiosque, seance) in enumerate(pages):
         if i:
             _saut_de_page(doc)
-        _affiche(doc, kiosque, rotations)
+        _affiche(doc, kiosque, rotations, seance)
 
-    chemin = ICI / 'affiches-kiosques-clair.docx'
+    chemin = ICI / nom
     doc.save(chemin)
     print(f'{chemin.relative_to(RACINE)}  '
           f'{chemin.stat().st_size / 1024:.0f} Ko')
-
-    anomalies = verifier(chemin, [_attendus(k, rotations) for k in kiosques])
-    print('\nContrôle :')
+    anomalies = verifier(chemin, [_attendus(k, rotations, s) for k, s in pages])
     for a in anomalies:
         print(f'  · {a}')
-    if anomalies:
-        return 1
-    print(f'  {len(kiosques)} affiches, {len(kiosques)} pages A3 portrait, '
-          'rien de coupé.')
-    return 0
+    if not anomalies:
+        print(f'  ✓ {len(pages)} affiches, {len(pages)} pages A3 portrait, '
+              'rien de coupé.')
+    return anomalies
+
+
+def main():
+    kiosques, rotations = A.lire_programme()
+    par_numero = {k['numero']: k for k in kiosques}
+
+    # Le jeu complet garde une seule affiche par kiosque : c'est celui qu'on
+    # tire pour les dix portes. Les deux salles du kiosque 10 ont leur propre
+    # fichier, parce qu'elles ne montrent pas la même chose et qu'une affiche
+    # de trop dans le jeu complet se colle au mauvais endroit.
+    anomalies = _produire('affiches-kiosques-clair.docx',
+                          [(k, None) for k in kiosques], rotations)
+    anomalies += _produire(
+        'affiches-kiosque-10-clair.docx',
+        [(par_numero['10'], seance) for seance in SEANCES['10']], rotations)
+    return 1 if anomalies else 0
 
 
 if __name__ == '__main__':

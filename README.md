@@ -189,6 +189,16 @@ une phrase, et maintenant le nom de la personne qu'il va trouver derrière.
 Pas de variante sombre : un aplat pleine page en Word s'imprime mal et vide les
 cartouches pour rien.
 
+**Le kiosque 10 a deux affiches**, dans un fichier à part —
+`affiches-kiosque-10-clair.docx`. Ses deux salles ne montrent pas la même
+chose depuis l'arbitrage du 11/09 : l'une présente le principe de la série et
+diffuse l'épisode 4 en exclusivité, l'autre passe les épisodes 1 à 3 en libre
+service. Un bandeau plein le dit sur chaque affiche. **Elles ne sont donc plus
+interchangeables** — et ce qui les distingue est écrit dessus, pas le nom de la
+salle, qui peut encore bouger le matin même. Le jeu complet garde, lui, une
+seule affiche par kiosque : une affiche de trop dans le paquet des dix se colle
+au mauvais endroit.
+
 **Attention à la divergence.** Le PDF qui part à l'impression
 (`affiches-kiosques-clair.pdf`) ne porte pas encore les porteurs : il vient de
 l'autre script. Tant que les deux coexistent, il faut savoir laquelle des deux

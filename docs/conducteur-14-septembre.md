@@ -616,7 +616,8 @@ la journée `[ à confirmer : jusqu'à quand la page reste-t-elle en ligne ? ]`.
 | 13 | ≈ 16h56 | Musique de fin | — |
 
 **Aucune diffusion vidéo à 13h40.** La séquence TESTY est supprimée du
-plénier ; la vidéo n'existe plus que dans le kiosque n° 10, en libre service.
+plénier ; la vidéo n'existe plus que dans le kiosque n° 10 — épisode 4 présenté
+dans une salle, épisodes 1 à 3 en libre service dans l'autre *(11/09)*.
 
 **Vérifications matérielles avant 09h30 :**
 
@@ -682,12 +683,17 @@ tranchées sont barrées, avec la décision.
     et corrigée en « DF Dommages », avec un s, le 11/09 (kiosques 7 et 9).
 15. **Les pancartes de temps** : « 5 / 1 / on termine » (10/09) ou
     « 10 / 5 / on termine » ? Voir l'objection au § 3.3.
-16. **Le kiosque 10 est-il en libre service ou à heure fixe ?** (§ 4.2) Le
-    fichier source finit par « visionnage en libre service » ; la version du
-    10/09 décrit une diffusion présentée de l'épisode 4. Les deux ne peuvent pas
-    être vrais. La page, elle, ne tranche plus : le kiosque s'appelle
-    **Mini-Série TESTY** depuis le 11/09 et la mention « libre service » a
-    disparu de son titre.
+16. ~~**Le kiosque 10 est-il en libre service ou à heure fixe ?**~~
+    **Tranché le 11/09 : les deux, une salle chacun.** Dans l'une, on présente
+    le principe de la série et on diffuse **l'épisode 4 en exclusivité** ; dans
+    l'autre, les **épisodes 1 à 3** se succèdent **en libre service**. Les deux
+    affiches de porte existent :
+    `outils/affiches/affiches-kiosque-10-clair.docx`, une page par salle.
+    **Reste ouvert :** quelle salle tient quel programme, et lequel des deux
+    porteurs — Elena TOMAS, Jaber BENZEGOUTTA — tient laquelle. Les deux
+    affiches les nomment tous les deux, faute de mieux. Et la séance présentée
+    a une heure de début : si elle ne repasse pas à chaque rotation, les
+    participants des rotations 2 à 5 arrivent après.
 17. **Le tirage : par nom, ou par rang et numéro de place ?** (§ 5.4) Les deux
     mécaniques ont été proposées ; elles ne récompensent pas la même chose.
 18. ~~**Kiosque 1 : la tour de Babel ou le Marshmallow Challenge ?**~~

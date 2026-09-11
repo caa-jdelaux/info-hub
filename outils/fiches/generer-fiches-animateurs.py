@@ -645,9 +645,9 @@ def _carte_bloc(cle, autre):
         # Les deux seuls points du bloc qui ne sont pas tranchés tombent tous
         # les deux ici, et c'est l'ouverture de la séquence.
         carte['alerte'] = (
-            'Kiosque 1 : les deux ateliers alternent selon la rotation — dis '
-            '« les deux en alternance ». Kiosque 10 : « libre service » ou '
-            '« épisode 4 présenté », non tranché.')
+            'Kiosque 1 : les deux ateliers alternent selon la rotation. '
+            'Kiosque 10 : deux salles — l’épisode 4 présenté dans l’une, les '
+            'épisodes 1 à 3 en libre service dans l’autre.')
     return carte
 
 
@@ -672,9 +672,9 @@ def _carte_preparation(numero):
             'n’est pas fixé : n’annonce pas d’horaire.')
     if numero == 10:
         carte['alerte'] = (
-            'Le fichier source finit par « visionnage en libre service » ; le '
-            'conducteur du 10/09 décrit une diffusion présentée de l’épisode 4. '
-            'À trancher avant de le dire.')
+            'Tranché le 11/09 : une salle présente le principe de la série et '
+            'diffuse l’épisode 4 en exclusivité, l’autre passe les épisodes 1 à '
+            '3 en libre service. Dis les deux.')
     return carte
 
 
