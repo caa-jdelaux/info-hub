@@ -14,6 +14,12 @@ horaire change ici, il doit changer là-bas, et inversement.
 Les mentions `[ à compléter : … ]` marquent ce que je n'ai pas et que je
 n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 
+**Version annotée du 10/09.** L'organisation a relu ce conducteur et tranché
+une partie des questions ouvertes (PDF *CTF – Conducteur d'animation*, reçu le
+10/09/2026). Ces décisions sont reprises ci-dessous et signalées par la mention
+« *arbitré le 10/09* ». Là où j'ai gardé une objection, elle est écrite juste
+après la décision : elle n'annule pas l'arbitrage, elle documente le risque.
+
 ---
 
 ## 1. Distribution
@@ -27,10 +33,10 @@ n'invente pas. Elles doivent toutes être levées avant le 12 septembre.
 | Kiosque 10 — TESTY | Elena TOMAS et Jaber BENZEGOUTTA · prise de parole `[ à confirmer, cf. § 4.2 ]` | 13h44 → 13h49 |
 | Conférence 1 | K-LAGAN / Julien CAHU | 09h55 (coulisses) → 10h45 |
 | Conférence 2 | Niji / Betty BEAUGE et Gilles NOUAIS | 10h40 (coulisses) → 11h30 |
-| Table ronde — intervenants | TFC / Ghislaine DOPIERRE · TMV / Grégory BARRANCO · SDSI / Erwan PERIGAULT | 11h25 (coulisses) → 12h15 |
+| Table ronde — intervenants | TFC / Ghislaine DOPIERRE · TMV / Grégory BARRANCO · USR / Erwan PERIGAULT | 11h25 (coulisses) → 12h15 |
 | Table ronde — animation | Fabrice CHATRON | 11h25 → 12h15 |
-| Régie son / vidéo | `[ à compléter ]` | 09h00 → fin |
-| Porteurs de micro (×2) | `[ à compléter ]` | 09h45 → 12h15 |
+| Régie son / vidéo | sur place | 09h00 → fin |
+| Porteurs de micro (×4) | vu avec le Staff | 09h45 → 12h15 |
 | Doublure d'Anas | `[ à compléter ]` | toute la journée |
 
 > **Point de vigilance.** Anas est seul en scène de 09h56 à 12h15 — l'après-midi
@@ -140,15 +146,16 @@ Slide QR code à l'écran, plein cadre, et **laissé affiché pendant qu'il parl
    façon de savoir où aller à 14h00.
 3. Laisser **20 secondes de silence** pour que la salle scanne. Compter à voix
    haute si nécessaire. Un QR code annoncé sans temps de scan n'est pas scanné.
-4. Précision facultative, à ta main : *« si la page ne s'ouvre pas sur le wifi
-   d'entreprise, scannez en 4G »*. `[ décision à prendre : dire ou ne pas dire ]`
-   — l'ouverture de l'URL depuis le réseau CAA n'a pas été vérifiée. Une phrase
-   dite évite cinquante personnes qui croient que ça ne marche pas ; une phrase
-   non dite évite d'attirer l'attention sur un problème qui ne se posera
-   peut-être pas.
-5. **Annonce de la conférence 1** : titre, intervenant, et il lance le générique.
+4. **Annonce de la conférence 1** : titre, intervenant, et il lance le
+   générique. **Remercier K-LAGAN pour son intervention**, représentée par
+   Julien CAHU. *(arbitré le 10/09)*
 
-**Cue régie :** générique de 15 s au top d'Anas, pas à 10h00 pile.
+La phrase de repli sur la 4G — *« si la page ne s'ouvre pas sur le wifi
+d'entreprise, scannez en 4G »* — a été écartée de la version du 10/09. Elle
+reste à la main d'Anas si le premier scan échoue visiblement dans la salle.
+
+**Cue régie :** générique de 15 s au top d'Anas, **au clic sur la slide de
+présentation**, pas à 10h00 pile. *(arbitré le 10/09)*
 
 ---
 
@@ -173,9 +180,15 @@ Personne ne parle par-dessus. L'animateur quitte la scène pendant qu'il tourne.
 #### Gestion du temps
 
 L'animateur ne peut pas interrompre un intervenant. Il lui faut un canal muet :
-**trois pancartes A4 — « 10 min », « 5 min », « on termine »** — tenues depuis
+**trois pancartes A4 — « 5 min », « 1 min », « on termine »** — tenues depuis
 le premier rang, dans l'axe du regard de l'intervenant. À préparer avant le
-jour J ; improvisé le matin même, ça ne se fait pas.
+jour J ; improvisé le matin même, ça ne se fait pas. *(arbitré le 10/09)*
+
+> **Objection, à trancher.** « 1 min » arrive trop tard pour changer quoi que ce
+> soit : à une minute de la fin, un intervenant ne peut plus que s'arrêter au
+> milieu d'une phrase. La pancarte qui modifie réellement un déroulé est celle
+> de **10 minutes** — elle laisse le temps de sauter deux slides et d'atterrir.
+> Soit « 10 / 5 / on termine », soit quatre pancartes.
 
 #### Les questions
 
@@ -185,8 +198,8 @@ la salle ne vous entend pas. »*
 
 Mécanique :
 
-- **Deux porteurs de micro**, un par travée, **debout et visibles avant la fin
-  de la conférence**. S'ils se lèvent après la question, on perd 30 secondes par
+- **Quatre porteurs de micro**, un par travée, **debout et visibles avant la
+  fin de la conférence**. *(arbitré le 10/09)* S'ils se lèvent après la question, on perd 30 secondes par
   question et on n'en passe que trois.
 - **Anas doit arriver avec deux questions écrites par conférence**, préparées à
   l'avance. Si aucune main ne se lève dans les cinq secondes, il pose la sienne :
@@ -199,8 +212,10 @@ Mécanique :
 
 #### Annonce de la conférence 2
 
-Titre, intervenant, et une phrase de liaison avec ce qui vient d'être dit.
-Puis il lance le générique et quitte la scène.
+Titre, intervenants, et une phrase de liaison avec ce qui vient d'être dit.
+**Remercier Niji pour le déplacement depuis Rennes et pour le partage
+d'expérience.** *(arbitré le 10/09)* Puis il lance le générique et quitte la
+scène.
 
 ---
 
@@ -229,8 +244,11 @@ temps et ça remplit les kiosques.
 
 **Il n'y a aucune pause entre 09h45 et 12h15.** Deux heures trente assises.
 Anas peut le dire une fois, après la conférence 2 : *« les portes restent
-ouvertes, si vous devez sortir faites-le par le fond, ça ne dérange personne. »*
-Sans ça, les gens se retiennent ou partent définitivement.
+ouvertes, si vous devez sortir, n'hésitez pas. »* Sans ça, les gens se
+retiennent ou partent définitivement.
+
+**Annonce de la table ronde :** titre, angle, les trois intervenants et
+l'animateur — et **remercier les intervenants**. *(arbitré le 10/09)*
 
 ---
 
@@ -247,7 +265,7 @@ Titre : *Mode produit et les tests.* Angle : *« Mode produit ADE : comment CAAS
 transforme ses approches de test pour accompagner la fabrication agile ? »*
 
 **Intervenants** : Ghislaine DOPIERRE (TFC), Grégory BARRANCO (TMV), Erwan
-PERIGAULT (SDSI). **Animation** : Fabrice CHATRON.
+PERIGAULT (USR). **Animation** : Fabrice CHATRON.
 
 **Deux conséquences de cette répartition, à trancher.** Fabrice anime la
 table ronde *et* revient à 16h45 comme sponsor : il est sur scène trois fois
@@ -281,7 +299,8 @@ Anas, dans cet ordre :
    conférence subie : des ateliers, des démos, des jeux.
 4. **Il y a des lots à gagner.** Le principe en une phrase : *« à chaque kiosque
    auquel vous assistez, vous déposez une fiche à votre nom. Cinq kiosques,
-   cinq fiches, cinq chances. Tirage au sort à 16h30. »*
+   cinq fiches, cinq chances. Tirage au sort à 16h30. »* **Une seule urne, à
+   l'accueil.** *(arbitré le 10/09)*
 5. **La règle qui remplit la salle à 16h30** :
    `[ décision à prendre : le gagnant doit-il être présent dans la salle ? ]`
    Si oui, le dire ici, le redire à 13h40, et le redire avant le tirage. Si
@@ -315,7 +334,7 @@ de façon que la rotation 1 démarre réellement à 14h00 et pas à 14h05.
 |---|---|---|---|
 | Accueil de reprise | Anas + 2ᵉ animateur | 1 min | 13h41 |
 | Principe des kiosques et des rotations | Anas + 2ᵉ animateur | 3 min | 13h44 |
-| Les 10 kiosques, 30 s chacun | les porteurs de kiosque | 5 min | 13h49 |
+| Les 10 kiosques, 30 s chacun | Anas (impairs) + 2ᵉ animateur (pairs) | 5 min | 13h49 |
 | Tirage au sort et lots | Anas + 2ᵉ animateur | 3 min | 13h52 |
 | Rappel salles + RDV 16h30 | Anas | 2 min | 13h54 |
 | Marge | — | 1 min | 13h55 |
@@ -333,18 +352,43 @@ Trois conséquences, dont deux favorables et une à surveiller.
 
 1. **Les pitches repassent à 30 secondes.** J'avais proposé de les couper à 20 s
    uniquement parce que la séquence TESTY mangeait le créneau. Les cinq minutes
-   qu'elle occupait rendent cet arbitrage inutile : 30 s tiennent. La consigne aux porteurs de
-   kiosque reste la même — **une phrase sur le contenu, une phrase sur la
-   salle, et on rend le micro** — et il faut toujours **deux micros HF passés en
-   alternance**, sinon dix passages de main coûtent à eux seuls plus d'une
-   minute. Trente secondes annoncées sans briefing préalable deviennent
-   cinquante, et les dix passages font huit minutes au lieu de cinq.
+   qu'elle occupait rendent cet arbitrage inutile : 30 s tiennent.
+
+   **Ce sont les animateurs qui pitchent, pas les porteurs.** *(arbitré le
+   10/09, après-coup)* Anas prend les kiosques impairs, le 2ᵉ animateur les
+   pairs ; chacun garde son micro d'un bout à l'autre et les porteurs restent
+   assis. Ce que ça fait gagner n'est pas tant la minute de passages de main
+   que **la variance** : deux animateurs qui ont répété tiennent cinq minutes,
+   dix intervenants qui montent chacun leur tour, non — trente secondes
+   annoncées sans briefing deviennent cinquante, et les dix passages font huit
+   minutes au lieu de cinq.
+
+   > **Ce que ça coûte, et comment le rendre.** La salle ne voit plus le visage
+   > de la personne qu'elle retrouvera en atelier, alors qu'elle doit choisir
+   > cinq kiosques sur dix. Contre-mesure gratuite, portée par les fiches :
+   > **l'animateur nomme le porteur et lui fait lever la main** pendant son
+   > pitch. Zéro seconde, et le visage est rendu.
 
 2. **Le kiosque 10 garde son exclusivité.** Plus personne n'aura vu l'épisode
    avant d'entrer en salle Sumida. En contrepartie, **le pitch du kiosque 10
    porte désormais seul tout le poids de TESTY** : c'est le seul des dix dont
-   les 30 secondes doivent donner envie plutôt qu'informer. À confier à Elena si
-   elle est disponible sur ce créneau.
+   les 30 secondes doivent donner envie plutôt qu'informer. Il revient au
+   2ᵉ animateur — le kiosque 10 est pair — et non plus à Elena.
+
+   **Précision du 10/09 :** le kiosque 10 occupe ses deux salles à des usages
+   différents — dans l'une, on présente le principe de la série et on diffuse
+   **en exclusivité l'épisode 4**, le dernier ; dans l'autre, les **trois
+   premiers épisodes** passent successivement.
+
+   > **Ce n'est plus tout à fait du libre service, et ça change deux choses.**
+   > Une diffusion *présentée* a une heure de début : quelqu'un doit la tenir,
+   > et l'épisode 4 doit repasser à chaque rotation, sinon les participants des
+   > rotations 2 à 5 arrivent après. Deux porteurs sont nommés au kiosque 10
+   > (Elena TOMAS, Jaber BENZEGOUTTA) pour deux salles et cinq rotations : la
+   > répartition n'est écrite nulle part. Par ailleurs, le pitch du fichier
+   > source et la page programme annoncent tous les deux « visionnage en libre
+   > service » — si l'épisode 4 est présenté à heure fixe, les deux le disent à
+   > tort et doivent être corrigés.
 
 3. **Le point à surveiller : ce bloc n'a plus aucun moment de respiration.**
    Quinze minutes d'instructions d'organisation, juste après un cocktail, dans
@@ -355,11 +399,13 @@ Trois conséquences, dont deux favorables et une à surveiller.
    le seul moment vivant du bloc ; les mettre en dernier, avant la dispersion,
    les ferait tomber dans le brouhaha des gens qui se lèvent.
 
-`[ à confirmer : Elena garde-t-elle une prise de parole ? ]` Sa séquence de
-3 minutes disparaît avec la vidéo. Par défaut je l'ai basculée sur le pitch de
-30 s du kiosque 10 — mais c'est une hypothèse de ma part, et elle avait
-probablement préparé autre chose. À lui dire avant le jour J plutôt que le
-matin même.
+**Elena n'a plus aucune prise de parole en plénière.** Sa séquence de 3 minutes
+a disparu avec la vidéo, et le pitch de 30 s du kiosque 10 vient de passer au
+2ᵉ animateur. Ce n'est pas un oubli, c'est la conséquence des deux décisions
+mises bout à bout — mais personne ne le lui a dit, et elle a probablement
+préparé quelque chose. Il reste les remerciements de 16h36, où les porteurs des
+dix kiosques montent sur scène. **À lui dire avant le jour J, pas le matin
+même.** Le même raisonnement vaut pour les neuf autres porteurs.
 
 #### Accueil de reprise (1 min)
 
@@ -389,7 +435,7 @@ Le mécanisme, dit lentement, dans cet ordre :
    kiosque.
 2. **Cinq kiosques = cinq fiches = cinq chances.** C'est la phrase à faire
    entendre.
-3. **Où on dépose la fiche** : `[ à compléter — voir § 6, question ouverte ]`
+3. **Où on dépose la fiche** : **une seule urne, à l'accueil.** *(arbitré le 10/09)*
 4. **Trois gagnants, trois lots distincts**, tirés à 16h30 :
    `[ à compléter : lot 1 / lot 2 / lot 3 ]`
 5. **Règle de présence** : `[ décision à prendre — cf. § 3.6 ]`
@@ -407,16 +453,18 @@ Le mécanisme, dit lentement, dans cet ordre :
 Pas d'animation en plénière. Deux points opérationnels qui ne sont pas encore
 tranchés et qui ne s'improvisent pas :
 
-**Qui signale la fin d'une rotation dans dix salles ?**
-`[ question ouverte — voir § 6 ]` Sans signal commun, dix kiosques finissent à
-dix moments différents et le décalage s'accumule sur cinq rotations. Trois
-options : chaque porteur de kiosque tient sa propre montre (le plus simple, le
-moins fiable) ; un ou deux « marcheurs » passent dans le couloir à 20 et 25
-minutes ; un signal sonore sur l'étage si le Business Center en dispose.
+**Le signal de fin de rotation.** *(arbitré le 10/09)* Signal commun fondé sur
+l'horaire, doublé de la musique de l'événement (4 min). **Chaque kiosque a son
+TimeKeeper**, qui tient sa propre montre, et un signal sonore sur l'étage du
+Business Center `[ à vérifier : le BC en dispose-t-il ? ]`.
+
+> **Conséquence à ne pas laisser passer :** dix TimeKeepers, c'est dix personnes
+> de plus à briefer, et rien ne leur a encore été envoyé. C'est l'objet de la
+> fiche « porteur de kiosque » du § 8, qui n'existe pas encore.
 
 **Un référent flottant.** Quelqu'un qui n'anime aucun kiosque et circule :
 participants perdus, kiosque en panne de vidéoprojecteur, fiches épuisées.
-`[ à compléter : qui ]`
+`[ à confirmer : Lou ? ]`
 
 **Rappel horaire de la rotation 5.** Elle se termine à **16h25** (contenu), les
 cinq dernières minutes servant à rejoindre l'auditorium. Les porteurs de kiosque
@@ -453,12 +501,13 @@ des gens venus de l'extérieur et pour le staff, c'est le pire moment possible.
 | Tirage au sort et remise des lots | Ghislaine + Anas | 8 min | 16h56 |
 | Musique de fin | régie | — | 17h00 |
 
-`[ décision à prendre : conserver l'ordre initial ou retenir celui-ci ]`
+**Ordre retenu.** *(arbitré le 10/09)*
 
 ### 5.1 — Mot de clôture (3 min)
 
 Ghislaine et Anas ensemble. Ce qu'on a vu aujourd'hui, en trois phrases, pas en
-récapitulatif. Le nombre de participants si le chiffre est connu.
+récapitulatif. Le nombre de participants : **relevé sur les feuilles
+d'émargement et remonté par Lou à 16h**. *(arbitré le 10/09)*
 
 ### 5.2 — Remerciements (8 min)
 
@@ -490,8 +539,13 @@ calée à l'avance.
 
 1. **Rappeler la règle avant de tirer**, pas après : cinq kiosques, cinq fiches,
    trois gagnants, trois lots. Et la règle de présence si elle a été retenue.
-2. **Faire tirer par un participant**, pas par un organisateur. C'est plus
-   crédible et ça se voit.
+2. **Faire tirer par un participant** — ni staff, ni TFC — pas par un
+   organisateur. C'est plus crédible et ça se voit. *(arbitré le 10/09)*
+   Variante proposée le 10/09 : tirer deux chiffres, **rang et numéro de
+   place**, plutôt qu'un nom. C'est plus spectaculaire, mais ça ne récompense
+   plus le parcours : quelqu'un qui n'a fait aucun kiosque peut gagner, et la
+   phrase « cinq kiosques, cinq chances » répétée toute la journée devient
+   fausse. Les deux mécaniques ne peuvent pas coexister sans l'expliquer.
 3. **Un tirage à la fois** : on tire, on lit le nom, la personne monte, on remet
    le lot, on applaudit, on passe au suivant. Trois noms lus d'affilée
    désorganisent la scène.
@@ -530,9 +584,10 @@ plénier ; la vidéo n'existe plus que dans le kiosque n° 10, en libre service.
 
 **Vérifications matérielles avant 09h30 :**
 
-- micros HF des animateurs + **deux micros baladeurs pour les questions**, tous
-  testés en salle vide, piles neuves ;
-- deux micros HF supplémentaires pour les dix pitches de 13h44 ;
+- micros HF des animateurs + **quatre micros baladeurs pour les questions**,
+  un par travée, tous testés en salle vide, piles neuves ;
+- rien de plus pour les dix pitches de 13h44 : les deux animateurs gardent
+  leurs micros, il n'y a plus de passage de main ;
 - les trois génériques et les deux musiques chargés et repérés dans l'ordre du
   tableau ci-dessus ;
 - retour vidéo visible depuis la scène, sinon les animateurs parlent dos à
@@ -543,34 +598,63 @@ plénier ; la vidéo n'existe plus que dans le kiosque n° 10, en libre service.
 ## 7. Questions ouvertes — à trancher avant le 12 septembre
 
 Aucune de ces questions n'a de réponse dans les éléments dont je dispose. Je ne
-les ai pas comblées par une hypothèse.
+les ai pas comblées par une hypothèse. Celles que la version du 10/09 a
+tranchées sont barrées, avec la décision.
 
-1. **Le second animateur de l'après-midi** — qui ?
-2. **La doublure d'Anas** — qui ? (§ 1)
-3. **L'urne : une ou dix ?** Une urne centrale oblige les participants à
-   remonter à l'auditorium entre deux rotations, ce qui est incompatible avec
-   les 5 minutes de déplacement. Dix urnes, une par kiosque, imposent une
-   collecte : **qui les rapporte, et à quelle heure ?** Les dernières fiches
-   sont écrites à 16h25 en salle Sumida ; le tirage a lieu vers 16h48. La
-   fenêtre est de vingt minutes et personne n'en est chargé aujourd'hui.
+1. **Le second animateur de l'après-midi** — qui ? Son jeu de fiches est prêt et
+   ne porte aucun nom.
+2. **La doublure d'Anas** — qui ? (§ 1) La version du 10/09 n'a pas retenu la
+   ligne ; le risque, lui, n'a pas disparu : Anas est seul en scène de 09h56 à
+   12h15.
+3. ~~L'urne : une ou dix ?~~ — **une seule urne, à l'accueil** (10/09). Reste un
+   angle mort : les dernières fiches sont écrites à **16h25** en salles Sumida,
+   Alzette et Garonne, les plus éloignées, et le tirage a lieu vers 16h48. Si
+   l'accueil n'est pas sur le chemin de l'auditorium, ces fiches n'arriveront
+   pas. **Qui ferme l'urne et la monte en salle, et à quelle heure ?**
 4. **Le contenu des trois lots.**
-5. **La règle de présence pour gagner** (§ 3.6, point 5).
-6. **Le signal de fin de rotation** dans les dix salles (§ 4.3).
-7. **La prise de parole d'Elena** : le pitch de 30 s du kiosque 10, ou rien ?
-   (§ 4.2) Sa séquence plénière de 3 minutes a disparu avec la vidéo.
-8. **L'ordre de la clôture** : initial ou celui du § 5.
-9. **La phrase sur la 4G** au moment du QR code (§ 3.2).
+5. **La règle de présence pour gagner** (§ 3.6, point 5). Proposition du 10/09 :
+   être présent. Tant qu'elle n'est pas arrêtée, elle est imprimée en blanc à
+   remplir sur les fiches d'Anas et du second animateur.
+6. ~~Le signal de fin de rotation~~ — **horaire + musique de 4 min, un
+   TimeKeeper par kiosque, signal sonore d'étage si le BC en dispose** (10/09).
+   Reste à vérifier que le Business Center dispose d'une sonorisation d'étage,
+   et à briefer les dix TimeKeepers.
+7. ~~La prise de parole d'Elena~~ — **aucune** : les dix pitches passent aux
+   animateurs, le kiosque 10 étant pair il revient au 2ᵉ animateur. À lui dire
+   avant le 14 (§ 4.2). Reste ouvert : **comment Elena TOMAS et Jaber
+   BENZEGOUTTA se répartissent deux salles sur cinq rotations**, dont une
+   diffusion présentée.
+8. ~~L'ordre de la clôture~~ — **l'ordre du § 5 est retenu** (10/09).
+9. ~~La phrase sur la 4G~~ — **écartée** (10/09).
 10. ~~Le modérateur de la table ronde~~ — **Fabrice CHATRON** (14/09).
 11. ~~Les noms des intervenants~~ — reçus le 14/09, cf. § 1. Restent à
-    confirmer : les accents d'Erwan PERIGAULT et Elodie TORDJMAN, absents du
-    fichier source et donc absents de la page. Grégory BARRANCO corrigé le
-    14/09 ; Betty BEAUGE reste à vérifier.
+    confirmer : les accents d'**Erwan PERIGAULT**, **Elodie TORDJMAN** et
+    **Betty BEAUGE**, absents du fichier source et donc absents de la page.
+    Grégory BARRANCO corrigé le 14/09.
 12. **Durée de mise en ligne de la page** après le 14 septembre.
 13. **Les questions de la table ronde** : Fabrice les ouvre, Anas les cadre ?
-    (§ 3.5)
+    (§ 3.5) La version du 10/09 a supprimé le paragraphe qui posait la question,
+    sans y répondre. Elle reste ouverte, quarante minutes avant le message le
+    plus important de la matinée.
 14. **Aurore CAPLAN (DF Dommage) est-elle aussi au kiosque 8 ?** Le fichier
     source ne la place qu'au kiosque 9, et la correction du 14/09 nomme le
     kiosque 8. Seule l'écriture « DF Dommage » a été appliquée, au kiosque 9.
+15. **Les pancartes de temps** : « 5 / 1 / on termine » (10/09) ou
+    « 10 / 5 / on termine » ? Voir l'objection au § 3.3.
+16. **Le kiosque 10 est-il en libre service ou à heure fixe ?** (§ 4.2) Le
+    fichier source finit par « visionnage en libre service » ; la version du
+    10/09 décrit une diffusion présentée de l'épisode 4. Les deux ne peuvent pas
+    être vrais. La page, elle, ne tranche plus : le kiosque s'appelle
+    **Mini-Série TESTY** depuis le 11/09 et la mention « libre service » a
+    disparu de son titre.
+17. **Le tirage : par nom, ou par rang et numéro de place ?** (§ 5.4) Les deux
+    mécaniques ont été proposées ; elles ne récompensent pas la même chose.
+18. **Kiosque 1 : la tour de Babel ou le Marshmallow Challenge ?** Le fichier
+    source décrit les deux comme « Option 1 » et « Option 2 », et rien ne dit
+    laquelle est retenue. La page programme et la fiche de pitch annoncent donc
+    les deux. Guillaume COUSIN doit trancher, ou assumer de le faire en salle.
+19. **Qui prévient les dix porteurs de kiosque** qu'ils ne pitchent plus ?
+    (§ 4.2) La décision est prise ; elle ne leur a pas été dite.
 
 ---
 
@@ -579,10 +663,21 @@ les ai pas comblées par une hypothèse.
 Ce document est un conducteur : il sert à préparer, à briefer et à tenir la
 régie. **Il n'est pas tenable en main sur scène.** Il manque encore :
 
-- **Une antisèche recto par animateur** — Ghislaine, Anas, le 2ᵉ animateur,
-  Elena, Fabrice. Une page, gros caractères, uniquement *ses* séquences, avec
-  les horaires de fin visés et les trois ou quatre messages à ne pas oublier.
-- **Une fiche « porteur de kiosque »** — le pitch de 20 s, le numéro de salle,
-  la fin de rotation à 16h25, et la mécanique des fiches.
+- ~~Une antisèche recto par animateur~~ — **faite** :
+  `outils/fiches/generer-fiches-animateurs.py` produit trente-trois cartes A5,
+  un jeu par animateur (Anas 17, Ghislaine 6, le second animateur 10), une carte
+  par prise de parole — dont **une carte par kiosque à pitcher**, cinq pour
+  chacun des deux animateurs de l'après-midi. Ce qui n'est pas tranché y est
+  imprimé en cadre à remplir au stylo plutôt que deviné. **Manque le jeu de
+  Fabrice** — il parle trois fois et anime la table ronde, mais il n'était pas
+  dans la demande.
+- **Une fiche « porteur de kiosque »** — le numéro de salle, la fin de rotation
+  à 16h25, le rôle de TimeKeeper et la mécanique des fiches. Le pitch de 30 s
+  n'y est plus : il est passé aux animateurs. En revanche il faut y dire
+  explicitement qu'ils ne pitchent plus, sinon dix personnes arrivent le 14 en
+  ayant préparé trente secondes.
+  C'est le document le plus rentable qui manque encore : les fiches d'animateur
+  protègent trois personnes, celle-ci protège les deux heures trente qui font
+  60 % de la journée.
 - **Les pancartes de temps** (10 / 5 / on termine) pour le premier rang.
 - **Le modèle de fiche à déposer dans l'urne** : nom, prénom, numéro de kiosque.

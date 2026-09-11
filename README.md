@@ -533,6 +533,121 @@ manuel, s'il le fallait : onglet **Lecture** → *Démarrer : Automatiquement* e
 vidéo : la diapo reste juste même si rien ne se lance.
 
 
+## Fiches de scène des animateurs
+
+    python3 outils/fiches/generer-fiches-animateurs.py
+
+Produit `fiches-animateurs.pptx` et `.pdf` : **trente-trois cartes A5, un jeu
+par animateur, une carte par prise de parole**. Recto seul, 160 g au minimum.
+
+Les pages font **exactement 14,85 × 21 cm**, et le contrôle le vérifie page par
+page. Le seul moyen d'obtenir une carte plus grande que l'A5 est de laisser la
+boîte de dialogue d'impression l'agrandir : « Ajuster à la page » sur une
+imprimante chargée en A4 remonte l'A5 à l'A4 sans rien dire. Imprimer en
+**« Taille réelle » / 100 %**, ou — si le bac n'a que de l'A4 — en **« 2 pages
+par feuille »**, qui réduit légèrement et ne dépasse donc jamais l'A5.
+
+Le découpage n'est ni « une fiche par personne » ni « une fiche par créneau ».
+Une carte par créneau serait à partager — de 09h45 à 10h00, Ghislaine parle,
+Fabrice parle, Ghislaine reprend, Anas enchaîne, et une carte ne se tient pas
+par deux mains à deux moments différents. Une carte par personne ne tient pas
+davantage : Anas a onze prises de parole entre 09h56 et 17h00, et sur un seul
+recto il faut ou bien écrire trop petit, ou bien supprimer les trois quarts.
+D'où le croisement des deux, en cartes numérotées et chronologiques : on ne
+regarde jamais que celle du dessus.
+
+Trois choix qui viennent de la scène plutôt que de la maquette :
+
+- **L'heure de fin visée est en gros, à droite.** C'est l'information la plus
+  consultée en scène, avant même le contenu — celle qui tient la journée.
+- **Ce qui n'est pas tranché est imprimé en cadre à remplir au stylo**, pas
+  deviné. Les lots, la règle de présence, le nombre de participants et les deux
+  questions de secours d'Anas sont des blancs visibles. Une carte où le blanc a
+  été comblé par une supposition se dit sur scène et devient faux.
+- **Recto seul.** Retourner une carte en scène est une hésitation qui se voit.
+
+### Une carte par kiosque pour les dix pitches
+
+Ce sont les deux animateurs qui pitchent les dix kiosques à 13h44, pas les
+porteurs : Anas les impairs, le second les pairs. Chacun a donc, après le
+tableau récapitulatif, **cinq cartes de pitch** — une par kiosque — où
+l'essentiel est le nom de la salle, en gros, à la place de l'heure de fin.
+
+Chaque carte porte trois choses, dans cet ordre d'importance :
+
+1. **La salle**, dans le pavé de couleur. C'est la seule information dont la
+   salle a besoin pour choisir où aller.
+2. **La phrase à dire**, celle de la page programme. Elle fait sept à huit
+   secondes ; le créneau en compte trente, transitions comprises.
+3. **Le texte long du porteur**, en petit, encadré « à lire avant, pas en
+   scène ». Il vient du fichier source et fait trente à quarante secondes à
+   voix haute — dix fois quarante secondes, c'est six minutes pour un créneau
+   de cinq. Il n'est pas là pour être lu : il est là pour qu'on y prenne une
+   phrase, la veille.
+
+Le tableau des dix reste en tête de série, avec **les cinq kiosques de
+l'animateur en couleur** et les cinq autres en gris : il faut savoir quand
+vient son tour, pas ce que dit l'autre.
+
+Les données ne sont plus écrites en dur. Le titre, le pitch court, la salle et
+les noms des porteurs sont **relus dans la page** — celle dont on rouvre le
+bloc `salles-data` le 14 au matin. Seul le texte long vient du fichier Excel,
+et c'est la seule donnée de ces fiches à revérifier si le fichier change.
+
+### La même chose en Word
+
+    python3 outils/fiches/generer-fiches-docx.py
+
+Produit `fiches-animateurs.docx` : les mêmes vingt-trois cartes, mêmes pages
+A5, mêmes corps de texte, mais **modifiables**. C'est la version qui circule
+avant le jour J — on remplit les blancs au clavier, on reformule une phrase, on
+réimprime. Celle qui monte sur scène reste le PDF.
+
+Le contenu n'est pas recopié : le script **importe** le générateur A5. Deux
+fichiers de contenu, ce serait deux vérités, et la seconde serait fausse le
+jour où l'une des deux change.
+
+Deux choses que Word ne rend pas comme le PDF, et qui ne se rattrapent pas :
+
+- **Le bandeau ne va pas bord à bord.** Word compose dans ses marges ; un aplat
+  pleine largeur demande un cadre flottant, qui se déplace dès qu'on tape une
+  ligne de trop.
+- **Le pied de page suit le texte au lieu de rester en bas.** Word répartit, il
+  ne pose pas. C'est aussi pour ça qu'une ligne ajoutée peut faire passer une
+  carte sur deux pages, sans erreur ni avertissement — d'où le contrôle, qui
+  convertit et **compte les pages** : vingt-trois cartes, vingt-trois pages.
+
+Cette conversion de contrôle écrit dans un dossier temporaire, jamais à côté du
+`.docx`. Écrite d'abord à côté, elle a écrasé puis supprimé
+`fiches-animateurs.pdf` — les deux fichiers ne diffèrent que par l'extension —
+en faisant son ménage, et sans rien signaler puisqu'elle avait « réussi ».
+
+### Le contrôle relit les phrases, pas seulement les positions
+
+Deux pièges, et un seul se voyait.
+
+Le premier est le débordement : une carte trop pleine descend sous le pied de
+page. Il est refusé à la composition, avant même l'export.
+
+Le second est plus sournois. Une phrase mal mesurée n'est pas déplacée : elle
+est **coupée** au bord de sa boîte. La mesure des blocs ne peut pas le voir,
+puisque tout reste à sa place. C'est arrivé au message de 12h10, où « subie. »
+avait disparu — la largeur moyenne d'un signe avait été reprise de
+`generer-ecran-complet.py`, calée sur Barlow Condensed, et sous-estimait d'un
+cinquième les lignes de Barlow. Le contrôle relit donc **chaque phrase dans le
+PDF produit** et refuse ce qu'il n'y retrouve pas.
+
+C'est aussi ce contrôle qui a fait apparaître deux glyphes absents de Barlow —
+la flèche « → » et le « ᵉ » de « 2ᵉ » — que LibreOffice allait chercher dans
+une autre fonte. Ils ne cassaient rien, mais ils ne se composaient pas avec le
+reste de la ligne.
+
+Enfin, les colonnes du tableau des dix kiosques sont **calculées sur la plus
+longue chaîne de chacune**, pas écrites en dur : « CRAN Quality Experts »
+passait à la ligne et venait écrire sur le kiosque suivant. Si un porteur
+s'ajoute ou une salle change, le script refuse net plutôt que de le laisser
+découvrir à l'impression.
+
 ## Qui anime — sur les cartes du programme
 
 Les trois séances du matin portent leurs intervenants, les dix kiosques leurs

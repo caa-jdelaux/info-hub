@@ -181,7 +181,9 @@ def composer(diapo, kiosque, rotations, t):
     texte(diapo, Cm(11.2), Cm(7.2), Cm(5), Cm(3.8),
           [(kiosque['emoji'], COURANTE, 88, t['titre'], False, 1.0)])
     # Zone ancrée en haut : un titre sur deux lignes remontait sinon dans
-    # l'emoji — « Vidéo TESTY — libre service » passait dessous.
+    # l'emoji. Relevé sur le kiosque 10, dont le titre faisait alors vingt-sept
+    # signes ; il est plus court aujourd'hui, la zone reste dimensionnée pour
+    # le cas long.
     texte(diapo, Cm(11.2), Cm(11.6), Cm(16.5), Cm(4.6),
           [(kiosque['titre'], CONDENSEE, 66, t['titre'], True, 0.92)])
 
