@@ -649,7 +649,7 @@ ANAS = [
             ('dire', 'Les portes restent ouvertes — si vous devez sortir, n’hésitez pas.'),
             ('note', 'Une seule fois, ici : il n’y a aucune pause entre 09h45 et 12h15.'),
             ('puce', 'Table ronde — Mode produit et les tests. Ghislaine DOPIERRE (TFC), '
-                     'Grégory BARRANCO (TMV), Erwan PERIGAULT (SDSI), animée par '
+                     'Grégory BARRANCO (TMV), Erwan PERIGAULT (USR), animée par '
                      'Fabrice CHATRON. Remercie les intervenants.'),
         ],
         'ensuite': 'Ensuite — 12h03 · les questions de la table ronde.',
@@ -805,7 +805,7 @@ GHISLAINE = [
             ('puce', 'Mode produit et les tests. Angle : « Mode produit ADE : comment '
                      'CAAS transforme ses approches de test pour accompagner la '
                      'fabrication agile ? »'),
-            ('puce', 'Avec toi : Grégory BARRANCO (TMV) et Erwan PERIGAULT (SDSI).'),
+            ('puce', 'Avec toi : Grégory BARRANCO (TMV) et Erwan PERIGAULT (USR).'),
             ('note', 'Table ronde 32 min au plus, questions de 12h03 à 12h10, puis '
                      'Anas reprend la main pour le message de midi.'),
         ],

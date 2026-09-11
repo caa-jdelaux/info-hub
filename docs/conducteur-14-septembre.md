@@ -33,7 +33,7 @@ après la décision : elle n'annule pas l'arbitrage, elle documente le risque.
 | Kiosque 10 — TESTY | Elena TOMAS et Jaber BENZEGOUTTA · prise de parole `[ à confirmer, cf. § 4.2 ]` | 13h44 → 13h49 |
 | Conférence 1 | K-LAGAN / Julien CAHU | 09h55 (coulisses) → 10h45 |
 | Conférence 2 | Niji / Betty BEAUGE et Gilles NOUAIS | 10h40 (coulisses) → 11h30 |
-| Table ronde — intervenants | TFC / Ghislaine DOPIERRE · TMV / Grégory BARRANCO · SDSI / Erwan PERIGAULT | 11h25 (coulisses) → 12h15 |
+| Table ronde — intervenants | TFC / Ghislaine DOPIERRE · TMV / Grégory BARRANCO · USR / Erwan PERIGAULT | 11h25 (coulisses) → 12h15 |
 | Table ronde — animation | Fabrice CHATRON | 11h25 → 12h15 |
 | Régie son / vidéo | sur place | 09h00 → fin |
 | Porteurs de micro (×4) | vu avec le Staff | 09h45 → 12h15 |
@@ -265,7 +265,7 @@ Titre : *Mode produit et les tests.* Angle : *« Mode produit ADE : comment CAAS
 transforme ses approches de test pour accompagner la fabrication agile ? »*
 
 **Intervenants** : Ghislaine DOPIERRE (TFC), Grégory BARRANCO (TMV), Erwan
-PERIGAULT (SDSI). **Animation** : Fabrice CHATRON.
+PERIGAULT (USR). **Animation** : Fabrice CHATRON.
 
 **Deux conséquences de cette répartition, à trancher.** Fabrice anime la
 table ronde *et* revient à 16h45 comme sponsor : il est sur scène trois fois
