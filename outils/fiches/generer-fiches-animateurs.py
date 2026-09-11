@@ -169,6 +169,8 @@ RETRAIT = Cm(0.52)
 # Corps des quatre colonnes du tableau des kiosques : numéro, thème, salle,
 # porteur.
 T_KIOSQUE = (13, 11, 10, 9.5)
+# Brique « pitch » : en-tête (n° · salle — titre), phrase à dire, porteurs.
+T_PITCH = (12, 11.5, 9.5)
 ECART_COLONNE = 0.16
 
 
@@ -257,6 +259,30 @@ def _brique(diapo, x, y, l, element, accent, dessiner=True):
                        COURANTE, T_RESERVE, GRIS_FONCE, interligne=1.1)
                 ly += haut + Cm(0.09)
         return h + Cm(0.24)
+
+    if genre == 'pitch':
+        # Une entrée de kiosque sur la carte de bloc : ce que l'animateur voit
+        # au moment où il ouvre la bouche. Le texte long du porteur n'est pas
+        # ici — il est sur la carte de préparation, à lire la veille.
+        numero = element[1]
+        t_ent, t_ph, t_qui = T_PITCH
+        entete = f'{numero} · {SALLES[numero]} — {TITRES[numero]}'
+        phrase = PITCH_COURT[numero]
+        qui = f'Porté par {PORTEURS[numero]}.'
+        lp = l - Cm(0.45)
+        h_ent = _haut_ligne(t_ent, 1.15)
+        h_ph = _lignes(phrase, lp, t_ph) * _haut_ligne(t_ph, 1.2)
+        h_qui = _lignes(qui, lp, t_qui) * _haut_ligne(t_qui)
+        h = h_ent + Cm(0.08) + h_ph + Cm(0.06) + h_qui
+        if dessiner:
+            _pave(diapo, x, y, Cm(0.09), h, accent)
+            _texte(diapo, x + Cm(0.45), y, lp, h_ent, entete,
+                   CONDENSEE, t_ent, accent, True)
+            _texte(diapo, x + Cm(0.45), y + h_ent + Cm(0.08), lp, h_ph, phrase,
+                   COURANTE, t_ph, ENCRE, interligne=1.2)
+            _texte(diapo, x + Cm(0.45), y + h_ent + Cm(0.08) + h_ph + Cm(0.06),
+                   lp, h_qui, qui, COURANTE, t_qui, GRIS_FONCE)
+        return h + Cm(0.22)
 
     if genre == 'kiosques':
         lignes = element[1]
@@ -520,49 +546,131 @@ CARTE_REPERES = {
 }
 
 
-# ── Les dix pitches, répartis entre les deux animateurs ──────────────────
+# ── Les dix pitches, en trois blocs thématiques ──────────────────────────
 #
-# Ce sont les animateurs qui pitchent, pas les porteurs de kiosque : Anas les
-# impairs, le second les pairs. Chacun garde son micro d'un bout à l'autre —
-# ce que ça fait gagner n'est pas tant la minute de passages de main que la
-# variance : deux animateurs qui ont répété tiennent cinq minutes, dix
-# intervenants qui montent chacun leur tour, non.
+# Décision du 11/09. Jusque-là les dix kiosques se disaient dans l'ordre 1 → 10,
+# Anas les impairs et le second les pairs : neuf passages de micro. Le compte ne
+# tenait pas. Le conducteur alloue 5 min à la séquence (ligne « Les 10 kiosques,
+# 30 s chacun ») ; 10 × 30 s = 300 s = 5 min pile, et les neuf passages de micro
+# n'étaient budgétés nulle part. À 5 s le passage, la séquence sortait déjà de
+# son créneau de 45 s avant qu'on ait ajouté quoi que ce soit.
 #
-# En contrepartie la salle ne voit plus le visage de qui elle retrouvera en
-# atelier. D'où la consigne, sur chaque carte, de nommer le porteur et de lui
-# faire lever la main : c'est gratuit en temps, et ça rend ce que la mécanique
-# enlève.
+# Les dix kiosques se regroupent d'eux-mêmes en trois familles — vérifiées sur
+# le texte des pitches, pas sur les titres. Un animateur par bloc : deux
+# passages de micro au lieu de neuf, soit 35 s récupérées, qui financent les
+# trois phrases d'introduction de bloc.
+#
+#   3 × 20 s d'intro + 10 × 22 s de pitch + 2 × 5 s de micro = 290 s = 4 min 50.
+#
+# L'ordre à l'intérieur d'un bloc n'est pas celui des numéros : c'est la chaîne
+# du test. Bloc IA : 4 (de l'US au parcours), 7 (de l'US aux critères et cas de
+# test), 3 (du code et du besoin au test automatisé), 2 (l'exécution). Bloc
+# outils : 6 (où vivent mes tests), 8 (avec quelles données), 9 (sur quel parc).
+# L'animateur enchaîne avec une transition au lieu de trois.
 
-IMPAIRS, PAIRS = [1, 3, 5, 7, 9], [2, 4, 6, 8, 10]
+BLOCS = [
+    {
+        'cle': 'jeu',
+        'titre': 'Comprendre, sans prérequis',
+        'kiosques': [1, 5, 10],
+        'duree': '1 min 25',
+        'intro': 'Trois kiosques où on ne vous demande rien de technique : '
+                 'on manipule, on joue, on regarde.',
+    },
+    {
+        'cle': 'ia',
+        'titre': 'L’IA dans vos tests',
+        'kiosques': [4, 7, 3, 2],
+        'duree': '1 min 50',
+        'intro': 'Quatre démos, de l’US au test exécuté. Les quatre tiennent '
+                 'dans vos cinq créneaux.',
+    },
+    {
+        'cle': 'outils',
+        'titre': 'Vos outils',
+        'kiosques': [6, 8, 9],
+        'duree': '1 min 25',
+        'intro': 'Où vivent vos tests, avec quelles données, sur quel parc '
+                 'on les exécute.',
+    },
+]
+
+# Anas ouvre et ferme. Le deuxième animateur — dont le prénom manque toujours —
+# reçoit le bloc homogène des quatre kiosques IA : une seule logique à tenir,
+# c'est celui qui se prépare le plus tard sans perdre en tenue.
+BLOCS_ANAS = ['jeu', 'outils']
+BLOCS_SECOND = ['ia']
+
+RANGS = {b['cle']: i + 1 for i, b in enumerate(BLOCS)}
 
 
-def _carte_kiosque(numero, autre):
-    if numero == 10:
-        ensuite = 'Ensuite — 13h49 · le tirage au sort et les lots.'
-    elif numero == 9:
-        ensuite = (f'Ensuite — le kiosque 10 est pour {autre}, '
-                   'puis 13h49 · le tirage au sort.')
+# Le tableau de la carte de répartition suit l'ordre où les kiosques se disent,
+# pas l'ordre de leurs numéros : c'est devenu la seule façon de lire la
+# séquence d'un coup d'œil.
+ORDRE_DIT = [n for b in BLOCS for n in b['kiosques']]
+KIOSQUES_ORDRE = sorted(KIOSQUES, key=lambda k: ORDRE_DIT.index(k[0]))
+
+
+def _bloc(cle):
+    return next(b for b in BLOCS if b['cle'] == cle)
+
+
+def _carte_bloc(cle, autre):
+    """La carte que l'animateur tient en main pendant son bloc.
+
+    Tout ce qu'il dit y est, et rien d'autre : le texte long du porteur est
+    sur les cartes de préparation, en fin de jeu, à lire la veille.
+    """
+    b = _bloc(cle)
+    rang = RANGS[cle]
+    if rang == 1:
+        ensuite = (f'Ensuite — {autre} prend le micro pour les quatre kiosques '
+                   'du bloc 2.')
+    elif rang == 2:
+        ensuite = f'Ensuite — {autre} reprend le micro pour le bloc 3.'
     else:
-        ensuite = (f'Ensuite — le kiosque {numero + 1} est pour {autre}. '
-                   f'Tu reprends au kiosque {numero + 2}.')
+        ensuite = 'Ensuite — 13h49 · le tirage au sort et les lots.'
+    carte = {
+        'heure': f'Bloc {rang}',
+        'etiquette': 'TENIR',
+        'fin': b['duree'],
+        'titre': f'{b["titre"]} — {len(b["kiosques"])} kiosques',
+        'corps': [
+            ('dire', b['intro']),
+            ('note', 'Pour chacun : nomme les porteurs, fais-leur lever la main.'),
+        ] + [('pitch', n) for n in b['kiosques']],
+        'ensuite': ensuite,
+    }
+    if cle == 'jeu':
+        # Les deux seuls points du bloc qui ne sont pas tranchés tombent tous
+        # les deux ici, et c'est l'ouverture de la séquence.
+        carte['alerte'] = (
+            'Kiosque 1 : les deux ateliers alternent selon la rotation — dis '
+            '« les deux en alternance ». Kiosque 10 : « libre service » ou '
+            '« épisode 4 présenté », non tranché.')
+    return carte
+
+
+def _carte_preparation(numero):
+    """Une carte par kiosque, à lire la veille. Jamais tenue en scène."""
     carte = {
         'heure': f'Kiosque {numero}',
         'etiquette': 'SALLE',
         'fin': SALLES[numero],
         'titre': TITRES[numero],
         'corps': [
+            ('note', 'À lire la veille. En scène, tu ne tiens que ton bloc.'),
             ('puce', f'Porté par {PORTEURS[numero]}.'),
-            ('note', 'Nomme-les et fais-leur lever la main : la salle doit voir '
-                     'le visage qu’elle retrouvera en atelier.'),
             ('dire', PITCH_COURT[numero]),
             ('reserve', PITCHES_LONGS[numero]),
         ],
-        'ensuite': ensuite,
+        'ensuite': 'Rien à dire depuis cette carte.',
     }
+    if numero == 1:
+        carte['alerte'] = (
+            'Les deux ateliers alternent selon la rotation. Laquelle a lequel '
+            'n’est pas fixé : n’annonce pas d’horaire.')
     if numero == 10:
-        # Deux sources disent deux choses, et c'est ce pitch-là qui les dira à
-        # la salle. Mieux vaut que l'animateur le sache avant d'ouvrir la
-        # bouche que de le découvrir en salle Sumida.
         carte['alerte'] = (
             'Le fichier source finit par « visionnage en libre service » ; le '
             'conducteur du 10/09 décrit une diffusion présentée de l’épisode 4. '
@@ -570,33 +678,38 @@ def _carte_kiosque(numero, autre):
     return carte
 
 
-def _carte_repartition(miens, moi, autre_moitie, autre):
+def _carte_repartition(mes_blocs, autre):
+    miens = [n for c in mes_blocs for n in _bloc(c)['kiosques']]
+    nums = [str(RANGS[c]) for c in mes_blocs]
+    rangs = (f'le bloc {nums[0]}' if len(nums) == 1
+             else 'les blocs ' + ' et '.join(nums))
     return {
         'heure': '13h44', 'fin': '13h49',
-        'titre': f'Les dix pitches — tu prends les {moi}',
+        'titre': f'Les dix pitches en trois blocs — tu prends {rangs}',
         'corps': [
-            ('note', f'Vous vous partagez les dix : toi les {moi}, {autre} les '
-                     f'{autre_moitie}. Chacun garde son micro d’un bout à '
-                     'l’autre — il n’y a plus aucun passage de main, et les '
-                     'porteurs de kiosque restent assis.'),
-            ('kiosques', KIOSQUES, set(miens)),
-            ('note', 'Tes cinq sont en couleur, et chacun a sa carte juste '
-                     'après celle-ci. Trente secondes chacun : la phrase à dire '
-                     'en fait moins de dix, le reste c’est la salle, les noms, '
-                     'et ce que tu veux y ajouter.'),
+            ('note', 'Les dix kiosques ne se disent plus dans l’ordre 1 à 10. '
+                     'Trois blocs, un animateur par bloc, deux passages de micro '
+                     'dans toute la séquence au lieu de neuf. Le tableau est dans '
+                     'l’ordre où ça se dit ; tes kiosques sont en couleur.'),
+            ('kiosques', KIOSQUES_ORDRE, set(miens)),
+            ('note', 'Une carte par bloc, tenue en scène. Une carte de '
+                     'préparation par kiosque en fin de jeu, à lire la veille.'),
             ('note', 'Si ça déborde après 13h50 : le rappel des salles passe de '
                      '2 min à 1 min et le tirage se dit debout, sans slide. La '
                      'dispersion de 13h55 ne se sacrifie jamais.'),
         ],
-        'ensuite': (f'Ensuite — le kiosque {miens[0]}, ta première carte.'
-                    if miens[0] == 1 else
-                    f'Ensuite — {autre} ouvre avec le kiosque 1 ; '
-                    f'ta première carte est le kiosque {miens[0]}.'),
+        'ensuite': ('Ensuite — ta carte du bloc 1.' if RANGS[mes_blocs[0]] == 1
+                    else f'Ensuite — {autre} ouvre avec le bloc 1 ; '
+                         f'ta carte est celle du bloc {RANGS[mes_blocs[0]]}.'),
     }
 
 
-PITCHS_ANAS = [_carte_kiosque(n, 'le deuxième animateur') for n in IMPAIRS]
-PITCHS_SECOND = [_carte_kiosque(n, 'Anas') for n in PAIRS]
+PITCHS_ANAS = ([_carte_bloc(c, 'le deuxième animateur') for c in BLOCS_ANAS]
+               + [_carte_preparation(n) for c in BLOCS_ANAS
+                  for n in _bloc(c)['kiosques']])
+PITCHS_SECOND = ([_carte_bloc(c, 'Anas') for c in BLOCS_SECOND]
+                 + [_carte_preparation(n) for c in BLOCS_SECOND
+                    for n in _bloc(c)['kiosques']])
 
 
 ANAS = [
@@ -700,9 +813,9 @@ ANAS = [
             ('puce', 'Salles sur le QR code et sur les affiches A3 des portes. '
                      'Horaires : 14h00 · 14h30 · 15h00 · 15h30 · 16h00.'),
         ],
-        'ensuite': 'Ensuite — 13h44 · les dix pitches de 30 secondes.',
+        'ensuite': 'Ensuite — 13h44 · les dix pitches, en trois blocs.',
     },
-    _carte_repartition(IMPAIRS, 'impairs', 'pairs', 'le deuxième animateur'),
+    _carte_repartition(BLOCS_ANAS, 'le deuxième animateur'),
     *PITCHS_ANAS,
     {
         'heure': '13h49', 'fin': '14h00',
@@ -851,9 +964,9 @@ SECOND = [
             ('puce', 'Horaires : 14h00 · 14h30 · 15h00 · 15h30 · 16h00.'),
             ('trou', 'qui dit quoi — répartition convenue avec Anas', 2),
         ],
-        'ensuite': 'Ensuite — 13h44 · les dix pitches, portés par les kiosques.',
+        'ensuite': 'Ensuite — 13h44 · les dix pitches, en trois blocs.',
     },
-    _carte_repartition(PAIRS, 'pairs', 'impairs', 'Anas'),
+    _carte_repartition(BLOCS_SECOND, 'Anas'),
     *PITCHS_SECOND,
     {
         'heure': '13h49', 'fin': '13h52',
@@ -911,6 +1024,11 @@ def _attendus(fiche):
         elif genre == 'reserve':
             textes.append('LE TEXTE DU PORTEUR — À LIRE AVANT, PAS EN SCÈNE')
             textes += element[1]
+        elif genre == 'pitch':
+            numero = element[1]
+            textes += [f'{numero} · {SALLES[numero]} — {TITRES[numero]}',
+                       PITCH_COURT[numero],
+                       f'Porté par {PORTEURS[numero]}.']
         elif genre == 'kiosques':
             for num, theme, salle, qui in element[1]:
                 textes += [theme, salle, qui]

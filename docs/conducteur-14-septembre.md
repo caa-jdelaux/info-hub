@@ -334,7 +334,7 @@ de façon que la rotation 1 démarre réellement à 14h00 et pas à 14h05.
 |---|---|---|---|
 | Accueil de reprise | Anas + 2ᵉ animateur | 1 min | 13h41 |
 | Principe des kiosques et des rotations | Anas + 2ᵉ animateur | 3 min | 13h44 |
-| Les 10 kiosques, 30 s chacun | Anas (impairs) + 2ᵉ animateur (pairs) | 5 min | 13h49 |
+| Les 10 kiosques, en trois blocs | Anas (blocs 1 et 3) + 2ᵉ animateur (bloc 2) | 5 min | 13h49 |
 | Tirage au sort et lots | Anas + 2ᵉ animateur | 3 min | 13h52 |
 | Rappel salles + RDV 16h30 | Anas | 2 min | 13h54 |
 | Marge | — | 1 min | 13h55 |
@@ -355,13 +355,48 @@ Trois conséquences, dont deux favorables et une à surveiller.
    qu'elle occupait rendent cet arbitrage inutile : 30 s tiennent.
 
    **Ce sont les animateurs qui pitchent, pas les porteurs.** *(arbitré le
-   10/09, après-coup)* Anas prend les kiosques impairs, le 2ᵉ animateur les
-   pairs ; chacun garde son micro d'un bout à l'autre et les porteurs restent
-   assis. Ce que ça fait gagner n'est pas tant la minute de passages de main
-   que **la variance** : deux animateurs qui ont répété tiennent cinq minutes,
-   dix intervenants qui montent chacun leur tour, non — trente secondes
-   annoncées sans briefing deviennent cinquante, et les dix passages font huit
-   minutes au lieu de cinq.
+   10/09, après-coup)* Chacun garde son micro et les porteurs restent assis. Ce
+   que ça fait gagner n'est pas tant la minute de passages de main que **la
+   variance** : deux animateurs qui ont répété tiennent cinq minutes, dix
+   intervenants qui montent chacun leur tour, non — trente secondes annoncées
+   sans briefing deviennent cinquante, et les dix passages font huit minutes au
+   lieu de cinq.
+
+   **Les dix pitches se disent en trois blocs thématiques.** *(arbitré le
+   11/09)* Le partage impair/pair est abandonné. Il imposait neuf alternances de
+   micro dans une séquence budgétée à 5 min pile (10 × 30 s = 300 s) : à 5 s
+   l'alternance, la séquence sortait déjà de son créneau de 45 secondes, sans
+   que personne l'ait compté. **Un animateur par bloc, deux alternances au
+   lieu de neuf**, et les 35 secondes récupérées financent les trois phrases
+   d'introduction de bloc.
+
+   | Bloc | Kiosques, dans l'ordre où ils se disent | Qui | Durée |
+   |---|---|---|---|
+   | 1 — Comprendre, sans prérequis | 1, 5, 10 | Anas | 1 min 25 |
+   | 2 — L'IA dans vos tests | 4, 7, 3, 2 | 2ᵉ animateur | 1 min 50 |
+   | 3 — Vos outils | 6, 8, 9 | Anas | 1 min 25 |
+
+   > 3 × 20 s d'intro + 10 × 22 s de pitch + 2 × 5 s de micro = **4 min 50**.
+   > C'est la première version de cette séquence dont le compte tient.
+
+   **L'ordre à l'intérieur d'un bloc n'est pas celui des numéros : c'est la
+   chaîne du test.** Bloc 2 : 4 (de l'US au parcours), 7 (de l'US aux critères
+   et cas de test), 3 (du code et du besoin au test automatisé), 2
+   (l'exécution). Bloc 3 : 6 (où vivent mes tests), 8 (avec quelles données),
+   9 (sur quel parc). L'animateur enchaîne avec une transition au lieu de trois,
+   et la salle retient une logique au lieu d'une liste.
+
+   > **Le risque du regroupement, et sa contre-mesure.** Annoncer un bloc de
+   > quatre kiosques IA, sur le sujet le plus demandé de la journée, concentre
+   > la demande là où la liste à plat la répartissait. **Je ne connais pas la
+   > capacité des salles**, donc je ne sais pas si le risque est réel. La
+   > contre-mesure est gratuite et déjà imprimée dans l'intro du bloc 2 :
+   > *« les quatre tiennent dans vos cinq créneaux »* — les cinq rotations
+   > étant identiques, personne n'a à arbitrer entre eux.
+
+   **Le 2ᵉ animateur reçoit le bloc 2.** Quatre kiosques, une seule logique :
+   c'est le bloc qui se prépare le plus tard sans perdre en tenue — et on
+   n'a toujours pas son prénom.
 
    > **Ce que ça coûte, et comment le rendre.** La salle ne voit plus le visage
    > de la personne qu'elle retrouvera en atelier, alors qu'elle doit choisir
@@ -372,8 +407,9 @@ Trois conséquences, dont deux favorables et une à surveiller.
 2. **Le kiosque 10 garde son exclusivité.** Plus personne n'aura vu l'épisode
    avant d'entrer en salle Sumida. En contrepartie, **le pitch du kiosque 10
    porte désormais seul tout le poids de TESTY** : c'est le seul des dix dont
-   les 30 secondes doivent donner envie plutôt qu'informer. Il revient au
-   2ᵉ animateur — le kiosque 10 est pair — et non plus à Elena.
+   les 30 secondes doivent donner envie plutôt qu'informer. **Depuis le
+   passage en blocs, il revient à Anas** — le kiosque 10 ferme le bloc 1 — et
+   non plus au 2ᵉ animateur ni à Elena.
 
    **Précision du 10/09 :** le kiosque 10 occupe ses deux salles à des usages
    différents — dans l'une, on présente le principe de la série et on diffuse
@@ -574,7 +610,7 @@ la journée `[ à confirmer : jusqu'à quand la page reste-t-elle en ligne ? ]`.
 | 7 | 11h30 | **Générique 15 s** — table ronde | au top d'Anas |
 | 8 | 13h36 | Musique de reprise | fondu au signal des animateurs |
 | 9 | 13h41 | Slide après-midi / rotations | — |
-| 10 | 13h44 | Slide des 10 kiosques (numéro + salle, un par pitch) | — |
+| 10 | 13h44 | **Trois** slides, une par bloc (numéros + salles du bloc) | une par bloc |
 | 11 | 13h52 | Slide QR code | maintenue jusqu'à 14h00 |
 | 12 | 16h25 | Musique d'attente pendant que la salle se remplit | fondu à 16h33 |
 | 13 | ≈ 16h56 | Musique de fin | — |
@@ -587,7 +623,11 @@ plénier ; la vidéo n'existe plus que dans le kiosque n° 10, en libre service.
 - micros HF des animateurs + **quatre micros baladeurs pour les questions**,
   un par travée, tous testés en salle vide, piles neuves ;
 - rien de plus pour les dix pitches de 13h44 : les deux animateurs gardent
-  leurs micros, il n'y a plus de passage de main ;
+  leurs micros, et il ne reste que **deux** passages de main, aux frontières
+  des blocs ;
+- **les trois slides de blocs sont faites par Jérémy** *(arbitré le 11/09)* ;
+  elles remplacent la slide unique des dix kiosques, et les numéros n'y sont
+  plus dans l'ordre 1 à 10 mais dans l'ordre où ils se disent ;
 - les trois génériques et les deux musiques chargés et repérés dans l'ordre du
   tableau ci-dessus ;
 - retour vidéo visible depuis la scène, sinon les animateurs parlent dos à
@@ -649,10 +689,14 @@ tranchées sont barrées, avec la décision.
     disparu de son titre.
 17. **Le tirage : par nom, ou par rang et numéro de place ?** (§ 5.4) Les deux
     mécaniques ont été proposées ; elles ne récompensent pas la même chose.
-18. **Kiosque 1 : la tour de Babel ou le Marshmallow Challenge ?** Le fichier
-    source décrit les deux comme « Option 1 » et « Option 2 », et rien ne dit
-    laquelle est retenue. La page programme et la fiche de pitch annoncent donc
-    les deux. Guillaume COUSIN doit trancher, ou assumer de le faire en salle.
+18. ~~**Kiosque 1 : la tour de Babel ou le Marshmallow Challenge ?**~~
+    **Tranché le 11/09 : les deux, en alternance d'une rotation à l'autre.** La
+    page programme le dit désormais (« en alternance », plus « ou »).
+    **Reste ouvert : quelle rotation a quel atelier ?** Tant que ce n'est pas
+    fixé, l'animateur n'annonce aucun horaire — c'est écrit sur sa carte. Et
+    le kiosque 1 devient le seul des dix où revenir une seconde fois a un
+    sens, ce qui contredit la phrase *« les cinq rotations sont identiques »*
+    répétée toute la journée. À dire, ou à assumer.
 19. **Qui prévient les dix porteurs de kiosque** qu'ils ne pitchent plus ?
     (§ 4.2) La décision est prise ; elle ne leur a pas été dite.
 
@@ -664,10 +708,12 @@ Ce document est un conducteur : il sert à préparer, à briefer et à tenir la
 régie. **Il n'est pas tenable en main sur scène.** Il manque encore :
 
 - ~~Une antisèche recto par animateur~~ — **faite** :
-  `outils/fiches/generer-fiches-animateurs.py` produit trente-trois cartes A5,
-  un jeu par animateur (Anas 17, Ghislaine 6, le second animateur 10), une carte
-  par prise de parole — dont **une carte par kiosque à pitcher**, cinq pour
-  chacun des deux animateurs de l'après-midi. Ce qui n'est pas tranché y est
+  `outils/fiches/generer-fiches-animateurs.py` produit trente-six cartes A5,
+  un jeu par animateur (Anas 20, Ghislaine 6, le second animateur 10), une carte
+  par prise de parole. Depuis le passage en blocs *(11/09)*, les pitches tiennent
+  sur **une carte par bloc, tenue en scène** (Anas 2, le second 1), doublée
+  d'**une carte de préparation par kiosque** en fin de jeu, qui porte le texte
+  long du porteur et ne se tient jamais en main. Ce qui n'est pas tranché y est
   imprimé en cadre à remplir au stylo plutôt que deviné. **Manque le jeu de
   Fabrice** — il parle trois fois et anime la table ronde, mais il n'était pas
   dans la demande.

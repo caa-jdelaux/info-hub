@@ -223,6 +223,25 @@ def _brique(doc, element, accent):
         _para(doc, None, COURANTE, 4, ENCRE, apres=0)
         return
 
+    if genre == 'pitch':
+        # Même brique que sur la carte imprimée : en-tête, phrase à dire,
+        # porteurs. Un filet d'accent à gauche tient lieu du pavé de la version
+        # PowerPoint — Word ne sait pas dessiner une barre libre dans le flux.
+        numero = element[1]
+        t_ent, t_ph, t_qui = F.T_PITCH
+        t = _tableau(doc, [LARGE])
+        cellule = t.rows[0].cells[0]
+        _bordures_cellule(cellule, accent, 18, 'l')
+        _marges_cellule(cellule, 0, 0, 140, 0)
+        _vider(cellule)
+        _para(cellule, f'{numero} · {F.SALLES[numero]} — {F.TITRES[numero]}',
+              CONDENSEE, t_ent, accent, gras=True, apres=1)
+        _para(cellule, F.PITCH_COURT[numero], COURANTE, t_ph, ENCRE, apres=1)
+        _para(cellule, f'Porté par {F.PORTEURS[numero]}.', COURANTE, t_qui,
+              GRIS_FONCE, apres=0)
+        _para(doc, None, COURANTE, 3, ENCRE, apres=0)
+        return
+
     if genre == 'kiosques':
         miens = element[2] if len(element) > 2 else None
         largeurs = [Cm(0.9), Cm(5.3), Cm(3.0), Cm(3.65)]
@@ -332,7 +351,9 @@ def _carte(doc, deck, accent, numero, total, fiche, premiere):
     for element in fiche['corps']:
         _brique(doc, element, accent)
 
-    pied = _para(doc, None, COURANTE, T_NOTE, GRIS_FONCE, avant=10, apres=0)
+    # 10 pt au-dessus du filet de pied : deux cartes de bloc dépassaient d'un
+    # millimètre, et Word ne dépasse pas — il renvoie la ligne page suivante.
+    pied = _para(doc, None, COURANTE, T_NOTE, GRIS_FONCE, avant=6, apres=0)
     _bordure_paragraphe(pied, 'top', GRIS_CLAIR, 6)
     _run(pied, fiche['ensuite'], COURANTE, T_NOTE, GRIS_FONCE)
 
