@@ -47,6 +47,14 @@ LARGEUR, HAUTEUR = Cm(29.7), Cm(42)
 MARGE = Cm(2.0)
 UTILE = Cm(25.7)
 
+# Largeur moyenne d'un signe, en centimètres par point de corps, mesurée sur
+# les deux polices. Sert à prévoir le nombre de lignes d'un bloc avant de le
+# poser : depuis que l'affiche porte les porteurs et, pour le kiosque 10, une
+# séance, les blocs ne peuvent plus être à des hauteurs écrites en dur.
+SIGNE_COURANTE = 0.0172
+SIGNE_CONDENSEE = 0.0148
+POINT_EN_CM = 2.54 / 72
+
 CONDENSEE = 'Barlow Condensed'
 COURANTE = 'Barlow'
 
@@ -61,6 +69,28 @@ BLEU_CLAIR = RGBColor(0xD9, 0xEF, 0xEF)
 GRIS_CLAIR = RGBColor(0xE3, 0xE3, 0xE3)
 NAVY_CLAIR = RGBColor(0x2E, 0x2E, 0x50)
 
+# Le kiosque 10 occupe deux salles, et depuis l'arbitrage du 11/09 elles ne
+# montrent pas la même chose. Ses deux affiches ne sont donc plus
+# interchangeables : ce qui les distingue est écrit dessus, pas le nom de la
+# salle — qui peut encore bouger le matin même.
+SEANCES = {
+    '10': [
+        {
+            'label': 'SÉANCE PRÉSENTÉE',
+            'titre': 'Le principe de la série, puis l’épisode 4 en exclusivité',
+            'texte': 'On vous présente TESTY et les coulisses de la série, puis '
+                     'on diffuse le dernier épisode — le 4 — que personne n’a '
+                     'encore vu.',
+        },
+        {
+            'label': 'EN LIBRE SERVICE',
+            'titre': 'Les trois premiers épisodes, en continu',
+            'texte': 'Les épisodes 1, 2 et 3 se succèdent. Entrez et sortez '
+                     'quand vous voulez : il n’y a pas de séance à attendre.',
+        },
+    ],
+}
+
 THEMES = {
     'clair': {
         'fond': BLANC,
@@ -69,6 +99,8 @@ THEMES = {
         'titre': ENCRE, 'pitch': GRIS_FONCE,
         'creneau': BLEU_CLAIR, 'creneau_heure': TEAL_TEXTE, 'creneau_label': GRIS_FONCE,
         'intertitre': TEAL_TEXTE,
+        'porteurs': BLEU_CLAIR, 'porteurs_org': TEAL_TEXTE, 'porteurs_noms': ENCRE,
+        'seance': TEAL_FONCE, 'seance_label': BLEU_CLAIR, 'seance_texte': BLANC,
         'pied': ENCRE, 'pied_texte': BLANC, 'pied_second': CYAN,
     },
     'sombre': {
@@ -78,6 +110,8 @@ THEMES = {
         'titre': BLANC, 'pitch': GRIS_CLAIR,
         'creneau': NAVY_CLAIR, 'creneau_heure': CYAN, 'creneau_label': GRIS_CLAIR,
         'intertitre': CYAN,
+        'porteurs': NAVY_CLAIR, 'porteurs_org': CYAN, 'porteurs_noms': BLANC,
+        'seance': TEAL_FONCE, 'seance_label': BLEU_CLAIR, 'seance_texte': BLANC,
         'pied': TEAL_FONCE, 'pied_texte': BLANC, 'pied_second': BLEU_CLAIR,
     },
 }
@@ -130,6 +164,15 @@ def lire_programme():
     return kiosques, rotations
 
 
+def lignes_de(texte, largeur_cm, taille, signe=SIGNE_COURANTE):
+    par_ligne = max(1, int(largeur_cm / (signe * taille)))
+    return max(1, -(-len(texte) // par_ligne))
+
+
+def hauteur(taille, nb_lignes, interligne=1.2):
+    return Cm(taille * 1.2 * interligne * POINT_EN_CM * nb_lignes)
+
+
 def bloc(diapo, x, y, l, h, couleur):
     forme = diapo.shapes.add_shape(1, x, y, l, h)   # 1 = rectangle
     forme.fill.solid()
@@ -157,17 +200,24 @@ def texte(diapo, x, y, l, h, lignes, align=PP_ALIGN.LEFT, ancre=MSO_ANCHOR.TOP):
         p = cadre.paragraphs[0] if i == 0 else cadre.add_paragraph()
         p.alignment = align
         p.line_spacing = interligne
-        r = p.add_run()
-        r.text = contenu
-        r.font.name = police
-        r.font.size = Pt(taille)
-        r.font.bold = gras
-        r.font.color.rgb = couleur
+        # `contenu` peut être une suite de morceaux à composer sur la même
+        # ligne — l'entité et les noms d'un porteur, par exemple, qui tiennent
+        # sur une ligne à eux deux et sur deux lignes séparément.
+        morceaux = (contenu if isinstance(contenu, list)
+                    else [(contenu, police, taille, couleur, gras)])
+        for txt, police_m, taille_m, couleur_m, gras_m in morceaux:
+            r = p.add_run()
+            r.text = txt
+            r.font.name = police_m
+            r.font.size = Pt(taille_m)
+            r.font.bold = gras_m
+            r.font.color.rgb = couleur_m
     return zone
 
 
-def composer(diapo, kiosque, rotations, t):
+def composer(diapo, kiosque, rotations, t, seance=None):
     bloc(diapo, 0, 0, LARGEUR, HAUTEUR, t['fond'])
+    large_cm = UTILE / 360000
 
     # ── Bandeau de tête ────────────────────────────────────────────────
     bloc(diapo, 0, 0, LARGEUR, Cm(5.5), t['bandeau'])
@@ -197,28 +247,95 @@ def composer(diapo, kiosque, rotations, t):
     texte(diapo, Cm(11.2), Cm(11.6), Cm(16.5), Cm(4.6),
           [(kiosque['titre'], CONDENSEE, 66, t['titre'], True, 0.92)])
 
+    # À partir d'ici les blocs s'empilent : leurs hauteurs dépendent du texte,
+    # et le kiosque 10 en porte un de plus. Des ordonnées écrites en dur
+    # tenaient tant que l'affiche ne disait que le pitch.
+    # Une affiche de séance n'a pas de pitch : elle démarre un peu plus haut
+    # plutôt que de laisser un blanc sous le titre.
+    y = Cm(16.6) if seance else Cm(17.4)
+
     # ── Pitch ──────────────────────────────────────────────────────────
-    texte(diapo, MARGE, Cm(17.6), UTILE, Cm(6.4),
-          [(kiosque['pitch'], COURANTE, 34, t['pitch'], False, 1.35)])
+    # Plus petit quand une séance suit : le pitch dit ce qu'est le kiosque, la
+    # séance dit ce qui se passe derrière cette porte-là. La seconde prime.
+    # 26 pt et non 34 comme avant les porteurs : le kiosque 8 passait alors le
+    # pitch sur trois lignes et les rotations finissaient sous le pied. Sur un
+    # A3 lu à deux mètres, 26 pt reste large ; un bloc invisible, non.
+    #
+    # Sur une affiche de séance, la séance remplace le pitch au lieu de s'y
+    # ajouter : les deux ensemble ne tiennent pas, et une porte n'a qu'un
+    # travail — dire ce qui se passe derrière celle-là. Le pitch général reste
+    # sur la page, sur le QR et sur les dix autres affiches.
+    if not seance:
+        h = hauteur(26, lignes_de(kiosque['pitch'], large_cm, 26), 1.35)
+        texte(diapo, MARGE, y, UTILE, h,
+              [(kiosque['pitch'], COURANTE, 26, t['pitch'], False, 1.35)])
+        y += h + Cm(0.8)
+
+    # ── Séance, kiosque 10 seulement ───────────────────────────────────
+    if seance:
+        large_texte = large_cm - 1.2
+        h_titre = hauteur(26, lignes_de(seance['titre'], large_texte, 26,
+                                        SIGNE_CONDENSEE), 1.05)
+        h_texte = hauteur(20, lignes_de(seance['texte'], large_texte, 20), 1.25)
+        h = Cm(0.5) + hauteur(18, 1, 1.0) + h_titre + h_texte + Cm(0.6)
+        bloc(diapo, MARGE, y, UTILE, h, t['seance'])
+        texte(diapo, MARGE + Cm(0.6), y + Cm(0.5), UTILE - Cm(1.2),
+              h - Cm(1.0), [
+                  (seance['label'], CONDENSEE, 18, t['seance_label'], True, 1.0),
+                  (seance['titre'], CONDENSEE, 26, t['seance_texte'], True, 1.05),
+                  (seance['texte'], COURANTE, 20, t['seance_texte'], False, 1.25),
+              ])
+        y += h + Cm(0.8)
+
+    # ── Qui anime ──────────────────────────────────────────────────────
+    # Ce que l'affiche ne disait pas : la page programme le dit aux
+    # participants, et c'est ce que cherche quelqu'un qui hésite devant une
+    # porte. Une ligne par groupe — un bloc « TFC · X / DF Dommages · Y » se
+    # lit mal, et c'est de loin qu'on lit une porte.
+    texte(diapo, MARGE, y, UTILE, Cm(1.1),
+          [('ANIMÉ PAR', CONDENSEE, 24, t['intertitre'], True, 1.0)])
+    y += Cm(1.2)
+
+    lignes = [([(org, CONDENSEE, 18, t['porteurs_org'], True),
+                ('   ' + noms, COURANTE, 24, t['porteurs_noms'], False)],
+               COURANTE, 24, t['porteurs_noms'], False, 1.2)
+              for org, noms in kiosque['qui']]
+    h = Cm(0.45) + hauteur(24, len(kiosque['qui']), 1.2) + Cm(0.45)
+    bloc(diapo, MARGE, y, UTILE, h, t['porteurs'])
+    texte(diapo, MARGE + Cm(0.6), y + Cm(0.5), UTILE - Cm(1.2), h - Cm(1.0),
+          lignes)
+    y += h + Cm(0.9)
 
     # ── Rotations ──────────────────────────────────────────────────────
     # La question de quelqu'un qui arrive à 15h10 n'est pas « c'est quoi »
     # mais « ça finit quand » : les cinq créneaux valent le tiers de la page.
     debut, fin = rotations[0][0].split(' – ')[0], rotations[-1][0].split(' – ')[-1]
-    texte(diapo, MARGE, Cm(25.2), UTILE, Cm(1.2),
-          [(f'5 ROTATIONS DE 30 MINUTES · {debut} → {fin}', CONDENSEE, 24,
+    texte(diapo, MARGE, y, UTILE, Cm(1.2),
+          [(f'5 ROTATIONS DE 30 MINUTES · {debut} à {fin}', CONDENSEE, 24,
             t['intertitre'], True, 1.0)])
+    y += Cm(1.4)
+
+    # Garde-fou posé avant de dessiner : les cartes de rotation glissaient
+    # sous le bandeau de pied, et le contrôle ne le voyait pas — un texte
+    # recouvert par un aplat opaque reste présent dans le PDF, donc relisible.
+    if y + Cm(4.0) > Cm(33.2):
+        raise SystemExit(
+            f'Kiosque {kiosque["numero"]} : les rotations finiraient à '
+            f'{(y + Cm(4.0)) / 360000:.1f} cm, sous le bandeau de pied qui '
+            'commence à 33,2 cm. Raccourcir le pitch ou les blocs au-dessus.')
 
     largeur = (UTILE - Cm(1.6)) / 5
     for i, (heure, label) in enumerate(rotations):
         x = MARGE + int(i * (largeur + Cm(0.4)))
         depart, arrivee = heure.split(' – ')
-        bloc(diapo, x, Cm(26.8), int(largeur), Cm(4.6), t['creneau'])
+        bloc(diapo, x, y, int(largeur), Cm(4.0), t['creneau'])
         # L'heure de début en gros, la fin en dessous : la question de
         # quelqu'un qui hésite dans le couloir est « ça commence quand ».
-        texte(diapo, x, Cm(27.5), int(largeur), Cm(3.4), [
+        # Pas de flèche « → » : elle n'existe pas dans Barlow, LibreOffice va
+        # la chercher ailleurs et le rendu s'en ressent.
+        texte(diapo, x, y + Cm(0.6), int(largeur), Cm(3.2), [
             (depart, CONDENSEE, 32, t['creneau_heure'], True, 1.0),
-            ('→ ' + arrivee, CONDENSEE, 20, t['creneau_heure'], False, 1.15),
+            ('jusqu’à ' + arrivee, CONDENSEE, 18, t['creneau_heure'], False, 1.2),
             (label, COURANTE, 14, t['creneau_label'], False, 1.5),
         ], align=PP_ALIGN.CENTER)
 
@@ -237,18 +354,39 @@ def composer(diapo, kiosque, rotations, t):
     ])
 
 
-def construire(variante):
-    kiosques, rotations = lire_programme()
-    t = THEMES[variante]
+def attendus(kiosque, rotations, seance=None):
+    """Tout ce qui doit se relire dans le PDF, exactement comme il y est écrit.
 
+    Compter les positions ne suffit pas : un texte trop long n'est pas déplacé
+    par LibreOffice, il est coupé au bord de sa zone. Aucune mesure de
+    chevauchement ne le voit. L'emoji est hors contrôle — Barlow ne l'a pas,
+    la substitution en désordonne l'extraction.
+    """
+    textes = ['TESTING EVENT', 'APRÈS-MIDI · KIOSQUES',
+              kiosque['numero'], kiosque['titre'],
+              'ANIMÉ PAR', 'LE PROGRAMME COMPLET', URL]
+    if seance:
+        textes += [seance['label'], seance['titre'], seance['texte']]
+    else:
+        textes.append(kiosque['pitch'])
+    for org, noms in kiosque['qui']:
+        textes += [org, noms]
+    for heure, label in rotations:
+        depart, arrivee = heure.split(' – ')
+        textes += [depart, 'jusqu’à ' + arrivee, label]
+    return textes
+
+
+def construire(nom, pages, rotations, t):
+    """pages : liste de (kiosque, séance ou None). Une affiche par élément."""
     prez = Presentation()
     prez.slide_width, prez.slide_height = LARGEUR, HAUTEUR
     vierge = prez.slide_layouts[6]
 
-    for kiosque in kiosques:
-        composer(prez.slides.add_slide(vierge), kiosque, rotations, t)
+    for kiosque, seance in pages:
+        composer(prez.slides.add_slide(vierge), kiosque, rotations, t, seance)
 
-    chemin = SORTIE / f'affiches-kiosques-{variante}.pptx'
+    chemin = SORTIE / nom
     prez.save(chemin)
     return chemin
 
@@ -264,7 +402,7 @@ def en_pdf(pptx):
     return pptx.with_suffix('.pdf')
 
 
-def verifier(pdf):
+def verifier(pdf, attendues):
     """Relit le PDF produit et refuse un chevauchement.
 
     Un pitch rallongé sur la page programme pousse le texte hors de sa zone
@@ -277,8 +415,8 @@ def verifier(pdf):
     cm = 72 / 2.54
     anomalies = []
     doc = pymupdf.open(pdf)
-    if doc.page_count != 10:
-        anomalies.append(f'{doc.page_count} pages, 10 attendues.')
+    if doc.page_count != len(attendues):
+        anomalies.append(f'{doc.page_count} pages, {len(attendues)} attendues.')
     for n, page in enumerate(doc, 1):
         if (abs(page.rect.width / cm - 29.7) > 0.05
                 or abs(page.rect.height / cm - 42) > 0.05):
@@ -298,31 +436,55 @@ def verifier(pdf):
         # Le numéro, l'emoji et le titre forment un seul bloc pour le lecteur
         # de PDF : c'est son bas qui ne doit pas mordre sur le pitch.
         identite = max((y1 for _, y0, _, y1 in blocs if 5.5 < y0 < 17.0), default=0)
-        if identite > 17.6:
+        if identite > 17.4:
             anomalies.append(f'p{n} : le titre déborde sur le pitch ({identite:.1f} cm).')
-        pitch = max((y1 for _, y0, _, y1 in blocs if 17.0 < y0 < 25.0), default=0)
-        if pitch > 25.2:
-            anomalies.append(f'p{n} : le pitch déborde sur les rotations ({pitch:.1f} cm).')
-        contenu = max((y1 for _, y0, _, y1 in blocs if y0 < 32.0), default=0)
-        if contenu > 33.2:
-            anomalies.append(f'p{n} : du texte passe sous le bandeau de pied '
-                             f'({contenu:.1f} cm).')
+        # Entre 32,6 cm et le premier texte du pied (35,4 cm) il ne doit rien
+        # y avoir : ce qu'on y trouve est recouvert par l'aplat du pied, donc
+        # illisible à l'impression tout en restant lisible dans le PDF.
+        for _, y0, _, y1 in blocs:
+            if 32.6 < y0 < 35.2:
+                anomalies.append(f'p{n} : du texte est recouvert par le '
+                                 f'bandeau de pied (à {y0:.1f} cm).')
+                break
+        # Les blocs ne sont plus à des hauteurs fixes : le seul contrôle qui
+        # reste possible entre le titre et le pied est de relire les phrases.
+        if n <= len(attendues):
+            lu = ' '.join(page.get_text().split())
+            for phrase in attendues[n - 1]:
+                if ' '.join(phrase.split()) not in lu:
+                    anomalies.append(f'p{n} : coupé ou absent — '
+                                     f'« {phrase[:60]}… »')
+    return anomalies
+
+
+def _sortir(nom, pages, rotations, t):
+    pptx = construire(nom, pages, rotations, t)
+    pdf = en_pdf(pptx)
+    for f in (pptx, pdf):
+        print(f'{f.relative_to(RACINE)}  {f.stat().st_size / 1024:.0f} Ko')
+    anomalies = verifier(pdf, [attendus(k, rotations, s) for k, s in pages])
+    for a in anomalies:
+        print(f'  ✗ {a}')
+    if not anomalies:
+        print(f'  ✓ {len(pages)} pages A3, rien qui déborde ni ne se coupe.')
     return anomalies
 
 
 def main():
+    kiosques, rotations = lire_programme()
+    par_numero = {k['numero']: k for k in kiosques}
     souci = 0
-    for variante in THEMES:
-        pptx = construire(variante)
-        pdf = en_pdf(pptx)
-        for f in (pptx, pdf):
-            print(f'{f.relative_to(RACINE)}  {f.stat().st_size / 1024:.0f} Ko')
-        anomalies = verifier(pdf)
-        for a in anomalies:
-            print(f'  ✗ {a}')
-        souci += len(anomalies)
-        if not anomalies:
-            print('  ✓ 10 pages A3, aucun chevauchement.')
+    for variante, t in THEMES.items():
+        # Le jeu complet garde une seule affiche par kiosque : c'est celui
+        # qu'on tire pour les dix portes. Les deux salles du kiosque 10 ont
+        # leur propre fichier — une affiche de trop dans le paquet des dix se
+        # colle au mauvais endroit.
+        souci += len(_sortir(f'affiches-kiosques-{variante}.pptx',
+                             [(k, None) for k in kiosques], rotations, t))
+        souci += len(_sortir(
+            f'affiches-kiosque-10-{variante}.pptx',
+            [(par_numero['10'], seance) for seance in SEANCES['10']],
+            rotations, t))
     sys.exit(1 if souci else 0)
 
 

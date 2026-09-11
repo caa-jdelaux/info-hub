@@ -83,27 +83,10 @@ UTILE = PAGE_L - 2 * MARGE_LATERALE
 
 QR = RACINE / 'qr' / 'testing-event-2026.png'
 
-# Le kiosque 10 occupe deux salles, et depuis l'arbitrage du 11/09 elles ne
-# montrent pas la même chose. Les deux affiches ne sont donc plus
-# interchangeables : ce qui les distingue est écrit dessus, pas le nom de la
-# salle — qui peut encore bouger le matin même.
-SEANCES = {
-    '10': [
-        {
-            'label': 'SÉANCE PRÉSENTÉE',
-            'titre': 'Le principe de la série, puis l’épisode 4 en exclusivité',
-            'texte': 'On vous présente TESTY et les coulisses de la série, puis '
-                     'on diffuse le dernier épisode — le 4 — que personne n’a '
-                     'encore vu.',
-        },
-        {
-            'label': 'EN LIBRE SERVICE',
-            'titre': 'Les trois premiers épisodes, en continu',
-            'texte': 'Les épisodes 1, 2 et 3 se succèdent. Entrez et sortez '
-                     'quand vous voulez : il n’y a pas de séance à attendre.',
-        },
-    ],
-}
+# Les deux séances du kiosque 10 sont décrites une seule fois, dans le
+# générateur PowerPoint : le même texte doit se lire sur l'affiche qu'on tire
+# et sur celle qu'on relit.
+SEANCES = A.SEANCES
 URL = 'info-hub.jeremy-delaux.workers.dev/testing-event-2026/'
 
 # Corps de texte, calés sur la maquette PowerPoint. Une première version plus

@@ -157,87 +157,80 @@ Il demande Pillow et numpy ; le CI ne l'exécute pas.
 
 ## Affiches A3 des kiosques
 
-`outils/affiches/generer-affiches.py` produit dix affiches A3 portrait, une par
-thème, à coller sur la porte des salles. Deux variantes à comparer sur papier :
+`outils/affiches/generer-affiches.py` produit les affiches A3 portrait à coller
+sur la porte des salles. Quatre fichiers par format, deux variantes à comparer
+sur papier :
 
-| Fichier | Usage |
+| Fichier | Contenu |
 |---|---|
-| `affiches-kiosques-clair.pdf` | fond blanc — c'est le PDF qui part à l'impression |
-| `affiches-kiosques-sombre.pdf` | fond sombre, même contenu |
-| `affiches-kiosques-*.pptx` | pour corriger sur place ; suppose Barlow Condensed installée |
+| `affiches-kiosques-clair.pdf` | les dix kiosques, fond blanc — c'est le PDF qui part à l'impression |
+| `affiches-kiosque-10-clair.pdf` | les deux salles du kiosque 10, une page chacune |
+| `affiches-kiosques-sombre.pdf` · `affiches-kiosque-10-sombre.pdf` | mêmes contenus, fond sombre |
+| `affiches-*.pptx` | pour corriger sur place ; suppose Barlow Condensed installée |
 
 **Les affiches ne nomment aucune salle.** Les affectations ont bougé deux fois
 la semaine de l'événement ; une affiche muette sur ce point se déplace d'une
-porte à l'autre au lieu de se réimprimer. Le kiosque 10 occupe deux salles :
-c'est la même affiche, tirée en deux exemplaires — soit **onze feuilles pour
-dix affiches**.
+porte à l'autre au lieu de se réimprimer.
 
-Les thèmes ne sont pas ressaisis dans le script : il les lit dans
-`index.html`, qui reste la source unique. Une correction de pitch faite sur la
-page se retrouve sur l'affiche à la prochaine exécution, et une affiche ne peut
-pas diverger en silence de ce que les participants lisent sur leur téléphone.
-
-### La variante Word, avec les porteurs
-
-`outils/affiches/generer-affiches-docx.py` produit
-`affiches-kiosques-clair.docx` : les mêmes dix affiches A3, **en clair
-uniquement**, et avec une chose que la version PowerPoint n'a pas — **qui anime
-le kiosque**, entité et noms, tels que la page programme les affiche aux
+**Chaque affiche dit qui anime.** Un bloc `ANIMÉ PAR` porte l'entité et les
+noms, une ligne par groupe, exactement comme la page programme les affiche aux
 participants. Quelqu'un qui hésite devant une porte lit un numéro, un titre,
-une phrase, et maintenant le nom de la personne qu'il va trouver derrière.
+une phrase, et le nom de la personne qu'il va trouver derrière.
 
-Pas de variante sombre : un aplat pleine page en Word s'imprime mal et vide les
-cartouches pour rien.
+**Le kiosque 10 a deux affiches, dans un fichier à part.** Ses deux salles ne
+montrent pas la même chose depuis l'arbitrage du 11/09 : l'une présente le
+principe de la série et diffuse l'épisode 4 en exclusivité, l'autre passe les
+épisodes 1 à 3 en libre service. Un bandeau plein le dit, **à la place du
+pitch** — les deux ensemble ne tiennent pas sur la page, et une porte n'a qu'un
+travail : dire ce qui se passe derrière celle-là. Ces deux affiches ne sont donc
+**pas interchangeables**, et ce qui les distingue est écrit dessus, pas le nom
+de la salle. Le jeu des dix garde une affiche générique pour le kiosque 10 :
+une onzième affiche glissée dans le paquet se colle au mauvais endroit.
 
-**Le kiosque 10 a deux affiches**, dans un fichier à part —
-`affiches-kiosque-10-clair.docx`. Ses deux salles ne montrent pas la même
-chose depuis l'arbitrage du 11/09 : l'une présente le principe de la série et
-diffuse l'épisode 4 en exclusivité, l'autre passe les épisodes 1 à 3 en libre
-service. Un bandeau plein le dit sur chaque affiche. **Elles ne sont donc plus
-interchangeables** — et ce qui les distingue est écrit dessus, pas le nom de la
-salle, qui peut encore bouger le matin même. Le jeu complet garde, lui, une
-seule affiche par kiosque : une affiche de trop dans le paquet des dix se colle
-au mauvais endroit.
+Les contenus ne sont pas ressaisis dans le script : il les lit dans
+`index.html`, qui reste la source unique. Une correction de pitch ou de porteur
+faite sur la page se retrouve sur l'affiche à la prochaine exécution, et une
+affiche ne peut pas diverger en silence de ce que les participants lisent sur
+leur téléphone.
 
-**Attention à la divergence.** Le PDF qui part à l'impression
-(`affiches-kiosques-clair.pdf`) ne porte pas encore les porteurs : il vient de
-l'autre script. Tant que les deux coexistent, il faut savoir laquelle des deux
-versions on tire.
+**Les blocs ne sont plus à des hauteurs écrites en dur.** Tant que l'affiche ne
+disait que le pitch, des ordonnées fixes suffisaient. Avec les porteurs, et une
+séance en plus sur le kiosque 10, les blocs s'empilent : chacun mesure son
+texte et pousse le suivant.
 
-Ce que Word ne rend pas comme le PDF :
-
-- **Les bandeaux s'arrêtent à la marge.** Word compose dans ses marges ; un
-  aplat pleine largeur demanderait un cadre flottant, qui se déplace dès qu'une
-  ligne s'allonge. Aucun copieur de bureau n'imprime à fond perdu de toute
-  façon.
-- **Word répartit le texte, il ne le pose pas.** Une ligne de trop pousse la
-  suite sur une seconde page, sans erreur ni avertissement. Le contrôle compte
-  donc les pages *et* relit chaque phrase dans le PDF produit — trois défauts
-  ont été attrapés comme ça : une page blanche glissée entre huit affiches sur
-  dix (le paragraphe de saut de page héritait d'un corps de 34 pt), un titre
-  coupé en silence par une hauteur de ligne exacte, et huit affiches qui
-  débordaient après un premier passage trop généreux sur les corps de texte.
-
-Le script lit le programme par `lire_programme()` de `generer-affiches.py` :
-un seul analyseur pour les deux sorties. Les briques Word, elles, sont
-importées de `outils/fiches/generer-fiches-docx.py` — une dépendance des
-affiches vers les fiches, qui n'est pas le bon sens de lecture et qui attend un
-module commun après l'événement.
-
-Trois pièges que le script traite, et qui font rater une affiche autrement :
+Quatre pièges que le script traite, et qui font rater une affiche autrement :
 
 - **La taille de diapo.** PowerPoint ouvre en 33,87 × 19,05 cm ; le script fixe
   29,7 × 42 cm pour que 1 diapo = 1 page A3 exacte, sans recadrage du pilote.
 - **La police.** Barlow Condensed est une police Google, absente de Windows et
   d'Office. Le PDF l'embarque, donc l'impression est fidèle ; le `.pptx`, lui,
   suppose qu'elle soit installée sur le poste qui l'ouvre.
-- **Le débordement.** Le script relit le PDF qu'il vient de produire et refuse
-  un titre qui mord sur le pitch, un pitch qui mord sur les horaires, ou un
-  texte trop près du bord (seuil calé sur la zone non imprimable d'un copieur,
-  ~10 mm). Sur un tirage A3 en onze exemplaires, l'erreur se découvre au mur.
+- **Le glissement sous le bandeau de pied.** Un bloc de trop et les cartes de
+  rotation passent *sous* l'aplat du pied : invisibles à l'impression, et
+  pourtant toujours présentes dans le PDF, donc relisibles par un contrôle de
+  texte. C'est arrivé, et aucun contrôle ne l'a vu. Il y en a deux maintenant :
+  le script refuse de dessiner si le curseur descend trop bas, et la relecture
+  du PDF signale tout texte posé dans la bande que le pied recouvre.
+- **Le débordement et la troncature.** Le script relit le PDF qu'il vient de
+  produire, refuse un titre qui mord sur le pitch ou un texte trop près du bord
+  (seuil calé sur la zone non imprimable d'un copieur, ~10 mm), et **vérifie
+  que chaque phrase attendue s'y retrouve** — une phrase trop longue n'est pas
+  déplacée par LibreOffice, elle est coupée au bord de sa zone, et aucune
+  mesure de position ne le voit.
 
-Il demande `python-pptx`, `pymupdf`, LibreOffice Impress et les polices Barlow
-et Barlow Condensed. Le CI ne l'exécute pas.
+### La même chose en Word
+
+`outils/affiches/generer-affiches-docx.py` produit les mêmes affiches en
+`.docx`, variante claire uniquement — pour qui veut corriger un mot sans
+PowerPoint. Elle porte les mêmes contenus, lus par le même analyseur, et les
+deux séances du kiosque 10 sont décrites une seule fois, dans le générateur
+PowerPoint.
+
+Ce n'est **pas** la version qui part à l'impression, et sa mise en page n'est
+pas identique : Word compose dans ses marges, donc les bandeaux s'arrêtent à la
+marge au lieu d'aller bord à bord, et Word répartit le texte au lieu de le
+poser — une ligne de trop pousse la suite sur une seconde page, sans erreur ni
+avertissement. Le contrôle compte donc les pages *et* relit chaque phrase.
 
 
 ## Affiche A3 de l'événement
