@@ -642,9 +642,11 @@ tranchées sont barrées, avec la décision.
 15. **Les pancartes de temps** : « 5 / 1 / on termine » (10/09) ou
     « 10 / 5 / on termine » ? Voir l'objection au § 3.3.
 16. **Le kiosque 10 est-il en libre service ou à heure fixe ?** (§ 4.2) Le
-    fichier source et la page programme disent « libre service » ; la version du
-    10/09 décrit une diffusion présentée. Les deux ne peuvent pas être vrais, et
-    c'est la page publiée qui devra changer.
+    fichier source finit par « visionnage en libre service » ; la version du
+    10/09 décrit une diffusion présentée de l'épisode 4. Les deux ne peuvent pas
+    être vrais. La page, elle, ne tranche plus : le kiosque s'appelle
+    **Mini-Série TESTY** depuis le 11/09 et la mention « libre service » a
+    disparu de son titre.
 17. **Le tirage : par nom, ou par rang et numéro de place ?** (§ 5.4) Les deux
     mécaniques ont été proposées ; elles ne récompensent pas la même chose.
 18. **Kiosque 1 : la tour de Babel ou le Marshmallow Challenge ?** Le fichier

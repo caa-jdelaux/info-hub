@@ -564,8 +564,9 @@ def _carte_kiosque(numero, autre):
         # la salle. Mieux vaut que l'animateur le sache avant d'ouvrir la
         # bouche que de le découvrir en salle Sumida.
         carte['alerte'] = (
-            '« Libre service » selon la page ; diffusion présentée de '
-            'l’épisode 4 selon le conducteur du 10/09. À trancher avant de le dire.')
+            'Le fichier source finit par « visionnage en libre service » ; le '
+            'conducteur du 10/09 décrit une diffusion présentée de l’épisode 4. '
+            'À trancher avant de le dire.')
     return carte
 
 
