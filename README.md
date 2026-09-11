@@ -566,28 +566,50 @@ Trois choix qui viennent de la scène plutôt que de la maquette :
   été comblé par une supposition se dit sur scène et devient faux.
 - **Recto seul.** Retourner une carte en scène est une hésitation qui se voit.
 
-### Une carte par kiosque pour les dix pitches
+### Les dix pitches en trois blocs thématiques
 
 Ce sont les deux animateurs qui pitchent les dix kiosques à 13h44, pas les
-porteurs : Anas les impairs, le second les pairs. Chacun a donc, après le
-tableau récapitulatif, **cinq cartes de pitch** — une par kiosque — où
-l'essentiel est le nom de la salle, en gros, à la place de l'heure de fin.
+porteurs. Le partage impair/pair a été abandonné le 11/09 pour une raison
+arithmétique : il imposait **neuf alternances de micro** dans une séquence
+budgétée à cinq minutes pile (10 × 30 s = 300 s), et ces alternances n'étaient
+comptées nulle part. À cinq secondes chacune, la séquence sortait de son
+créneau de quarante-cinq secondes avant qu'on y ait ajouté quoi que ce soit.
 
-Chaque carte porte trois choses, dans cet ordre d'importance :
+Les dix kiosques se regroupent en trois familles — vérifiées sur le texte des
+pitches, pas sur les titres :
 
-1. **La salle**, dans le pavé de couleur. C'est la seule information dont la
-   salle a besoin pour choisir où aller.
-2. **La phrase à dire**, celle de la page programme. Elle fait sept à huit
-   secondes ; le créneau en compte trente, transitions comprises.
-3. **Le texte long du porteur**, en petit, encadré « à lire avant, pas en
-   scène ». Il vient du fichier source et fait trente à quarante secondes à
-   voix haute — dix fois quarante secondes, c'est six minutes pour un créneau
-   de cinq. Il n'est pas là pour être lu : il est là pour qu'on y prenne une
-   phrase, la veille.
+| Bloc | Kiosques, dans l'ordre où ils se disent | Qui | Durée |
+|---|---|---|---|
+| 1 — Comprendre, sans prérequis | 1, 5, 10 | Anas | 1 min 25 |
+| 2 — L'IA dans vos tests | 4, 7, 3, 2 | 2ᵉ animateur | 1 min 50 |
+| 3 — Vos outils | 6, 8, 9 | Anas | 1 min 25 |
 
-Le tableau des dix reste en tête de série, avec **les cinq kiosques de
-l'animateur en couleur** et les cinq autres en gris : il faut savoir quand
-vient son tour, pas ce que dit l'autre.
+**Deux alternances de micro au lieu de neuf**, et les trente-cinq secondes
+récupérées paient les trois phrases d'introduction de bloc :
+3 × 20 s + 10 × 22 s + 2 × 5 s = **4 min 50**.
+
+L'ordre à l'intérieur d'un bloc n'est pas celui des numéros, c'est la chaîne du
+test : bloc 2, de l'US au parcours (4), de l'US aux cas de test (7), du code au
+test automatisé (3), l'exécution (2). L'animateur enchaîne avec une transition
+au lieu de trois.
+
+Il y a donc deux sortes de cartes, et c'est la distinction utile :
+
+- **Les cartes de bloc**, tenues en scène. Une phrase d'introduction à dire,
+  puis chaque kiosque en trois lignes : `numéro · salle — titre`, la phrase de
+  la page programme, et les porteurs à nommer. Tout ce qui se dit y est, et
+  rien d'autre. Anas en a deux, le second animateur une.
+- **Les cartes de préparation**, une par kiosque, en fin de jeu. Elles portent
+  **le texte long du porteur**, encadré « à lire avant, pas en scène ». Il fait
+  trente à quarante secondes à voix haute — dix fois quarante secondes, c'est
+  six minutes pour un créneau de cinq. Il n'est pas là pour être lu : il est là
+  pour qu'on y prenne une phrase, la veille. Le pied de ces cartes le dit :
+  *« rien à dire depuis cette carte »*.
+
+Le tableau des dix reste en tête de série, mais **dans l'ordre où ça se dit**,
+plus dans l'ordre des numéros : c'est devenu la seule façon de lire la séquence
+d'un coup d'œil. Les kiosques de l'animateur sont en couleur, les autres en
+gris — il faut savoir quand vient son tour, pas ce que dit l'autre.
 
 Les données ne sont plus écrites en dur. Le titre, le pitch court, la salle et
 les noms des porteurs sont **relus dans la page** — celle dont on rouvre le
