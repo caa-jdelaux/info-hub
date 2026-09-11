@@ -177,6 +177,43 @@ Les thèmes ne sont pas ressaisis dans le script : il les lit dans
 page se retrouve sur l'affiche à la prochaine exécution, et une affiche ne peut
 pas diverger en silence de ce que les participants lisent sur leur téléphone.
 
+### La variante Word, avec les porteurs
+
+`outils/affiches/generer-affiches-docx.py` produit
+`affiches-kiosques-clair.docx` : les mêmes dix affiches A3, **en clair
+uniquement**, et avec une chose que la version PowerPoint n'a pas — **qui anime
+le kiosque**, entité et noms, tels que la page programme les affiche aux
+participants. Quelqu'un qui hésite devant une porte lit un numéro, un titre,
+une phrase, et maintenant le nom de la personne qu'il va trouver derrière.
+
+Pas de variante sombre : un aplat pleine page en Word s'imprime mal et vide les
+cartouches pour rien.
+
+**Attention à la divergence.** Le PDF qui part à l'impression
+(`affiches-kiosques-clair.pdf`) ne porte pas encore les porteurs : il vient de
+l'autre script. Tant que les deux coexistent, il faut savoir laquelle des deux
+versions on tire.
+
+Ce que Word ne rend pas comme le PDF :
+
+- **Les bandeaux s'arrêtent à la marge.** Word compose dans ses marges ; un
+  aplat pleine largeur demanderait un cadre flottant, qui se déplace dès qu'une
+  ligne s'allonge. Aucun copieur de bureau n'imprime à fond perdu de toute
+  façon.
+- **Word répartit le texte, il ne le pose pas.** Une ligne de trop pousse la
+  suite sur une seconde page, sans erreur ni avertissement. Le contrôle compte
+  donc les pages *et* relit chaque phrase dans le PDF produit — trois défauts
+  ont été attrapés comme ça : une page blanche glissée entre huit affiches sur
+  dix (le paragraphe de saut de page héritait d'un corps de 34 pt), un titre
+  coupé en silence par une hauteur de ligne exacte, et huit affiches qui
+  débordaient après un premier passage trop généreux sur les corps de texte.
+
+Le script lit le programme par `lire_programme()` de `generer-affiches.py` :
+un seul analyseur pour les deux sorties. Les briques Word, elles, sont
+importées de `outils/fiches/generer-fiches-docx.py` — une dépendance des
+affiches vers les fiches, qui n'est pas le bon sens de lecture et qui attend un
+module commun après l'événement.
+
 Trois pièges que le script traite, et qui font rater une affiche autrement :
 
 - **La taille de diapo.** PowerPoint ouvre en 33,87 × 19,05 cm ; le script fixe

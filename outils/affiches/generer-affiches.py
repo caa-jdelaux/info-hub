@@ -99,11 +99,17 @@ def lire_programme():
         nom = re.search(r'<h3 class="kiosque-name">(.*?)</h3>', corps, re.S).group(1)
         emoji = re.search(r'<span aria-hidden="true">(.*?)</span>', nom).group(1)
         pitch = re.search(r'<div class="kiosque-pitch">(.*?)</div>', corps, re.S).group(1)
+        # Les porteurs, un couple (entité, noms) par groupe, dans l'ordre de la
+        # page. L'affiche A3 ne les utilise pas encore ; la variante Word, si.
+        groupes = [(sans_balises(o), sans_balises(n)) for o, n in re.findall(
+            r'<span class="qui-groupe"><span class="qui-org">(.*?)</span>(.*?)</span>',
+            corps, re.S)]
         kiosques.append({
             'numero': numero,
             'emoji': emoji,
             'titre': sans_balises(re.sub(r'<span aria-hidden="true">.*?</span>', '', nom)),
             'pitch': sans_balises(pitch),
+            'qui': groupes,
         })
 
     rotations = []
@@ -117,6 +123,10 @@ def lire_programme():
     if len(kiosques) != 10 or len(rotations) != 5:
         sys.exit(f'programme illisible : {len(kiosques)} kiosques, '
                  f'{len(rotations)} rotations (attendu 10 et 5)')
+    muets = [k['numero'] for k in kiosques if not k['qui']]
+    if muets:
+        sys.exit('porteurs illisibles dans la page pour les kiosques '
+                 + ', '.join(muets))
     return kiosques, rotations
 
 
