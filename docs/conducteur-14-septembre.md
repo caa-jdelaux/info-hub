@@ -676,9 +676,10 @@ tranchées sont barrées, avec la décision.
     (§ 3.5) La version du 10/09 a supprimé le paragraphe qui posait la question,
     sans y répondre. Elle reste ouverte, quarante minutes avant le message le
     plus important de la matinée.
-14. **Aurore CAPLAN (DF Dommage) est-elle aussi au kiosque 8 ?** Le fichier
+14. **Aurore CAPLAN (DF Dommages) est-elle aussi au kiosque 8 ?** Le fichier
     source ne la place qu'au kiosque 9, et la correction du 14/09 nomme le
-    kiosque 8. Seule l'écriture « DF Dommage » a été appliquée, au kiosque 9.
+    kiosque 8. Seule l'écriture de l'entité a été appliquée, au kiosque 9 —
+    et corrigée en « DF Dommages », avec un s, le 11/09 (kiosques 7 et 9).
 15. **Les pancartes de temps** : « 5 / 1 / on termine » (10/09) ou
     « 10 / 5 / on termine » ? Voir l'objection au § 3.3.
 16. **Le kiosque 10 est-il en libre service ou à heure fixe ?** (§ 4.2) Le
